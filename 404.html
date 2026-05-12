@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found · Las Cruces Culinary Innovation Hub</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@300;400;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌶</text></svg>" />
+  <style>
+    .not-found-shell {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem 4rem;
+      text-align: center;
+      background: var(--ember-bg, #1a0f08);
+      color: var(--white, #ffffff);
+    }
+
+    .not-found__brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      margin-bottom: 3rem;
+      text-decoration: none;
+    }
+
+    .not-found__brand-primary {
+      font-family: 'Abril Fatface', 'Playfair Display', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #d4a84b;
+      letter-spacing: .01em;
+      line-height: 1;
+    }
+
+    .not-found__brand-secondary {
+      font-family: 'Josefin Sans', system-ui, sans-serif;
+      font-size: .58rem;
+      font-weight: 300;
+      color: rgba(232,213,160,.55);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .not-found__code {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(5rem, 22vw, 10rem);
+      font-weight: 700;
+      color: rgba(212,168,75,.18);
+      line-height: 1;
+      letter-spacing: -.04em;
+      margin: 0 0 .25rem;
+      user-select: none;
+    }
+
+    .not-found__heading {
+      margin: 0 0 .75rem;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--white, #ffffff);
+      letter-spacing: -.01em;
+      line-height: 1.1;
+    }
+
+    .not-found__body {
+      max-width: 400px;
+      margin: 0 0 2.5rem;
+      color: rgba(232,213,160,.65);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .not-found__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+    }
+
+    .not-found__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 1.5rem;
+      border-radius: 999px;
+      font-family: 'Josefin Sans', system-ui, sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background .18s, color .18s, border-color .18s;
+    }
+
+    .not-found__btn--primary {
+      background: #d4500a;
+      color: #ffffff;
+      border: 2px solid #d4500a;
+    }
+
+    .not-found__btn--primary:hover {
+      background: #b83a08;
+      border-color: #b83a08;
+    }
+
+    .not-found__btn--ghost {
+      background: transparent;
+      color: #d4a84b;
+      border: 2px solid rgba(212,168,75,.4);
+    }
+
+    .not-found__btn--ghost:hover {
+      border-color: #d4a84b;
+      background: rgba(212,168,75,.08);
+    }
+
+    .not-found__footer {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 0; right: 0;
+      text-align: center;
+      color: rgba(212,168,75,.25);
+      font-size: .7rem;
+      letter-spacing: .06em;
+      font-family: 'Josefin Sans', system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="not-found-shell">
+
+    <a class="not-found__brand" href="/">
+      <span class="not-found__brand-primary">Cider &amp; Spice</span>
+      <span class="not-found__brand-secondary">Las Cruces Culinary Innovation Hub</span>
+    </a>
+
+    <p class="not-found__code" aria-hidden="true">404</p>
+
+    <h1 class="not-found__heading">Page not found</h1>
+
+    <p class="not-found__body">
+      This page doesn&rsquo;t exist or has moved. Head back home or
+      reach out &mdash; we&rsquo;re happy to point you in the right direction.
+    </p>
+
+    <div class="not-found__actions">
+      <a class="not-found__btn not-found__btn--primary" href="/">← Back to Home</a>
+      <a class="not-found__btn not-found__btn--ghost" href="/#contact">Get in Touch</a>
+    </div>
+
+  </div>
+
+  <p class="not-found__footer">&copy; 2026 Cider &amp; Spice &nbsp;&middot;&nbsp; Las Cruces, NM</p>
+</body>
+</html>

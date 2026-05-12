@@ -1,0 +1,9 @@
+/* Brand design system — must precede @tailwind directives.
+   All CSS custom properties, section styles, and component
+   classes live here. Tailwind utilities layer on top. */
+@import url('../styles.css');
+
+/* Tailwind base — utility classes available in new components */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
