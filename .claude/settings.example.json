@@ -1,0 +1,11 @@
+{
+  "_comment": "Copy this file to settings.json and fill in your real NCB API token. settings.json is gitignored — never commit it.",
+  "mcpServers": {
+    "nocodebackend": {
+      "url": "https://app.nocodebackend.com/api/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer <your-nocodebackend-api-token>"
+      }
+    }
+  }
+}

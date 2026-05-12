@@ -2,14 +2,29 @@
  * lib/api.ts
  * NoCodeBackend REST API client for the LC Culinary Hub.
  *
+ * MCP server: https://app.nocodebackend.com/api/mcp/sse
+ * MCP config: .claude/settings.json (gitignored — see .claude/settings.example.json)
+ *
  * Environment variables (set in .env.local — never commit):
- *   NEXT_PUBLIC_NCB_BASE_URL  – e.g. https://your-project.nocodebackend.com
+ *   NEXT_PUBLIC_NCB_BASE_URL  – https://app.nocodebackend.com
  *   NCB_API_KEY               – secret key (server-side only; no NEXT_PUBLIC_ prefix)
  *
  * NEXT_PUBLIC_NCB_BASE_URL is safe to expose in the browser (it's just a URL).
  * NCB_API_KEY must only be used in Server Components, Route Handlers, or
  * Server Actions — never in client components.
+ *
+ * Endpoint path conventions for NoCodeBackend:
+ *   Table list:   /api/tables/{tableName}
+ *   Single row:   /api/tables/{tableName}/{id}
+ *   The NCB_TABLE_PREFIX constant below sets the shared prefix so convenience
+ *   wrappers only need the table name, e.g. table('vendors') → /api/tables/vendors
  */
+
+/** Shared path prefix for all NoCodeBackend table endpoints. */
+const NCB_TABLE_PREFIX = '/api/tables'
+
+/** Build a fully-qualified table path: table('vendors') → '/api/tables/vendors' */
+const table = (name: string) => `${NCB_TABLE_PREFIX}/${name}`
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -131,7 +146,7 @@ async function ncbFetch<T>(
  * Fetch a list of records from the given endpoint.
  *
  * @example
- *   const result = await getRecords('/vendors', { page: 1, pageSize: 20 })
+ *   const result = await getRecords('/api/tables/vendors', { page: 1, pageSize: 20 })
  *   if (!result.ok) console.error(result.message)
  *   else console.log(result.data)
  */
@@ -168,7 +183,7 @@ export async function getRecords<T = Record<string, unknown>>(
  * Fetch a single record by ID.
  *
  * @example
- *   const result = await getRecord('/vendors', 'abc123')
+ *   const result = await getRecord('/api/tables/vendors', 'abc123')
  *   if (!result.ok) console.error(result.message)
  *   else console.log(result.data)
  */
@@ -191,7 +206,7 @@ export async function getRecord<T = Record<string, unknown>>(
  * Create a new record.
  *
  * @example
- *   const result = await createRecord('/leads', {
+ *   const result = await createRecord('/api/tables/leads', {
  *     name: 'Jane Smith',
  *     email: 'jane@example.com',
  *     interest: 'vendor',
@@ -219,7 +234,7 @@ export async function createRecord<
  * Update an existing record by ID (PATCH — partial update).
  *
  * @example
- *   const result = await updateRecord('/vendors', 'abc123', { status: 'approved' })
+ *   const result = await updateRecord('/api/tables/vendors', 'abc123', { status: 'approved' })
  */
 export async function updateRecord<
   TPayload = Record<string, unknown>,
@@ -244,7 +259,7 @@ export async function updateRecord<
  * Delete a record by ID. Returns `{ ok: true }` on success (204 No Content).
  *
  * @example
- *   const result = await deleteRecord('/leads', 'abc123')
+ *   const result = await deleteRecord('/api/tables/leads', 'abc123')
  *   if (!result.ok) console.error(result.message)
  */
 export async function deleteRecord(
@@ -292,19 +307,19 @@ export interface CiderClubSignup {
 
 /** List vendors — for use in Server Components or Route Handlers. */
 export const getVendors = (opts?: ListOptions) =>
-  getRecords<Vendor>('/vendors', opts)
+  getRecords<Vendor>(table('vendors'), opts)
 
 /** Submit a vendor application. */
 export const submitVendorApplication = (data: Omit<Vendor, 'id' | 'status'>) =>
-  createRecord<Omit<Vendor, 'id' | 'status'>, Vendor>('/vendors', data)
+  createRecord<Omit<Vendor, 'id' | 'status'>, Vendor>(table('vendors'), data)
 
 /** Submit a general interest / newsletter lead. */
 export const submitLead = (data: Omit<Lead, 'id'>) =>
-  createRecord<Omit<Lead, 'id'>, Lead>('/leads', data)
+  createRecord<Omit<Lead, 'id'>, Lead>(table('leads'), data)
 
 /** Submit a Cider Club membership signup. */
 export const submitCiderClub = (data: Omit<CiderClubSignup, 'id' | 'submitted_at'>) =>
   createRecord<Omit<CiderClubSignup, 'id' | 'submitted_at'>, CiderClubSignup>(
-    '/cider-club',
+    table('cider-club'),
     data,
   )

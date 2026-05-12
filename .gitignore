@@ -21,6 +21,11 @@ node_modules/
 # Vercel
 .vercel
 
+# Claude Code project settings — contains bearer tokens, never commit
+.claude/settings.json
+.claude/settings.local.json
+.claude/mcp-needs-auth-cache.json
+
 # Root-level images/ kept for legacy index.html but not tracked in git.
 # Next.js serves from public/images/ instead.
 /images/
