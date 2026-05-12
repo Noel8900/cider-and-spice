@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { applyAsVendor } from './actions'
 import type { VendorFormData, VendorActionResult } from './actions'
+import SkeletonForm from '@/components/ui/SkeletonForm'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
 
@@ -165,10 +166,17 @@ function SuccessScreen() {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function VendorsPage() {
-  const [form, setForm]         = useState<VendorFormData>(EMPTY_FORM)
+  const [form, setForm]             = useState<VendorFormData>(EMPTY_FORM)
   const [submitting, setSubmitting] = useState(false)
-  const [success, setSuccess]   = useState(false)
-  const [error, setError]       = useState<string | null>(null)
+  const [success, setSuccess]       = useState(false)
+  const [error, setError]           = useState<string | null>(null)
+  const [initializing, setInitializing] = useState(true)
+
+  useEffect(() => {
+    // Simulate config load — replace with real async prefill fetch if needed
+    const timer = setTimeout(() => setInitializing(false), 400)
+    return () => clearTimeout(timer)
+  }, [])
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 
@@ -198,6 +206,12 @@ export default function VendorsPage() {
   }
 
   // ── Early exits ─────────────────────────────────────────────────────────────
+
+  if (initializing) return (
+    <main className="min-h-screen bg-[#1C1209]">
+      <SkeletonForm />
+    </main>
+  )
 
   if (success) return <SuccessScreen />
 

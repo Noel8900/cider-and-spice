@@ -5,24 +5,13 @@ import { fetchVendors, updateVendorStatus, type Vendor, type VendorStatus } from
 import GlassCard from '@/components/ui/GlassCard';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Badge from '@/components/ui/Badge';
+import SkeletonTable from '@/components/ui/SkeletonTable';
+import SkeletonStats from '@/components/ui/SkeletonStats';
 
 const statusOptions: VendorStatus[] = ['pending', 'approved', 'rejected'];
 
 const statusVariant = (s?: string): 'ember' | 'grove' | 'muted' =>
   s === 'approved' ? 'grove' : s === 'rejected' ? 'muted' : 'ember';
-
-// Skeleton row for loading state
-function SkeletonRow() {
-  return (
-    <tr>
-      {[...Array(6)].map((_, i) => (
-        <td key={i} className="px-6 py-4">
-          <div className="h-4 rounded bg-white/10 animate-pulse" />
-        </td>
-      ))}
-    </tr>
-  );
-}
 
 export default function AdminPage() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -61,23 +50,7 @@ export default function AdminPage() {
           align="left"
         />
 
-        {/* Stats bar */}
-        {!loading && !error && (
-          <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg">
-            {(['pending', 'approved', 'rejected'] as VendorStatus[]).map((s) => (
-              <GlassCard key={s} className="p-4 text-center" hover={false}>
-                <div className="font-serif text-2xl font-bold text-[#C4622D]">
-                  {vendors.filter((v) => (v.status ?? 'pending') === s).length}
-                </div>
-                <div className="font-sans text-xs uppercase tracking-widest text-[#F5ECD7] mt-1"
-                     style={{ opacity: 0.50 }}>
-                  {s}
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        )}
-
+        {/* Error banner */}
         {error && (
           <div role="alert" className="mb-6 px-4 py-3 rounded-xl bg-red-500/10
                                        border border-red-500/30 text-red-400 text-sm">
@@ -85,24 +58,49 @@ export default function AdminPage() {
           </div>
         )}
 
-        <GlassCard hover={false} className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-[#F5ECD7] min-w-[700px]">
-              <thead className="border-b border-[#F5ECD7]/10">
-                <tr>
-                  {['Name', 'Business', 'Cuisine', 'Booth', 'Status', 'Action'].map((h) => (
-                    <th key={h} className="px-6 py-4 text-left font-sans font-medium
-                                           text-xs tracking-widest uppercase"
-                        style={{ opacity: 0.50 }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F5ECD7]/5">
-                {loading
-                  ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
-                  : vendors.map((v) => (
+        {/* Loading state — reusable skeleton components */}
+        {loading && (
+          <div className="space-y-6">
+            <SkeletonStats count={3} />
+            <SkeletonTable rows={5} cols={6} />
+          </div>
+        )}
+
+        {/* Loaded state */}
+        {!loading && !error && (
+          <>
+            {/* Stats bar */}
+            <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg">
+              {(['pending', 'approved', 'rejected'] as VendorStatus[]).map((s) => (
+                <GlassCard key={s} className="p-4 text-center" hover={false}>
+                  <div className="font-serif text-2xl font-bold text-[#C4622D]">
+                    {vendors.filter((v) => (v.status ?? 'pending') === s).length}
+                  </div>
+                  <div className="font-sans text-xs uppercase tracking-widest text-[#F5ECD7] mt-1"
+                       style={{ opacity: 0.50 }}>
+                    {s}
+                  </div>
+                </GlassCard>
+              ))}
+            </div>
+
+            {/* Vendor table */}
+            <GlassCard hover={false} className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-[#F5ECD7] min-w-[700px]">
+                  <thead className="border-b border-[#F5ECD7]/10">
+                    <tr>
+                      {['Name', 'Business', 'Cuisine', 'Booth', 'Status', 'Action'].map((h) => (
+                        <th key={h} className="px-6 py-4 text-left font-sans font-medium
+                                               text-xs tracking-widest uppercase"
+                            style={{ opacity: 0.50 }}>
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#F5ECD7]/5">
+                    {vendors.map((v) => (
                       <tr key={v.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-6 py-4 font-serif font-medium" style={{ opacity: 1 }}>
                           {v.name}
@@ -140,10 +138,12 @@ export default function AdminPage() {
                         </td>
                       </tr>
                     ))}
-              </tbody>
-            </table>
-          </div>
-        </GlassCard>
+                  </tbody>
+                </table>
+              </div>
+            </GlassCard>
+          </>
+        )}
       </div>
     </main>
   );
