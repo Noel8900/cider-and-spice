@@ -1,6 +1,7 @@
-/* Brand design system — must precede @tailwind directives.
-   All CSS custom properties, section styles, and component
-   classes live here. Tailwind utilities layer on top. */
+/* New brand token layer — Cider & Spice design system */
+@import url('../styles/tokens.css');
+
+/* Legacy brand design system — existing custom properties + section styles */
 @import url('../styles.css');
 
 /* Tailwind base — utility classes available in new components */

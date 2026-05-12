@@ -1,0 +1,25 @@
+/* Single source of truth for all brand tokens — import in globals.css */
+:root {
+  /* Brand colors */
+  --color-bg:        #1C1209;
+  --color-surface:   rgba(255,255,255,0.05);
+  --color-border:    rgba(245,236,215,0.12);
+  --color-cream:     #F5ECD7;
+  --color-ember:     #C4622D;
+  --color-grove:     #2D5016;
+
+  /* Typography — anchor font: Playfair Display, support: Inter */
+  --font-anchor:     'Playfair Display', Georgia, serif;
+  --font-support:    'Inter', system-ui, sans-serif;
+
+  /* Opacity hierarchy (Google Material principle) */
+  --opacity-high:    1;      /* Headlines — commands attention */
+  --opacity-mid:     0.70;   /* Subheadings — supporting role */
+  --opacity-low:     0.50;   /* Body text — readable, not dominant */
+  --opacity-mute:    0.30;   /* Labels, placeholders */
+
+  /* Spacing scale */
+  --radius-card:     1rem;
+  --radius-input:    0.75rem;
+  --radius-pill:     9999px;
+}
