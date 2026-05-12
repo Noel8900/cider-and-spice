@@ -42,7 +42,7 @@ const images: GalleryImage[] = [
 export default function GallerySection() {
   return (
     <section
-      id="gallery"
+      id="cider-bar"
       className="py-24 px-6 bg-[#1C1209]"
       aria-labelledby="gallery-heading"
     >
