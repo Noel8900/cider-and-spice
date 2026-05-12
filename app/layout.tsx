@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import Navbar from '@/components/layout/Navbar'
 import './globals.css'
 
 /* ── Metadata (replaces <head> SEO tags) ─────────────────────── */
@@ -43,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <head>
         {/* Google Fonts — preconnect then load */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -116,6 +117,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <Navbar />
         {children}
 
         {/* All DOM interaction (nav, FAQ, forms, lightbox, animations)

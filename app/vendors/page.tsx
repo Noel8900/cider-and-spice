@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { applyAsVendor } from './actions'
 import type { VendorFormData, VendorActionResult } from './actions'
@@ -60,14 +61,6 @@ function Spinner() {
   )
 }
 
-function CheckCircle() {
-  return (
-    <svg className="h-10 w-10 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  )
-}
-
 function AlertCircle() {
   return (
     <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -114,61 +107,12 @@ const inputCls =
   'focus:border-[#B83A2E] focus:outline-none focus:ring-2 focus:ring-[#B83A2E]/20 ' +
   'disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed'
 
-// ─── Success screen ───────────────────────────────────────────────────────────
-
-function SuccessScreen() {
-  return (
-    <main className="flex min-h-screen flex-col" style={{ background: '#faf8f5' }}>
-      <div className="px-6 py-4" style={{ background: '#1a0f08' }}>
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
-        >
-          <BackArrow />
-          Back to the Hub
-        </Link>
-      </div>
-
-      <div className="flex flex-1 items-center justify-center px-4 py-24">
-        <div className="max-w-md text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 ring-1 ring-emerald-100">
-            <CheckCircle />
-          </div>
-
-          <h2
-            className="mb-3 text-3xl font-bold text-gray-900"
-            style={{ fontFamily: 'Playfair Display, serif' }}
-          >
-            Application Received!
-          </h2>
-
-          <p className="mb-2 text-gray-600">
-            Thank you for your interest in the Las Cruces Culinary Innovation Hub.
-          </p>
-          <p className="mb-10 text-gray-600">
-            We&apos;ll review your application and follow up at the email you
-            provided within <strong>5–7 business days</strong>.
-          </p>
-
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-bold text-white shadow-md transition-opacity hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg,#B83A2E 0%,#d4641a 100%)' }}
-          >
-            Return to the Hub
-          </Link>
-        </div>
-      </div>
-    </main>
-  )
-}
-
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function VendorsPage() {
+  const router = useRouter()
   const [form, setForm]             = useState<VendorFormData>(EMPTY_FORM)
   const [submitting, setSubmitting] = useState(false)
-  const [success, setSuccess]       = useState(false)
   const [error, setError]           = useState<string | null>(null)
   const [initializing, setInitializing] = useState(true)
 
@@ -198,7 +142,7 @@ export default function VendorsPage() {
     const result: VendorActionResult = await applyAsVendor(form)
 
     if (result.ok) {
-      setSuccess(true)   // unmounts the form, renders SuccessScreen
+      router.push('/vendors/thank-you')
     } else {
       setError(result.message)
       setSubmitting(false)
@@ -212,8 +156,6 @@ export default function VendorsPage() {
       <SkeletonForm />
     </main>
   )
-
-  if (success) return <SuccessScreen />
 
   // ── Render ──────────────────────────────────────────────────────────────────
 

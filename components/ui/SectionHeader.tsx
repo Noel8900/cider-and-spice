@@ -2,6 +2,7 @@
 // Anchor font on title, support font on subtitle — matches video tip 1
 
 interface SectionHeaderProps {
+  id?: string;
   badge?: string;
   title: string;
   subtitle?: string;
@@ -9,7 +10,7 @@ interface SectionHeaderProps {
 }
 
 export default function SectionHeader({
-  badge, title, subtitle, align = 'center'
+  id, badge, title, subtitle, align = 'center'
 }: SectionHeaderProps) {
   const alignment = align === 'center' ? 'text-center mx-auto' : 'text-left';
   return (
@@ -21,7 +22,7 @@ export default function SectionHeader({
         </span>
       )}
       {/* Anchor font, 100% opacity — star of the show for each section */}
-      <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#F5ECD7] leading-tight mb-4"
+      <h2 id={id} className="font-serif text-4xl md:text-5xl font-bold text-[#F5ECD7] leading-tight mb-4"
           style={{ opacity: 'var(--opacity-high)' }}>
         {title}
       </h2>
