@@ -283,10 +283,20 @@ export async function deleteRecord(
 
 export interface Vendor {
   id?: string
+  /** Full legal name of the applicant */
   name: string
-  contact: string
+  /** Trade name / food-concept name shown to the public */
+  business_name: string
+  /** Contact e-mail address */
+  email: string
+  /** Contact phone number (optional) */
+  phone?: string
+  /** Primary cuisine category */
   cuisine_type: string
+  /** Preferred booth size key, e.g. 'small_8x8' | 'medium_8x12' */
   booth_preference?: string
+  /** Short concept description — max ~500 chars */
+  description?: string
   status?: 'pending' | 'approved' | 'active' | 'inactive'
 }
 
