@@ -2,9 +2,14 @@
 // 3-col grid on desktop → 2-col tablet → 1-col mobile.
 // Hover: subtle scale lift + dark overlay.
 // CLAUDE.md: tenant-vision images show content disclaimer.
+// blur placeholder prevents layout shift on load.
 
 import Image from 'next/image';
 import SectionHeader from '@/components/ui/SectionHeader';
+
+// Tiny 1×1 warm amber blur placeholder (base64 PNG)
+const BLUR_DATA_URL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F/HQAI/AL+LPbfHgAAAABJRU5ErkJggg==';
 
 interface GalleryImage {
   src: string;
@@ -43,7 +48,7 @@ export default function GallerySection() {
   return (
     <section
       id="cider-bar"
-      className="py-24 px-6 bg-[#1C1209]"
+      className="py-24 px-6 bg-bg"
       aria-labelledby="gallery-heading"
     >
       <div className="mx-auto max-w-6xl">
@@ -59,7 +64,7 @@ export default function GallerySection() {
             <div
               key={src}
               className="group relative overflow-hidden rounded-2xl
-                         aspect-[4/3] bg-white/5 border border-[#F5ECD7]/10"
+                         aspect-[4/3] bg-white/5 border border-cream/10"
             >
               <Image
                 src={src}
@@ -67,11 +72,13 @@ export default function GallerySection() {
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
               />
 
               {/* Hover overlay */}
               <div
-                className="absolute inset-0 bg-[#1C1209]/40 opacity-0
+                className="absolute inset-0 bg-bg/40 opacity-0
                            group-hover:opacity-100 transition-opacity duration-300"
                 aria-hidden="true"
               />
@@ -81,7 +88,7 @@ export default function GallerySection() {
                 <span
                   className="absolute bottom-3 left-3 rounded-full bg-black/60
                              px-3 py-1 text-[10px] font-sans font-semibold
-                             text-[#F5ECD7]/70 backdrop-blur-sm"
+                             text-cream/70 backdrop-blur-sm"
                 >
                   Concept · Not a confirmed tenant
                 </span>
@@ -91,10 +98,7 @@ export default function GallerySection() {
         </div>
 
         {/* Global disclaimer */}
-        <p
-          className="mt-6 text-center font-sans text-xs text-[#F5ECD7]"
-          style={{ opacity: 0.35 }}
-        >
+        <p className="mt-6 text-center font-sans text-xs text-cream/35">
           All images are architectural concept renderings for illustration purposes only.
           Vendor brands, pricing, and layouts are subject to change.
         </p>
