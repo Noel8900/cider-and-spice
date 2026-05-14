@@ -1,7 +1,7 @@
 'use client';
 // Accordion FAQ — terracotta chevron, GlassCard wrapper.
 // CSS max-height transition avoids layout thrash (no JS height measurement).
-// 2000px sentinel ensures long answers never clip.
+// Added below VendorCTA in app/page.tsx.
 
 import { useState } from 'react';
 import GlassCard from '@/components/ui/GlassCard';
@@ -44,7 +44,7 @@ const faqs = [
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-5 w-5 flex-shrink-0 text-ember transition-transform duration-300 ${
+      className={`h-5 w-5 flex-shrink-0 text-[#C4622D] transition-transform duration-300 ${
         open ? 'rotate-180' : ''
       }`}
       fill="none"
@@ -70,37 +70,38 @@ function FAQItem({
 }) {
   const [open, setOpen] = useState(false);
   const answerId = `faq-panel-${index}`;
-  const questionId = `faq-question-${index}`;
 
   return (
-    <div className="border-b border-cream/10 last:border-b-0">
+    <div className="border-b border-[#F5ECD7]/10 last:border-b-0">
       <button
-        id={questionId}
         type="button"
         className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left
-                   transition-colors hover:bg-white/[0.03]
-                   focus-visible:outline-none focus-visible:ring-inset
-                   focus-visible:ring-2 focus-visible:ring-ember/40"
+                   transition-colors hover:bg-white/[0.03]"
         aria-expanded={open}
         aria-controls={answerId}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="font-serif text-base font-semibold text-cream/90">
+        <span
+          className="font-serif text-base font-semibold text-[#F5ECD7]"
+          style={{ opacity: 0.90 }}
+        >
           {question}
         </span>
         <ChevronIcon open={open} />
       </button>
 
-      {/* CSS max-height accordion — 2000px sentinel prevents clipping long answers */}
+      {/* CSS max-height accordion — no layout thrash */}
       <div
         id={answerId}
         role="region"
-        aria-labelledby={questionId}
         aria-hidden={!open}
         className="overflow-hidden transition-all duration-300 ease-in-out"
-        style={{ maxHeight: open ? '2000px' : '0px' }}
+        style={{ maxHeight: open ? '400px' : '0px' }}
       >
-        <p className="px-6 pb-5 font-sans text-sm leading-relaxed text-cream/60">
+        <p
+          className="px-6 pb-5 font-sans text-sm leading-relaxed text-[#F5ECD7]"
+          style={{ opacity: 0.60 }}
+        >
           {answer}
         </p>
       </div>
@@ -113,7 +114,7 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="py-24 px-6 bg-bg"
+      className="py-24 px-6 bg-[#1C1209]"
       aria-labelledby="faq-heading"
     >
       <div className="mx-auto max-w-3xl">
@@ -135,11 +136,14 @@ export default function FAQSection() {
           ))}
         </GlassCard>
 
-        <p className="mt-8 text-center font-sans text-sm text-cream/45">
+        <p
+          className="mt-8 text-center font-sans text-sm text-[#F5ECD7]"
+          style={{ opacity: 0.45 }}
+        >
           Still have questions?{' '}
           <a
             href="mailto:info@lccullinaryhub.com"
-            className="underline underline-offset-2 transition-colors hover:text-ember"
+            className="underline underline-offset-2 transition-colors hover:text-[#C4622D]"
           >
             Email us directly.
           </a>

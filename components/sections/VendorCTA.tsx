@@ -1,12 +1,12 @@
-// Visual rhyme: ember orb reappears here (smaller) — connects back to hero star.
-// Depth: glass card wraps CTA — same material as feature cards.
+// Visual rhyme: ember orb reappears here (smaller) — connects back to hero star
+// Depth: glass card wraps CTA — same material as feature cards
 
+import Link from 'next/link';
 import GlassCard from '@/components/ui/GlassCard';
-import Button from '@/components/ui/Button';
 
 export default function VendorCTA() {
   return (
-    <section className="py-24 px-6 bg-bg">
+    <section className="py-24 px-6 bg-[#1C1209]">
       <div className="max-w-3xl mx-auto">
         <GlassCard className="p-12 text-center relative overflow-hidden" hover={false}>
 
@@ -21,23 +21,30 @@ export default function VendorCTA() {
             aria-hidden="true"
           />
 
-          <span className="font-sans text-xs tracking-widest uppercase text-ember
-                           font-semibold mb-4 block">
+          <span className="font-sans text-xs tracking-widest uppercase text-[#C4622D]
+                           font-semibold mb-4 block"
+                style={{ opacity: 1 }}>
             Limited Spots Available
           </span>
 
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-cream mb-4">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#F5ECD7] mb-4"
+              style={{ opacity: 1 }}>
             Ready to Grow Your<br />Food Business?
           </h2>
 
-          <p className="font-sans text-cream/60 max-w-lg mx-auto mb-8">
+          <p className="font-sans text-[#F5ECD7] max-w-lg mx-auto mb-8"
+             style={{ opacity: 0.60 }}>
             Join a community of passionate food entrepreneurs in the heart
             of Las Cruces. Apply today and lock in your spot.
           </p>
 
-          <Button variant="primary" size="lg" href="/vendors">
+          <Link
+            href="/vendors"
+            className="inline-block px-10 py-4 bg-[#C4622D] hover:bg-[#a8521f]
+                       text-white font-semibold rounded-xl transition-colors duration-200"
+          >
             Apply as a Vendor →
-          </Button>
+          </Link>
         </GlassCard>
       </div>
     </section>

@@ -1,8 +1,8 @@
 // Server component — no client state needed.
 // Renders after a successful vendor application redirect from /vendors.
 
+import Link from 'next/link';
 import type { Metadata } from 'next';
-import Button from '@/components/ui/Button';
 
 export const metadata: Metadata = {
   title: 'Application Received | Cider & Spice Vendor Applications',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 function CheckCircleIcon() {
   return (
     <svg
-      className="h-12 w-12 text-ember"
+      className="h-12 w-12 text-[#C4622D]"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -34,48 +34,67 @@ export default function VendorThankYouPage() {
   return (
     <main
       className="flex min-h-screen flex-col items-center justify-center
-                 bg-bg px-6 py-24"
+                 bg-[#1C1209] px-6 py-24"
     >
       <div className="mx-auto max-w-md text-center">
         {/* Icon ring */}
         <div
           className="mx-auto mb-8 flex h-24 w-24 items-center justify-center
-                     rounded-full border border-ember/30 bg-ember/10"
+                     rounded-full border border-[#C4622D]/30 bg-[#C4622D]/10"
         >
           <CheckCircleIcon />
         </div>
 
         {/* Headline */}
-        <h1 className="mb-4 font-serif text-4xl font-bold text-cream">
+        <h1 className="mb-4 font-serif text-4xl font-bold text-[#F5ECD7]">
           Application Received!
         </h1>
 
         {/* Body copy */}
-        <p className="mb-3 font-sans text-base leading-relaxed text-cream/70">
+        <p
+          className="mb-3 font-sans text-base leading-relaxed text-[#F5ECD7]"
+          style={{ opacity: 0.70 }}
+        >
           Thank you for your interest in the Las Cruces Culinary Innovation Hub.
         </p>
-        <p className="mb-10 font-sans text-base leading-relaxed text-cream/70">
+        <p
+          className="mb-10 font-sans text-base leading-relaxed text-[#F5ECD7]"
+          style={{ opacity: 0.70 }}
+        >
           We review every application carefully and will follow up at the email
           you provided within{' '}
-          <strong className="text-cream">5–7 business days</strong>.
+          <strong className="text-[#F5ECD7]">5–7 business days</strong>.
         </p>
 
         {/* CTAs */}
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Button variant="primary" href="/">
+          <Link
+            href="/"
+            className="rounded-xl bg-[#C4622D] px-6 py-3 text-sm font-semibold
+                       text-white transition-colors hover:bg-[#a8521f]"
+          >
             Back to Home
-          </Button>
-          <Button variant="secondary" href="/cider-club">
+          </Link>
+          <Link
+            href="/cider-club"
+            className="rounded-xl border border-[#F5ECD7]/20 px-6 py-3 text-sm
+                       font-semibold text-[#F5ECD7] transition-colors hover:border-[#C4622D]/40
+                       hover:text-[#C4622D]"
+            style={{ opacity: 0.80 }}
+          >
             Learn About the Cider Club →
-          </Button>
+          </Link>
         </div>
 
         {/* Footnote */}
-        <p className="mt-12 font-sans text-xs text-cream/35">
+        <p
+          className="mt-12 font-sans text-xs text-[#F5ECD7]"
+          style={{ opacity: 0.35 }}
+        >
           Questions? Email us at{' '}
           <a
             href="mailto:info@lccullinaryhub.com"
-            className="underline underline-offset-2 hover:text-ember transition-colors"
+            className="underline underline-offset-2"
           >
             info@lccullinaryhub.com
           </a>

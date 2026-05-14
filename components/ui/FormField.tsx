@@ -1,5 +1,5 @@
-// Reusable field wrapper — works for both dark-bg and light-bg forms.
-// Use darkInput or lightInput class strings on the child <input>/<select>/<textarea>.
+// Reusable field wrapper for dark-bg forms (investors, cider club).
+// Vendor form keeps its own light-theme Field component.
 
 interface FormFieldProps {
   id: string;
@@ -14,16 +14,17 @@ export default function FormField({ id, label, required, hint, children }: FormF
     <div>
       <label
         htmlFor={id}
-        className="mb-1.5 block text-sm font-semibold text-cream/80"
+        className="mb-1.5 block text-sm font-semibold text-[#F5ECD7]"
+        style={{ opacity: 0.80 }}
       >
         {label}
         {required && (
-          <span className="ml-0.5 text-ember" aria-label="required">*</span>
+          <span className="ml-0.5 text-[#C4622D]" aria-label="required">*</span>
         )}
       </label>
       {children}
       {hint && (
-        <p className="mt-1.5 text-xs text-cream/40" id={`${id}-hint`}>
+        <p className="mt-1.5 text-xs text-[#F5ECD7]" style={{ opacity: 0.40 }}>
           {hint}
         </p>
       )}
@@ -31,19 +32,11 @@ export default function FormField({ id, label, required, hint, children }: FormF
   );
 }
 
-// ── Input class strings ───────────────────────────────────────────────────────
-
-/** Dark-background form inputs (cider-club, investors pages). */
+// Shared input class string for dark-bg form fields.
+// Import and spread where needed: className={darkInput}
 export const darkInput =
-  'block w-full rounded-xl border border-cream/20 bg-white/5 px-4 py-3 ' +
-  'text-sm text-cream placeholder-cream/30 ' +
-  'transition-colors focus:border-ember/60 focus:outline-none ' +
-  'focus:ring-2 focus:ring-ember/20 ' +
+  'block w-full rounded-xl border border-[#F5ECD7]/20 bg-white/5 px-4 py-3 ' +
+  'text-sm text-[#F5ECD7] placeholder-[#F5ECD7]/30 ' +
+  'transition-colors focus:border-[#C4622D]/60 focus:outline-none ' +
+  'focus:ring-2 focus:ring-[#C4622D]/20 ' +
   'disabled:opacity-50 disabled:cursor-not-allowed';
-
-/** Light-background form inputs (vendor application form). */
-export const lightInput =
-  'block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 ' +
-  'placeholder-gray-400 shadow-sm transition-colors ' +
-  'focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember/20 ' +
-  'disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed';

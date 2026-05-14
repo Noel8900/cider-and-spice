@@ -28,6 +28,7 @@ const navLinks = [
 function isActive(href: string, pathname: string): boolean {
   if (href.startsWith('/#')) return false;
   if (href === '/') return pathname === '/';
+  // Match /vendors and /vendors/thank-you, /cider-club and any sub-routes
   return pathname === href || pathname.startsWith(href + '/');
 }
 
@@ -72,7 +73,7 @@ export default function Navbar() {
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 80);
     window.addEventListener('scroll', handler, { passive: true });
-    handler();
+    handler(); // set initial state on mount
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
@@ -85,7 +86,7 @@ export default function Navbar() {
     return () => window.removeEventListener('resize', handler);
   }, []);
 
-  // Close drawer on route change
+  // Close drawer on route change (e.g. after clicking a page link)
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
@@ -94,7 +95,7 @@ export default function Navbar() {
     <nav
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || menuOpen
-          ? 'bg-bg/95 shadow-lg backdrop-blur-sm'
+          ? 'bg-[#1C1209]/95 shadow-lg backdrop-blur-sm'
           : 'bg-transparent'
       }`}
       aria-label="Site navigation"
@@ -104,7 +105,7 @@ export default function Navbar() {
         {/* ── Logo ──────────────────────────────────────────────────────── */}
         <Link
           href="/"
-          className="font-serif text-xl font-bold text-cream transition-opacity hover:opacity-80"
+          className="font-serif text-xl font-bold text-[#F5ECD7] transition-opacity hover:opacity-80"
         >
           Cider &amp; Spice
         </Link>
@@ -117,15 +118,16 @@ export default function Navbar() {
               <li key={label}>
                 <Link
                   href={href}
-                  className={`relative font-sans text-sm text-cream transition-colors
-                              hover:text-ember ${active ? 'text-ember' : 'opacity-75'}`}
+                  className={`relative font-sans text-sm text-[#F5ECD7] transition-colors
+                              hover:text-[#C4622D] ${active ? 'text-[#C4622D]' : ''}`}
+                  style={{ opacity: active ? 1 : 0.75 }}
                   aria-current={active ? 'page' : undefined}
                 >
                   {label}
                   {/* Terracotta underline for active page routes */}
                   {active && (
                     <span
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-[#C4622D]"
                       aria-hidden="true"
                     />
                   )}
@@ -139,18 +141,15 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/vendors"
-            className="hidden rounded-xl bg-ember px-5 py-2.5 text-sm font-semibold
-                       text-white transition-colors hover:bg-ember-hover md:inline-block
-                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/50"
+            className="hidden rounded-xl bg-[#C4622D] px-5 py-2.5 text-sm font-semibold
+                       text-white transition-colors hover:bg-[#a8521f] md:inline-block"
           >
             Apply Now →
           </Link>
 
           <button
             type="button"
-            className="rounded-lg p-2 text-cream transition-colors hover:bg-white/10
-                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/50
-                       md:hidden"
+            className="rounded-lg p-2 text-[#F5ECD7] transition-colors hover:bg-white/10 md:hidden"
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
@@ -166,7 +165,7 @@ export default function Navbar() {
         id="mobile-menu"
         role="dialog"
         aria-label="Mobile navigation"
-        className={`overflow-hidden border-t border-cream/10 transition-all duration-300 md:hidden ${
+        className={`overflow-hidden border-t border-[#F5ECD7]/10 transition-all duration-300 md:hidden ${
           menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
@@ -177,9 +176,10 @@ export default function Navbar() {
               <li key={label}>
                 <Link
                   href={href}
-                  className={`block rounded-lg px-3 py-2.5 font-sans text-base text-cream
+                  className={`block rounded-lg px-3 py-2.5 font-sans text-base text-[#F5ECD7]
                               transition-colors hover:bg-white/5
-                              ${active ? 'text-ember bg-white/[0.04]' : 'opacity-80 hover:text-ember'}`}
+                              ${active ? 'text-[#C4622D] bg-white/[0.04]' : 'hover:text-[#C4622D]'}`}
+                  style={{ opacity: active ? 1 : 0.80 }}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -193,8 +193,8 @@ export default function Navbar() {
           <li className="pt-3">
             <Link
               href="/vendors"
-              className="block rounded-xl bg-ember px-5 py-3 text-center font-semibold
-                         text-white transition-colors hover:bg-ember-hover"
+              className="block rounded-xl bg-[#C4622D] px-5 py-3 text-center font-semibold
+                         text-white transition-colors hover:bg-[#a8521f]"
               onClick={() => setMenuOpen(false)}
             >
               Apply Now →

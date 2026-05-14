@@ -1,13 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { applyAsVendor } from './actions'
 import type { VendorFormData, VendorActionResult } from './actions'
 import SkeletonForm from '@/components/ui/SkeletonForm'
-import FormField, { lightInput } from '@/components/ui/FormField'
-import Button from '@/components/ui/Button'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
 
@@ -46,7 +44,7 @@ const EMPTY_FORM: VendorFormData = {
 
 const DESC_MAX = 500
 
-// ─── Small helpers ────────────────────────────────────────────────────────────
+// ─── Small shared components ──────────────────────────────────────────────────
 
 function Spinner() {
   return (
@@ -79,7 +77,7 @@ function BackArrow() {
   )
 }
 
-// ─── Light-theme field wrapper for vendor form ────────────────────────────────
+// ─── Field wrapper ────────────────────────────────────────────────────────────
 
 interface FieldProps {
   id: string
@@ -94,13 +92,20 @@ function Field({ id, label, required, hint, children }: FieldProps) {
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-gray-700">
         {label}
-        {required && <span className="ml-0.5 text-ember" aria-label="required">*</span>}
+        {required && <span className="ml-0.5 text-red-500" aria-label="required">*</span>}
       </label>
       {children}
-      {hint && <p className="mt-1.5 text-xs text-gray-400" id={`${id}-hint`}>{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-gray-400">{hint}</p>}
     </div>
   )
 }
+
+// Shared Tailwind string for every input / select / textarea
+const inputCls =
+  'block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 ' +
+  'placeholder-gray-400 shadow-sm transition-colors ' +
+  'focus:border-[#B83A2E] focus:outline-none focus:ring-2 focus:ring-[#B83A2E]/20 ' +
+  'disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed'
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
@@ -109,6 +114,13 @@ export default function VendorsPage() {
   const [form, setForm]             = useState<VendorFormData>(EMPTY_FORM)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]           = useState<string | null>(null)
+  const [initializing, setInitializing] = useState(true)
+
+  useEffect(() => {
+    // Simulate config load — replace with real async prefill fetch if needed
+    const timer = setTimeout(() => setInitializing(false), 400)
+    return () => clearTimeout(timer)
+  }, [])
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 
@@ -116,6 +128,7 @@ export default function VendorsPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) {
     const { name, value } = e.target
+    // Clamp description to DESC_MAX chars
     const safe = name === 'description' ? value.slice(0, DESC_MAX) : value
     setForm(prev => ({ ...prev, [name]: safe }))
     if (error) setError(null)
@@ -136,32 +149,45 @@ export default function VendorsPage() {
     }
   }
 
+  // ── Early exits ─────────────────────────────────────────────────────────────
+
+  if (initializing) return (
+    <main className="min-h-screen bg-[#1C1209]">
+      <SkeletonForm />
+    </main>
+  )
+
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <main className="min-h-screen" style={{ background: '#faf8f5' }}>
 
       {/* ── Hero header ───────────────────────────────────────────────────── */}
-      <div className="bg-bg px-6 pb-16 pt-6">
+      <div style={{ background: '#1a0f08' }} className="px-6 pb-16 pt-6">
         <div className="mx-auto max-w-3xl">
           <Link
             href="/"
-            className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium
-                       text-ember transition-opacity hover:opacity-70"
+            className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
           >
             <BackArrow />
             Back to the Hub
           </Link>
 
           <div className="text-center">
-            <p className="mb-3 font-label text-xs font-bold uppercase tracking-widest text-ember">
+            <p
+              className="mb-3 text-xs font-bold uppercase tracking-widest text-amber-400"
+              style={{ fontFamily: 'Josefin Sans, sans-serif' }}
+            >
               Vendor Applications
             </p>
-            <h1 className="mb-4 font-serif text-4xl font-bold leading-tight text-cream md:text-5xl">
+            <h1
+              className="mb-4 text-4xl font-bold leading-tight text-white md:text-5xl"
+              style={{ fontFamily: 'Playfair Display, serif' }}
+            >
               Bring Your Concept{' '}
-              <em className="not-italic text-ember">to the Hub</em>
+              <em className="not-italic text-amber-400">to the Hub</em>
             </h1>
-            <p className="mx-auto max-w-xl text-base text-cream/70">
+            <p className="mx-auto max-w-xl text-base text-white/70">
               We&apos;re curating 10–13 distinctive food concepts for our Q1–Q2 2027
               grand opening in downtown Las Cruces. Tell us about your idea and
               we&apos;ll be in touch.
@@ -176,12 +202,15 @@ export default function VendorsPage() {
 
           {/* Card header */}
           <div className="border-b border-gray-100 px-8 pb-6 pt-8">
-            <h2 className="font-serif text-xl font-bold text-gray-900">
+            <h2
+              className="text-xl font-bold text-gray-900"
+              style={{ fontFamily: 'Playfair Display, serif' }}
+            >
               Vendor Application
             </h2>
             <p className="mt-1 text-sm text-gray-500">
               Fields marked{' '}
-              <span className="font-semibold text-ember">*</span>{' '}
+              <span className="font-semibold text-red-500">*</span>{' '}
               are required.
             </p>
           </div>
@@ -201,8 +230,7 @@ export default function VendorsPage() {
                   onChange={handleChange}
                   disabled={submitting}
                   placeholder="Jane Smith"
-                  aria-invalid={!!error}
-                  className={lightInput}
+                  className={inputCls}
                 />
               </Field>
 
@@ -217,8 +245,7 @@ export default function VendorsPage() {
                   onChange={handleChange}
                   disabled={submitting}
                   placeholder="Spice Route Kitchen"
-                  aria-invalid={!!error}
-                  className={lightInput}
+                  className={inputCls}
                 />
               </Field>
             </div>
@@ -236,8 +263,7 @@ export default function VendorsPage() {
                   onChange={handleChange}
                   disabled={submitting}
                   placeholder="jane@example.com"
-                  aria-invalid={!!error}
-                  className={lightInput}
+                  className={inputCls}
                 />
               </Field>
 
@@ -251,7 +277,7 @@ export default function VendorsPage() {
                   onChange={handleChange}
                   disabled={submitting}
                   placeholder="(575) 555-0100"
-                  className={lightInput}
+                  className={inputCls}
                 />
               </Field>
             </div>
@@ -266,8 +292,7 @@ export default function VendorsPage() {
                   value={form.cuisine_type}
                   onChange={handleChange}
                   disabled={submitting}
-                  aria-invalid={!!error}
-                  className={`${lightInput} cursor-pointer`}
+                  className={`${inputCls} cursor-pointer`}
                 >
                   {CUISINE_OPTIONS.map(opt => (
                     <option key={opt.value} value={opt.value} disabled={!!opt.disabled}>
@@ -288,8 +313,7 @@ export default function VendorsPage() {
                   value={form.booth_preference}
                   onChange={handleChange}
                   disabled={submitting}
-                  aria-describedby="booth_preference-hint"
-                  className={`${lightInput} cursor-pointer`}
+                  className={`${inputCls} cursor-pointer`}
                 >
                   {BOOTH_OPTIONS.map(opt => (
                     <option key={opt.value} value={opt.value} disabled={!!opt.disabled}>
@@ -315,10 +339,8 @@ export default function VendorsPage() {
                 value={form.description}
                 onChange={handleChange}
                 disabled={submitting}
-                aria-invalid={!!error}
-                aria-describedby="description-hint"
                 placeholder="Tell us about your food concept, your experience in the industry, and why you'd be a great fit for the Hub…"
-                className={`${lightInput} resize-y`}
+                className={`${inputCls} resize-y`}
               />
             </Field>
 
@@ -338,16 +360,23 @@ export default function VendorsPage() {
             )}
 
             {/* ── Submit button ─────────────────────────────────────────── */}
-            <Button
-              variant="primary"
-              size="lg"
+            <button
               type="submit"
               disabled={submitting}
-              loading={submitting}
-              className="w-full justify-center shadow-lg"
+              className="flex w-full items-center justify-center gap-2.5 rounded-xl px-6 py-4 text-sm font-bold text-white shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
+              style={{
+                background: 'linear-gradient(135deg, #B83A2E 0%, #d4641a 100%)',
+              }}
             >
-              {submitting ? 'Submitting…' : 'Submit Application →'}
-            </Button>
+              {submitting ? (
+                <>
+                  <Spinner />
+                  Submitting…
+                </>
+              ) : (
+                'Submit Application →'
+              )}
+            </button>
 
             {/* ── Privacy note ─────────────────────────────────────────── */}
             <p className="text-center text-xs text-gray-400">

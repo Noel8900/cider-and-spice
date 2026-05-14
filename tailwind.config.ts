@@ -8,17 +8,35 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Brand token palette — matches styles/tokens.css source of truth
+      // Mirror the brand token palette from styles.css for Tailwind use
       colors: {
-        // Core palette
-        bg:    '#1C1209',                          // Dark background
-        ember: { DEFAULT: '#C4622D', hover: '#a8521f' }, // Terracotta accent
-        cream: '#F5ECD7',                          // Off-white text
-        grove: '#2D5016',                          // Deep sage green
-        // Supporting palette
-        gold:  { DEFAULT: '#d4a84b', light: '#e8d5a0' },
-        sage:  { DEFAULT: '#5A7A5F', light: '#7A9E80' },
-        sand:  { DEFAULT: '#F5EDE0', dark:  '#EAD9C5' },
+        ember: {
+          DEFAULT: '#1a0f08',
+          deep: 'rgba(14,12,10,0.97)',
+        },
+        chile: {
+          DEFAULT: '#B83A2E',
+          dark:    '#8C2820',
+          light:   '#D4534A',
+        },
+        gold: {
+          DEFAULT: '#d4a84b',
+          light:   '#e8d5a0',
+          muted:   'rgba(212,168,75,0.22)',
+        },
+        amber: {
+          DEFAULT: '#C4872A',
+          light:   '#E6A94A',
+        },
+        sage: {
+          DEFAULT: '#5A7A5F',
+          light:   '#7A9E80',
+        },
+        sand: {
+          DEFAULT: '#F5EDE0',
+          dark:    '#EAD9C5',
+        },
+        cream: '#FDFAF5',
       },
       fontFamily: {
         display: ['"Abril Fatface"', 'Georgia', 'serif'],
