@@ -462,16 +462,16 @@ ul { list-style: none; }
   height: 100%;
   object-fit: cover;
   /* Show the copper taps + mountain window prominently on the right */
-  object-position: 65% center;
+  object-position: center center;
   transform: scale(1.04);
   transition: transform 8s ease-out;
   z-index: 0;
 }
 .hero__bg-photo.loaded { transform: scale(1); }
 
-/* ── VARIATION B: Asymmetric left-panel overlay ──────────────
-   Dark left column keeps text legible; right side reveals the
-   cider bar photo with only a thin film of darkening.          */
+/* ── FULL-BLEED CINEMATIC OVERLAY ────────────────────────────
+   Photo is the primary visual across the full screen.
+   Text stays legible via a uniform dark film + edge gradients. */
 .hero__bg::before {
   content: '';
   position: absolute;
@@ -479,28 +479,24 @@ ul { list-style: none; }
   z-index: 1;
   pointer-events: none;
   background-image:
-    /* Primary: left-heavy darkening — creates the text panel */
-    linear-gradient(108deg,
-      rgba(10,6,4,.97)  0%,
-      rgba(10,6,4,.94) 26%,
-      rgba(10,6,4,.74) 46%,
-      rgba(10,6,4,.30) 65%,
-      rgba(10,6,4,.06) 100%),
-    /* Secondary: bottom lift — stat row + scroll arrow readability */
-    linear-gradient(to top,
-      rgba(10,6,4,.92)  0%,
-      rgba(10,6,4,.48) 14%,
-      transparent      32%),
-    /* Tertiary: top darkening — nav bar contrast */
+    /* Uniform dark film — photo reads full-width, text stays legible */
     linear-gradient(to bottom,
-      rgba(10,6,4,.68)  0%,
-      transparent      20%),
-    /* Ember glow — warms the brand corner, echoes the cider palette */
+      rgba(10,6,4,.50)  0%,
+      rgba(10,6,4,.40) 50%,
+      rgba(10,6,4,.70) 100%),
+    /* Bottom lift — scroll arrow + badge readability */
+    linear-gradient(to top,
+      rgba(10,6,4,.78)  0%,
+      rgba(10,6,4,.28) 18%,
+      transparent      38%),
+    /* Top darkening — nav bar contrast */
+    linear-gradient(to bottom,
+      rgba(10,6,4,.58)  0%,
+      transparent      18%),
+    /* Ember glow — brand warmth in bottom-left corner */
     radial-gradient(ellipse 55% 65% at -5% 108%,
-      rgba(139,37,0,.55) 0%, transparent 60%),
-    /* Subtle film-grain texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
-  background-size: cover, cover, cover, cover, 300px 300px;
+      rgba(139,37,0,.45) 0%, transparent 60%);
+  background-size: cover, cover, cover, cover;
 }
 
 /* Decorative geometric SVG overlay — NM Zia-inspired ring */
