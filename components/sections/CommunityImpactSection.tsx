@@ -54,9 +54,9 @@ const events = [
 ];
 
 const tourismStats = [
-  { value: '45,000+',  label: 'Projected Annual Visitors'       },
-  { value: '$2.8M',    label: 'Est. Tourism Multiplier Effect'  },
-  { value: '15%',      label: 'Downtown Foot Traffic Increase'  },
+  { value: '90,000+',  label: 'Projected Annual Visitors'       },
+  { value: '$5.6M',    label: 'Est. Tourism Multiplier Effect'  },
+  { value: '25%',      label: 'Downtown Foot Traffic Increase'  },
   { value: '200 mi',   label: 'Nearest Food Hall Competitor'    },
 ];
 
@@ -65,7 +65,7 @@ const grantCategories = [
   { label: 'NM MainStreet Capital Improvement',        status: 'Eligible' },
   { label: 'USDA Rural Business Development Grant',    status: 'Exploring' },
   { label: 'EDA Economic Development Assistance',      status: 'Eligible' },
-  { label: 'SBA 7(a) Loan Pre-Qualification',          status: '$850K Pre-Qualified' },
+  { label: 'SBA 7(a) Loan',                            status: 'Application In Progress' },
 ];
 
 export default function CommunityImpactSection() {
@@ -88,7 +88,8 @@ export default function CommunityImpactSection() {
           <p className="font-sans text-sm text-[#F5ECD7] text-center mb-8 max-w-2xl mx-auto"
              style={{ opacity: 0.60 }}>
             Las Cruces sits at the center of a 215,000-person metro with zero food hall competitors within
-            200 miles. Cider &amp; Spice is positioned to become a regional dining destination.
+            200 miles. Cider &amp; Spice is positioned to become a regional dining destination — projecting
+            90,000+ annual visitors and a $5.6M tourism multiplier effect by Year 2.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {tourismStats.map(({ value, label }) => (

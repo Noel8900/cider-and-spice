@@ -23,8 +23,8 @@ export default function HeroSection() {
           Where Las Cruces<br /><em>Eats the World</em>
         </h1>
         <p className="hero__subhead">
-          A curated food hall, culinary incubator, and Southern New Mexico&apos;s
-          only craft cider bar — all under one climate-controlled roof.
+          A next-generation food hall, culinary incubator, and Southern New Mexico&apos;s
+          only craft cider bar — giving Borderland food makers a permanent downtown home.
         </p>
         <div className="hero__actions">
           <Link href="#opportunity" className="btn btn--primary">See the Opportunity</Link>
