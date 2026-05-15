@@ -12,12 +12,14 @@ import { usePathname } from 'next/navigation';
 
 // ── Nav link definitions ──────────────────────────────────────────────────────
 const navLinks = [
-  { label: 'Home',       href: '/'            },
-  { label: 'The Hub',    href: '/#opportunity' },
-  { label: 'Cider Bar',  href: '/#cider-bar'  },
-  { label: 'Vendors',    href: '/vendors'     },
-  { label: 'Cider Club', href: '/cider-club'  },
-  { label: 'Contact',    href: '/#contact'    },
+  { label: 'Home',        href: '/'             },
+  { label: 'The Hub',     href: '/#opportunity' },
+  { label: 'How It Works',href: '/#concept'     },
+  { label: 'Community',   href: '/#impact'      },
+  { label: 'Cider Bar',   href: '/#cider-bar'   },
+  { label: 'Vendors',     href: '/vendors'      },
+  { label: 'Cider Club',  href: '/cider-club'   },
+  { label: 'Get Involved',href: '/#newsletter'  },
 ] as const;
 
 /**
