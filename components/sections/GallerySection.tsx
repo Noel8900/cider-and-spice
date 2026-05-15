@@ -37,6 +37,21 @@ const images: GalleryImage[] = [
     src: '/images/cider-spice-concept-indoor-mezzanine-flow-concept-rendering.png',
     alt: 'Indoor mezzanine flow concept rendering',
   },
+  {
+    src: '/images/cider-spice-tenant-vision-three-stall-row-vision-image.png',
+    alt: 'Three vendor stalls side by side — illustrative tenant vision',
+    disclaimer: true,
+  },
+  {
+    src: '/images/cider-spice-tenant-vision-sticky-stack-co-stall-vision-image.png',
+    alt: 'Sticky Stack Co. stall — illustrative tenant vision',
+    disclaimer: true,
+  },
+  {
+    src: '/images/cider-spice-tenant-vision-seoul-fire-chicken-stall-vision-image.png',
+    alt: 'Seoul Fire Chicken stall — illustrative tenant vision',
+    disclaimer: true,
+  },
 ];
 
 export default function GallerySection() {
