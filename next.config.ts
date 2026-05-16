@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // Security headers (replaces vercel.json headers for Next.js builds)
+  // Security headers — applied by Vercel (vercel.json) and Netlify (netlify.toml).
   async headers() {
     return [
       {
