@@ -46,6 +46,7 @@ const stats = [
 
 export default function EntrepreneurSection() {
   return (
+    /* Keep CSS gradient — can't express two-stop bg-bg gradient in Tailwind without arbitrary values */
     <section id="incubator" className="py-24 px-6" style={{ background: 'linear-gradient(to bottom, #1C1209 0%, #12100a 100%)' }}>
       <div className="max-w-6xl mx-auto">
         <SectionHeader
@@ -59,16 +60,12 @@ export default function EntrepreneurSection() {
           {stats.map(({ value, label }) => (
             <div
               key={label}
-              className="rounded-2xl border border-[#C4622D]/20 bg-[#C4622D]/5
-                         p-6 text-center"
+              className="rounded-2xl border border-ember/20 bg-ember/5 p-6 text-center"
             >
-              <div className="font-serif text-4xl font-bold text-[#C4622D] mb-1">
+              <div className="font-serif text-4xl font-bold text-ember mb-1">
                 {value}
               </div>
-              <div
-                className="font-sans text-xs tracking-wider uppercase text-[#F5ECD7]"
-                style={{ opacity: 0.55 }}
-              >
+              <div className="font-sans text-xs tracking-wider uppercase text-cream/55">
                 {label}
               </div>
             </div>
@@ -80,22 +77,21 @@ export default function EntrepreneurSection() {
           {pillars.map((p) => (
             <div
               key={p.title}
-              className="rounded-2xl border border-[#F5ECD7]/10 bg-white/[0.03]
-                         p-8 hover:border-[#C4622D]/30 hover:bg-white/[0.05]
+              className="rounded-2xl border border-cream/10 bg-white/[0.03]
+                         p-8 hover:border-ember/30 hover:bg-white/[0.05]
                          transition-all duration-300"
             >
               <span className="text-3xl mb-4 block">{p.icon}</span>
-              <h3 className="font-serif text-xl font-semibold text-[#F5ECD7] mb-4">
+              <h3 className="font-serif text-xl font-semibold text-cream mb-4">
                 {p.title}
               </h3>
               <ul className="space-y-3">
                 {p.bullets.map((b) => (
                   <li
                     key={b}
-                    className="flex items-start gap-2.5 font-sans text-sm text-[#F5ECD7]"
-                    style={{ opacity: 0.65 }}
+                    className="flex items-start gap-2.5 font-sans text-sm text-cream/65"
                   >
-                    <span className="mt-0.5 text-[#C4622D] shrink-0" aria-hidden="true">✓</span>
+                    <span className="mt-0.5 text-ember shrink-0" aria-hidden="true">✓</span>
                     {b}
                   </li>
                 ))}
@@ -106,15 +102,15 @@ export default function EntrepreneurSection() {
 
         {/* Workforce callout */}
         <div
-          className="rounded-2xl border border-[#2D5016]/40 bg-[#2D5016]/10 p-8
+          className="rounded-2xl border border-grove/40 bg-grove/10 p-8
                      flex flex-col md:flex-row items-center gap-6"
         >
           <div className="text-4xl shrink-0" aria-hidden="true">🎓</div>
           <div className="flex-1">
-            <h3 className="font-serif text-xl font-semibold text-[#F5ECD7] mb-2">
+            <h3 className="font-serif text-xl font-semibold text-cream mb-2">
               NMSU &amp; DACC Workforce Partnership
             </h3>
-            <p className="font-sans text-sm leading-relaxed text-[#F5ECD7]" style={{ opacity: 0.65 }}>
+            <p className="font-sans text-sm leading-relaxed text-cream/65">
               Cider &amp; Spice is partnering with New Mexico State University and Doña Ana Community College
               to create a formal culinary certificate pipeline. Students gain real-world experience inside the
               hub; vendors gain trained staff. The program launches in coordination with our Q1–Q2 2027 opening.
@@ -122,8 +118,8 @@ export default function EntrepreneurSection() {
           </div>
           <Link
             href="/vendors"
-            className="shrink-0 rounded-xl bg-[#C4622D] px-6 py-3 text-sm font-semibold
-                       text-white hover:bg-[#a8521f] transition-colors whitespace-nowrap"
+            className="shrink-0 rounded-xl bg-ember px-6 py-3 text-sm font-semibold
+                       text-white hover:bg-ember-hover transition-colors whitespace-nowrap"
           >
             Apply as a Vendor →
           </Link>

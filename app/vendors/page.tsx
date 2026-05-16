@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { applyAsVendor } from './actions'
 import type { VendorFormData, VendorActionResult } from './actions'
 import SkeletonForm from '@/components/ui/SkeletonForm'
+import { lightInput } from '@/components/ui/FormField'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
 
@@ -100,12 +101,8 @@ function Field({ id, label, required, hint, children }: FieldProps) {
   )
 }
 
-// Shared Tailwind string for every input / select / textarea
-const inputCls =
-  'block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 ' +
-  'placeholder-gray-400 shadow-sm transition-colors ' +
-  'focus:border-[#B83A2E] focus:outline-none focus:ring-2 focus:ring-[#B83A2E]/20 ' +
-  'disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed'
+// Use shared lightInput from FormField for consistency
+const inputCls = lightInput
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
@@ -117,9 +114,7 @@ export default function VendorsPage() {
   const [initializing, setInitializing] = useState(true)
 
   useEffect(() => {
-    // Simulate config load — replace with real async prefill fetch if needed
-    const timer = setTimeout(() => setInitializing(false), 400)
-    return () => clearTimeout(timer)
+    setInitializing(false)
   }, [])
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -152,7 +147,7 @@ export default function VendorsPage() {
   // ── Early exits ─────────────────────────────────────────────────────────────
 
   if (initializing) return (
-    <main className="min-h-screen bg-[#1C1209]">
+    <main className="min-h-screen bg-bg">
       <SkeletonForm />
     </main>
   )
@@ -163,11 +158,11 @@ export default function VendorsPage() {
     <main className="min-h-screen" style={{ background: '#faf8f5' }}>
 
       {/* ── Hero header ───────────────────────────────────────────────────── */}
-      <div style={{ background: '#1a0f08' }} className="px-6 pb-16 pt-6">
+      <div className="bg-bg px-6 pb-16 pt-6">
         <div className="mx-auto max-w-3xl">
           <Link
             href="/"
-            className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
+            className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-ember transition-colors hover:text-ember/70"
           >
             <BackArrow />
             Back to the Hub
@@ -175,17 +170,15 @@ export default function VendorsPage() {
 
           <div className="text-center">
             <p
-              className="mb-3 text-xs font-bold uppercase tracking-widest text-amber-400"
-              style={{ fontFamily: 'Josefin Sans, sans-serif' }}
+              className="mb-3 text-xs font-bold uppercase tracking-widest text-ember font-label"
             >
               Vendor Applications
             </p>
             <h1
-              className="mb-4 text-4xl font-bold leading-tight text-white md:text-5xl"
-              style={{ fontFamily: 'Playfair Display, serif' }}
+              className="mb-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl"
             >
               Bring Your Concept{' '}
-              <em className="not-italic text-amber-400">to the Hub</em>
+              <em className="not-italic text-ember">to the Hub</em>
             </h1>
             <p className="mx-auto max-w-xl text-base text-white/70">
               We&apos;re curating 10–13 distinctive food concepts for our Q1–Q2 2027
@@ -363,10 +356,7 @@ export default function VendorsPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="flex w-full items-center justify-center gap-2.5 rounded-xl px-6 py-4 text-sm font-bold text-white shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
-              style={{
-                background: 'linear-gradient(135deg, #B83A2E 0%, #d4641a 100%)',
-              }}
+              className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-ember hover:bg-ember-hover px-6 py-4 text-sm font-bold text-white shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting ? (
                 <>

@@ -7,9 +7,9 @@ interface BadgeProps {
 }
 
 const variants = {
-  ember: 'text-[#C4622D] border-[#C4622D]/30 bg-[#C4622D]/10',
-  grove: 'text-[#2D5016] border-[#2D5016]/30 bg-[#2D5016]/10',
-  muted: 'text-[#F5ECD7]/50 border-[#F5ECD7]/15 bg-white/5',
+  ember: 'text-ember border-ember/30 bg-ember/10',
+  grove: 'text-grove border-grove/30 bg-grove/10',
+  muted: 'text-cream/50 border-cream/[0.15] bg-white/5',
 };
 
 export default function Badge({ children, variant = 'ember' }: BadgeProps) {

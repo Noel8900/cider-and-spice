@@ -11,9 +11,9 @@ interface GlassCardProps {
 export default function GlassCard({ children, className = '', hover = true }: GlassCardProps) {
   return (
     <div className={`
-      rounded-2xl border border-[#F5ECD7]/10
+      rounded-2xl border border-cream/10
       bg-white/5 backdrop-blur-sm
-      ${hover ? 'hover:bg-white/10 hover:border-[#F5ECD7]/20 transition-all duration-300' : ''}
+      ${hover ? 'hover:bg-white/10 hover:border-cream/20 transition-all duration-300' : ''}
       ${className}
     `}>
       {children}

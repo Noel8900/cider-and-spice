@@ -121,7 +121,7 @@ export default function Navbar() {
     <nav
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || menuOpen
-          ? 'bg-[#1C1209]/95 shadow-lg backdrop-blur-sm'
+          ? 'bg-bg/95 shadow-lg backdrop-blur-sm'
           : 'bg-transparent'
       }`}
       aria-label="Site navigation"
@@ -131,7 +131,7 @@ export default function Navbar() {
         {/* ── Logo ──────────────────────────────────────────────────────── */}
         <Link
           href="/"
-          className="font-serif text-xl font-bold text-[#F5ECD7] transition-opacity hover:opacity-80"
+          className="font-serif text-xl font-bold text-cream transition-opacity hover:opacity-80"
         >
           Cider &amp; Spice
         </Link>
@@ -143,14 +143,13 @@ export default function Navbar() {
           <li>
             <Link
               href="/"
-              className={`relative font-sans text-sm text-[#F5ECD7] transition-colors
-                          hover:text-[#C4622D] ${isActive('/', pathname ?? '') ? 'text-[#C4622D]' : ''}`}
-              style={{ opacity: isActive('/', pathname ?? '') ? 1 : 0.75 }}
+              className={`relative font-sans text-sm transition-colors
+                          hover:text-ember ${isActive('/', pathname ?? '') ? 'text-ember' : 'text-cream/75'}`}
               aria-current={isActive('/', pathname ?? '') ? 'page' : undefined}
             >
               Home
               {isActive('/', pathname ?? '') && (
-                <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-[#C4622D]" aria-hidden="true" />
+                <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember" aria-hidden="true" />
               )}
             </Link>
           </li>
@@ -162,10 +161,9 @@ export default function Navbar() {
               onClick={() => setSpaceOpen((o) => !o)}
               aria-expanded={spaceOpen}
               aria-haspopup="menu"
-              className={`flex items-center gap-1 font-sans text-sm text-[#F5ECD7]
-                          transition-colors hover:text-[#C4622D]
-                          ${spaceActive ? 'text-[#C4622D]' : ''}`}
-              style={{ opacity: spaceActive ? 1 : 0.75 }}
+              className={`flex items-center gap-1 font-sans text-sm transition-colors
+                          hover:text-ember
+                          ${spaceActive ? 'text-ember' : 'text-cream/75'}`}
             >
               The Space
               <svg
@@ -177,7 +175,7 @@ export default function Navbar() {
                 <path d="M6 9l6 6 6-6" />
               </svg>
               {spaceActive && (
-                <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-[#C4622D]" aria-hidden="true" />
+                <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember" aria-hidden="true" />
               )}
             </button>
 
@@ -185,7 +183,7 @@ export default function Navbar() {
             <div
               role="menu"
               className={`absolute left-1/2 top-full mt-3 w-52 -translate-x-1/2
-                          rounded-2xl border border-[#F5ECD7]/10 bg-[#1C1209]/98
+                          rounded-2xl border border-cream/10 bg-bg/[0.98]
                           backdrop-blur-md shadow-2xl shadow-black/50 overflow-hidden
                           transition-all duration-200 origin-top
                           ${spaceOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}
@@ -199,17 +197,15 @@ export default function Navbar() {
                     role="menuitem"
                     onClick={() => setSpaceOpen(false)}
                     className={`flex items-center gap-3 px-5 py-3 font-sans text-sm
-                                text-[#F5ECD7] transition-colors hover:bg-[#C4622D]/15
-                                hover:text-[#C4622D]
-                                ${active ? 'text-[#C4622D] bg-[#C4622D]/10' : ''}`}
-                    style={{ opacity: active ? 1 : 0.80 }}
+                                transition-colors hover:bg-ember/15 hover:text-ember
+                                ${active ? 'text-ember bg-ember/10' : 'text-cream/80'}`}
                     aria-current={active ? 'page' : undefined}
                   >
                     <span aria-hidden="true" className="text-base">{icon}</span>
                     {label}
                     {label === 'Floor Plan' && (
-                      <span className="ml-auto rounded-full bg-[#C4622D]/20 px-2 py-0.5
-                                       text-[10px] font-semibold text-[#C4622D] uppercase tracking-wide">
+                      <span className="ml-auto rounded-full bg-ember/20 px-2 py-0.5
+                                       text-[10px] font-semibold text-ember uppercase tracking-wide">
                         New
                       </span>
                     )}
@@ -226,14 +222,13 @@ export default function Navbar() {
               <li key={label}>
                 <Link
                   href={href}
-                  className={`relative font-sans text-sm text-[#F5ECD7] transition-colors
-                              hover:text-[#C4622D] ${active ? 'text-[#C4622D]' : ''}`}
-                  style={{ opacity: active ? 1 : 0.75 }}
+                  className={`relative font-sans text-sm transition-colors
+                              hover:text-ember ${active ? 'text-ember' : 'text-cream/75'}`}
                   aria-current={active ? 'page' : undefined}
                 >
                   {label}
                   {active && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-[#C4622D]" aria-hidden="true" />
+                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember" aria-hidden="true" />
                   )}
                 </Link>
               </li>
@@ -245,15 +240,15 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/vendors"
-            className="hidden rounded-xl bg-[#C4622D] px-5 py-2.5 text-sm font-semibold
-                       text-white transition-colors hover:bg-[#a8521f] md:inline-block"
+            className="hidden rounded-xl bg-ember px-5 py-2.5 text-sm font-semibold
+                       text-white transition-colors hover:bg-ember-hover md:inline-block"
           >
             Apply Now →
           </Link>
 
           <button
             type="button"
-            className="rounded-lg p-2 text-[#F5ECD7] transition-colors hover:bg-white/10 md:hidden"
+            className="rounded-lg p-2 text-cream transition-colors hover:bg-white/10 md:hidden focus-visible:ring-2 focus-visible:ring-ember/50"
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
@@ -269,7 +264,7 @@ export default function Navbar() {
         id="mobile-menu"
         role="dialog"
         aria-label="Mobile navigation"
-        className={`overflow-hidden border-t border-[#F5ECD7]/10 transition-all duration-300 md:hidden ${
+        className={`overflow-hidden border-t border-cream/10 transition-all duration-300 md:hidden ${
           menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
@@ -279,10 +274,9 @@ export default function Navbar() {
           <li>
             <Link
               href="/"
-              className={`block rounded-lg px-3 py-2.5 font-sans text-base text-[#F5ECD7]
-                          transition-colors hover:bg-white/5 hover:text-[#C4622D]
-                          ${isActive('/', pathname ?? '') ? 'text-[#C4622D] bg-white/[0.04]' : ''}`}
-              style={{ opacity: isActive('/', pathname ?? '') ? 1 : 0.80 }}
+              className={`block rounded-lg px-3 py-2.5 font-sans text-base
+                          transition-colors hover:bg-white/5 hover:text-ember
+                          ${isActive('/', pathname ?? '') ? 'text-ember bg-white/[0.04]' : 'text-cream/80'}`}
               onClick={() => setMenuOpen(false)}
             >
               Home
@@ -292,10 +286,10 @@ export default function Navbar() {
           {/* The Space sub-items inline in mobile */}
           <li>
             <p className="px-3 pt-3 pb-1 font-sans text-xs font-semibold uppercase
-                           tracking-widest text-[#F5ECD7]/40">
+                           tracking-widest text-cream/40">
               The Space
             </p>
-            <ul className="space-y-0.5 border-l-2 border-[#C4622D]/30 ml-3 pl-3">
+            <ul className="space-y-0.5 border-l-2 border-ember/30 ml-3 pl-3">
               {spaceLinks.map(({ label, href, icon }) => {
                 const active = isActive(href, pathname ?? '');
                 return (
@@ -303,18 +297,16 @@ export default function Navbar() {
                     <Link
                       href={href}
                       className={`flex items-center gap-2 rounded-lg px-3 py-2 font-sans
-                                  text-sm text-[#F5ECD7] transition-colors hover:bg-white/5
-                                  hover:text-[#C4622D]
-                                  ${active ? 'text-[#C4622D] bg-white/[0.04]' : ''}`}
-                      style={{ opacity: active ? 1 : 0.75 }}
+                                  text-sm transition-colors hover:bg-white/5 hover:text-ember
+                                  ${active ? 'text-ember bg-white/[0.04]' : 'text-cream/75'}`}
                       aria-current={active ? 'page' : undefined}
                       onClick={() => setMenuOpen(false)}
                     >
                       <span aria-hidden="true">{icon}</span>
                       {label}
                       {label === 'Floor Plan' && (
-                        <span className="ml-auto rounded-full bg-[#C4622D]/20 px-2 py-0.5
-                                         text-[10px] font-semibold text-[#C4622D] uppercase tracking-wide">
+                        <span className="ml-auto rounded-full bg-ember/20 px-2 py-0.5
+                                         text-[10px] font-semibold text-ember uppercase tracking-wide">
                           New
                         </span>
                       )}
@@ -332,10 +324,9 @@ export default function Navbar() {
               <li key={label}>
                 <Link
                   href={href}
-                  className={`block rounded-lg px-3 py-2.5 font-sans text-base text-[#F5ECD7]
+                  className={`block rounded-lg px-3 py-2.5 font-sans text-base
                               transition-colors hover:bg-white/5
-                              ${active ? 'text-[#C4622D] bg-white/[0.04]' : 'hover:text-[#C4622D]'}`}
-                  style={{ opacity: active ? 1 : 0.80 }}
+                              ${active ? 'text-ember bg-white/[0.04]' : 'text-cream/80 hover:text-ember'}`}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -349,8 +340,8 @@ export default function Navbar() {
           <li className="pt-3">
             <Link
               href="/vendors"
-              className="block rounded-xl bg-[#C4622D] px-5 py-3 text-center font-semibold
-                         text-white transition-colors hover:bg-[#a8521f]"
+              className="block rounded-xl bg-ember px-5 py-3 text-center font-semibold
+                         text-white transition-colors hover:bg-ember-hover"
               onClick={() => setMenuOpen(false)}
             >
               Apply Now →

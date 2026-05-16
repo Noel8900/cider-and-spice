@@ -47,8 +47,8 @@ const paths = [
 ];
 
 export default function GetInvolvedSection() {
-  const [email, setEmail]       = useState('');
-  const [status, setStatus]     = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [email, setEmail]   = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +67,7 @@ export default function GetInvolvedSection() {
   }
 
   return (
+    /* Keep CSS gradient — two-stop dark-to-bg can't be expressed cleanly in Tailwind */
     <section id="newsletter" className="py-24 px-6" style={{ background: 'linear-gradient(to bottom, #12100a 0%, #1C1209 100%)' }}>
       <div className="max-w-6xl mx-auto">
         <SectionHeader
@@ -82,16 +83,15 @@ export default function GetInvolvedSection() {
               key={title}
               className={`flex flex-col rounded-2xl border p-7 transition-all duration-300
                 ${accent
-                  ? 'border-[#C4622D]/40 bg-[#C4622D]/8 hover:bg-[#C4622D]/12'
-                  : 'border-[#F5ECD7]/10 bg-white/[0.03] hover:border-[#C4622D]/25 hover:bg-white/[0.06]'
+                  ? 'border-ember/40 bg-ember/[0.08] hover:bg-ember/[0.12]'
+                  : 'border-cream/10 bg-white/[0.03] hover:border-ember/25 hover:bg-white/[0.06]'
                 }`}
             >
               <span className="text-3xl mb-4 block">{icon}</span>
-              <h3 className="font-serif text-lg font-semibold text-[#F5ECD7] mb-3">
+              <h3 className="font-serif text-lg font-semibold text-cream mb-3">
                 {title}
               </h3>
-              <p className="font-sans text-sm leading-relaxed text-[#F5ECD7] mb-5 flex-1"
-                 style={{ opacity: 0.62 }}>
+              <p className="font-sans text-sm leading-relaxed text-cream/60 mb-5 flex-1">
                 {body}
               </p>
               {external ? (
@@ -100,8 +100,8 @@ export default function GetInvolvedSection() {
                   className={`inline-block rounded-xl px-5 py-2.5 text-sm font-semibold
                               text-center transition-colors
                     ${accent
-                      ? 'bg-[#C4622D] text-white hover:bg-[#a8521f]'
-                      : 'border border-[#F5ECD7]/20 text-[#F5ECD7] hover:border-[#C4622D]/50 hover:text-[#C4622D]'
+                      ? 'bg-ember text-white hover:bg-ember-hover'
+                      : 'border border-cream/20 text-cream/80 hover:border-ember/50 hover:text-ember'
                     }`}
                 >
                   {cta}
@@ -112,8 +112,8 @@ export default function GetInvolvedSection() {
                   className={`inline-block rounded-xl px-5 py-2.5 text-sm font-semibold
                               text-center transition-colors
                     ${accent
-                      ? 'bg-[#C4622D] text-white hover:bg-[#a8521f]'
-                      : 'border border-[#F5ECD7]/20 text-[#F5ECD7] hover:border-[#C4622D]/50 hover:text-[#C4622D]'
+                      ? 'bg-ember text-white hover:bg-ember-hover'
+                      : 'border border-cream/20 text-cream/80 hover:border-ember/50 hover:text-ember'
                     }`}
                 >
                   {cta}
@@ -125,15 +125,14 @@ export default function GetInvolvedSection() {
 
         {/* Newsletter signup */}
         <div
-          className="rounded-2xl border border-[#F5ECD7]/10 bg-white/[0.03]
+          className="rounded-2xl border border-cream/10 bg-white/[0.03]
                      p-8 md:p-12 text-center max-w-2xl mx-auto"
         >
           <div className="text-4xl mb-4" aria-hidden="true">📬</div>
-          <h3 className="font-serif text-2xl font-semibold text-[#F5ECD7] mb-3">
+          <h3 className="font-serif text-2xl font-semibold text-cream mb-3">
             Stay in the Loop
           </h3>
-          <p className="font-sans text-sm text-[#F5ECD7] mb-8 leading-relaxed"
-             style={{ opacity: 0.62 }}>
+          <p className="font-sans text-sm text-cream/60 mb-8 leading-relaxed">
             Get construction updates, event announcements, vendor spotlights, and early access
             to our opening — straight to your inbox.
           </p>
@@ -141,8 +140,8 @@ export default function GetInvolvedSection() {
           {status === 'done' ? (
             <div
               role="status"
-              className="rounded-xl bg-[#2D5016]/20 border border-[#2D5016]/30
-                         px-6 py-4 font-sans text-sm text-[#F5ECD7]"
+              className="rounded-xl bg-grove/20 border border-grove/30
+                         px-6 py-4 font-sans text-sm text-cream"
             >
               ✅ You&apos;re on the list — thank you for your support!
             </div>
@@ -155,18 +154,19 @@ export default function GetInvolvedSection() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === 'sending'}
-                className="flex-1 rounded-xl border border-[#F5ECD7]/20 bg-white/5
-                           px-4 py-3 font-sans text-sm text-[#F5ECD7]
-                           placeholder-[#F5ECD7]/30 focus:border-[#C4622D]/60
-                           focus:outline-none focus:ring-2 focus:ring-[#C4622D]/20
+                className="flex-1 rounded-xl border border-cream/20 bg-white/5
+                           px-4 py-3 font-sans text-sm text-cream
+                           placeholder-cream/30 focus:border-ember/60
+                           focus:outline-none focus:ring-2 focus:ring-ember/20
                            disabled:opacity-50 transition-colors"
               />
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="rounded-xl bg-[#C4622D] px-6 py-3 font-sans text-sm
-                           font-semibold text-white hover:bg-[#a8521f]
-                           disabled:opacity-60 transition-colors whitespace-nowrap"
+                className="rounded-xl bg-ember px-6 py-3 font-sans text-sm
+                           font-semibold text-white hover:bg-ember-hover
+                           disabled:opacity-60 transition-colors whitespace-nowrap
+                           focus-visible:ring-2 focus-visible:ring-ember/50"
               >
                 {status === 'sending' ? 'Sending…' : 'Notify Me →'}
               </button>
@@ -179,7 +179,7 @@ export default function GetInvolvedSection() {
             </p>
           )}
 
-          <p className="mt-4 font-sans text-xs text-[#F5ECD7]" style={{ opacity: 0.35 }}>
+          <p className="mt-4 font-sans text-xs text-cream/35">
             No spam. Unsubscribe anytime.
           </p>
         </div>

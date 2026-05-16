@@ -44,7 +44,7 @@ const faqs = [
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-5 w-5 flex-shrink-0 text-[#C4622D] transition-transform duration-300 ${
+      className={`h-5 w-5 flex-shrink-0 text-ember transition-transform duration-300 ${
         open ? 'rotate-180' : ''
       }`}
       fill="none"
@@ -72,7 +72,7 @@ function FAQItem({
   const answerId = `faq-panel-${index}`;
 
   return (
-    <div className="border-b border-[#F5ECD7]/10 last:border-b-0">
+    <div className="border-b border-cream/10 last:border-b-0">
       <button
         type="button"
         className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left
@@ -81,10 +81,7 @@ function FAQItem({
         aria-controls={answerId}
         onClick={() => setOpen((o) => !o)}
       >
-        <span
-          className="font-serif text-base font-semibold text-[#F5ECD7]"
-          style={{ opacity: 0.90 }}
-        >
+        <span className="font-serif text-base font-semibold text-cream/90">
           {question}
         </span>
         <ChevronIcon open={open} />
@@ -96,12 +93,9 @@ function FAQItem({
         role="region"
         aria-hidden={!open}
         className="overflow-hidden transition-all duration-300 ease-in-out"
-        style={{ maxHeight: open ? '400px' : '0px' }}
+        style={{ maxHeight: open ? '2000px' : '0px' }}
       >
-        <p
-          className="px-6 pb-5 font-sans text-sm leading-relaxed text-[#F5ECD7]"
-          style={{ opacity: 0.60 }}
-        >
+        <p className="px-6 pb-5 font-sans text-sm leading-relaxed text-cream/60">
           {answer}
         </p>
       </div>
@@ -114,7 +108,7 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="py-24 px-6 bg-[#1C1209]"
+      className="py-24 px-6 bg-bg"
       aria-labelledby="faq-heading"
     >
       <div className="mx-auto max-w-3xl">
@@ -137,13 +131,12 @@ export default function FAQSection() {
         </GlassCard>
 
         <p
-          className="mt-8 text-center font-sans text-sm text-[#F5ECD7]"
-          style={{ opacity: 0.45 }}
+          className="mt-8 text-center font-sans text-sm text-cream/45"
         >
           Still have questions?{' '}
           <a
             href="mailto:info@lccullinaryhub.com"
-            className="underline underline-offset-2 transition-colors hover:text-[#C4622D]"
+            className="underline underline-offset-2 transition-colors hover:text-ember"
           >
             Email us directly.
           </a>

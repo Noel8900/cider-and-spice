@@ -26,10 +26,10 @@ export default function FloatingFloorPlanButton() {
       href="/floor-plan/"
       aria-label="View interactive floor plan"
       className={`fixed bottom-6 right-6 z-40 flex items-center gap-2
-                  rounded-full bg-[#C4622D] px-5 py-3 font-sans text-sm
+                  rounded-full bg-ember px-5 py-3 font-sans text-sm
                   font-semibold text-white shadow-lg shadow-black/40
                   transition-all duration-300
-                  hover:bg-[#a8521f] hover:shadow-xl hover:-translate-y-0.5
+                  hover:bg-ember-hover hover:shadow-xl hover:-translate-y-0.5
                   ${visible
                     ? 'translate-y-0 opacity-100'
                     : 'translate-y-4 opacity-0 pointer-events-none'

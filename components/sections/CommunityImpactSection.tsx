@@ -70,7 +70,7 @@ const grantCategories = [
 
 export default function CommunityImpactSection() {
   return (
-    <section id="impact" className="py-24 px-6 bg-[#1C1209]">
+    <section id="impact" className="py-24 px-6 bg-bg">
       <div className="max-w-6xl mx-auto space-y-20">
 
         {/* ── Header ── */}
@@ -82,11 +82,10 @@ export default function CommunityImpactSection() {
 
         {/* ── Tourism & Economic Impact ── */}
         <div>
-          <h3 className="font-serif text-2xl font-semibold text-[#F5ECD7] mb-2 text-center">
+          <h3 className="font-serif text-2xl font-semibold text-cream mb-2 text-center">
             Economic &amp; Tourism Impact
           </h3>
-          <p className="font-sans text-sm text-[#F5ECD7] text-center mb-8 max-w-2xl mx-auto"
-             style={{ opacity: 0.60 }}>
+          <p className="font-sans text-sm text-cream/60 text-center mb-8 max-w-2xl mx-auto">
             Las Cruces sits at the center of a 215,000-person metro with zero food hall competitors within
             200 miles. Cider &amp; Spice is positioned to become a regional dining destination — projecting
             90,000+ annual visitors and a $5.6M tourism multiplier effect by Year 2.
@@ -95,12 +94,11 @@ export default function CommunityImpactSection() {
             {tourismStats.map(({ value, label }) => (
               <div
                 key={label}
-                className="rounded-2xl border border-[#F5ECD7]/10 bg-white/[0.03]
-                           p-6 text-center hover:border-[#C4622D]/25 transition-colors"
+                className="rounded-2xl border border-cream/10 bg-white/[0.03]
+                           p-6 text-center hover:border-ember/25 transition-colors"
               >
-                <div className="font-serif text-3xl font-bold text-[#C4622D] mb-1">{value}</div>
-                <div className="font-sans text-xs tracking-wide uppercase text-[#F5ECD7]"
-                     style={{ opacity: 0.50 }}>
+                <div className="font-serif text-3xl font-bold text-ember mb-1">{value}</div>
+                <div className="font-sans text-xs tracking-wide uppercase text-cream/50">
                   {label}
                 </div>
               </div>
@@ -110,11 +108,10 @@ export default function CommunityImpactSection() {
 
         {/* ── Local Partners ── */}
         <div>
-          <h3 className="font-serif text-2xl font-semibold text-[#F5ECD7] mb-2 text-center">
+          <h3 className="font-serif text-2xl font-semibold text-cream mb-2 text-center">
             Community Partners &amp; Endorsements
           </h3>
-          <p className="font-sans text-sm text-[#F5ECD7] text-center mb-8 max-w-xl mx-auto"
-             style={{ opacity: 0.60 }}>
+          <p className="font-sans text-sm text-cream/60 text-center mb-8 max-w-xl mx-auto">
             Cider &amp; Spice is endorsed by and actively collaborating with the following Las Cruces
             institutions and organizations.
           </p>
@@ -122,15 +119,14 @@ export default function CommunityImpactSection() {
             {partners.map(({ name, role }) => (
               <div
                 key={name}
-                className="rounded-xl border border-[#F5ECD7]/10 bg-white/[0.03]
-                           p-5 hover:border-[#C4622D]/25 hover:bg-white/[0.05]
+                className="rounded-xl border border-cream/10 bg-white/[0.03]
+                           p-5 hover:border-ember/25 hover:bg-white/[0.05]
                            transition-all duration-200"
               >
-                <div className="font-serif text-sm font-semibold text-[#F5ECD7] mb-1.5">
+                <div className="font-serif text-sm font-semibold text-cream mb-1.5">
                   {name}
                 </div>
-                <div className="font-sans text-xs text-[#F5ECD7] leading-snug"
-                     style={{ opacity: 0.50 }}>
+                <div className="font-sans text-xs text-cream/50 leading-snug">
                   {role}
                 </div>
               </div>
@@ -140,11 +136,10 @@ export default function CommunityImpactSection() {
 
         {/* ── Cultural Events ── */}
         <div>
-          <h3 className="font-serif text-2xl font-semibold text-[#F5ECD7] mb-2 text-center">
+          <h3 className="font-serif text-2xl font-semibold text-cream mb-2 text-center">
             Community Programming &amp; Cultural Events
           </h3>
-          <p className="font-sans text-sm text-[#F5ECD7] text-center mb-8 max-w-xl mx-auto"
-             style={{ opacity: 0.60 }}>
+          <p className="font-sans text-sm text-cream/60 text-center mb-8 max-w-xl mx-auto">
             Cider &amp; Spice is designed to be a living community space — not just a place to eat,
             but a destination for culture, learning, and connection.
           </p>
@@ -152,24 +147,22 @@ export default function CommunityImpactSection() {
             {events.map(({ icon, title, cadence, body }) => (
               <div
                 key={title}
-                className="rounded-2xl border border-[#F5ECD7]/10 bg-white/[0.03]
-                           p-6 hover:border-[#C4622D]/25 hover:bg-white/[0.05]
+                className="rounded-2xl border border-cream/10 bg-white/[0.03]
+                           p-6 hover:border-ember/25 hover:bg-white/[0.05]
                            transition-all duration-200 group"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-2xl">{icon}</span>
                   <div>
-                    <div className="font-serif text-base font-semibold text-[#F5ECD7]">
+                    <div className="font-serif text-base font-semibold text-cream">
                       {title}
                     </div>
-                    <div className="font-sans text-[11px] tracking-wide uppercase text-[#C4622D]"
-                         style={{ opacity: 0.85 }}>
+                    <div className="font-sans text-[11px] tracking-wide uppercase text-ember/85">
                       {cadence}
                     </div>
                   </div>
                 </div>
-                <p className="font-sans text-sm leading-relaxed text-[#F5ECD7]"
-                   style={{ opacity: 0.58 }}>
+                <p className="font-sans text-sm leading-relaxed text-cream/60">
                   {body}
                 </p>
               </div>
@@ -178,11 +171,11 @@ export default function CommunityImpactSection() {
         </div>
 
         {/* ── Grant & Funding Categories ── */}
-        <div className="rounded-2xl border border-[#F5ECD7]/10 bg-white/[0.03] p-8">
-          <h3 className="font-serif text-2xl font-semibold text-[#F5ECD7] mb-2">
+        <div className="rounded-2xl border border-cream/10 bg-white/[0.03] p-8">
+          <h3 className="font-serif text-2xl font-semibold text-cream mb-2">
             Public Funding &amp; Grant Eligibility
           </h3>
-          <p className="font-sans text-sm text-[#F5ECD7] mb-6" style={{ opacity: 0.60 }}>
+          <p className="font-sans text-sm text-cream/60 mb-6">
             Cider &amp; Spice is structured to qualify for multiple public and federal funding streams
             that prioritize community economic development, workforce training, and small business incubation.
           </p>
@@ -191,15 +184,15 @@ export default function CommunityImpactSection() {
               <li
                 key={label}
                 className="flex items-center justify-between gap-4 py-3
-                           border-b border-[#F5ECD7]/[0.07] last:border-0"
+                           border-b border-cream/[0.07] last:border-0"
               >
-                <span className="font-sans text-sm text-[#F5ECD7]" style={{ opacity: 0.75 }}>
+                <span className="font-sans text-sm text-cream/75">
                   {label}
                 </span>
                 <span
-                  className="shrink-0 rounded-full border border-[#C4622D]/40
-                             bg-[#C4622D]/10 px-3 py-1 font-sans text-xs
-                             font-semibold text-[#C4622D]"
+                  className="shrink-0 rounded-full border border-ember/40
+                             bg-ember/10 px-3 py-1 font-sans text-xs
+                             font-semibold text-ember"
                 >
                   {status}
                 </span>

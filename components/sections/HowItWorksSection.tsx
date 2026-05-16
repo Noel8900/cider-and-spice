@@ -44,7 +44,7 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="concept" className="py-24 px-6 bg-[#1C1209]">
+    <section id="concept" className="py-24 px-6 bg-bg">
       <div className="max-w-6xl mx-auto">
         <SectionHeader
           badge="How It Works"
@@ -56,15 +56,14 @@ export default function HowItWorksSection() {
           {steps.map((step) => (
             <div
               key={step.number}
-              className="group relative rounded-2xl border border-[#F5ECD7]/10
+              className="group relative rounded-2xl border border-cream/10
                          bg-white/[0.03] p-7 hover:bg-white/[0.06]
-                         hover:border-[#C4622D]/30 transition-all duration-300"
+                         hover:border-ember/30 transition-all duration-300"
             >
               {/* Step number — decorative, fades into background */}
               <span
                 className="absolute top-5 right-6 font-serif text-5xl font-bold
-                           text-[#F5ECD7] select-none pointer-events-none"
-                style={{ opacity: 0.06 }}
+                           text-cream/[0.06] select-none pointer-events-none"
                 aria-hidden="true"
               >
                 {step.number}
@@ -72,22 +71,17 @@ export default function HowItWorksSection() {
 
               <span className="text-3xl mb-4 block">{step.icon}</span>
 
-              <h3
-                className="font-serif text-lg font-semibold text-[#F5ECD7] mb-3"
-              >
+              <h3 className="font-serif text-lg font-semibold text-cream mb-3">
                 {step.title}
               </h3>
 
-              <p
-                className="font-sans text-sm leading-relaxed text-[#F5ECD7]"
-                style={{ opacity: 0.62 }}
-              >
+              <p className="font-sans text-sm leading-relaxed text-cream/60">
                 {step.body}
               </p>
 
               {/* Hover accent line */}
               <div
-                className="mt-5 h-0.5 w-0 bg-[#C4622D] rounded-full
+                className="mt-5 h-0.5 w-0 bg-ember rounded-full
                            group-hover:w-10 transition-all duration-300"
                 aria-hidden="true"
               />

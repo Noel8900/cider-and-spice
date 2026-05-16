@@ -17,19 +17,17 @@ export default function SectionHeader({
     <div className={`mb-16 max-w-2xl ${alignment}`}>
       {badge && (
         <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-widest
-                         uppercase border border-[#C4622D]/40 rounded-full text-[#C4622D]">
+                         uppercase border border-ember/40 rounded-full text-ember">
           {badge}
         </span>
       )}
       {/* Anchor font, 100% opacity — star of the show for each section */}
-      <h2 id={id} className="font-serif text-4xl md:text-5xl font-bold text-[#F5ECD7] leading-tight mb-4"
-          style={{ opacity: 'var(--opacity-high)' }}>
+      <h2 id={id} className="font-serif text-4xl md:text-5xl font-bold text-cream leading-tight mb-4">
         {title}
       </h2>
       {subtitle && (
         /* Support font, 60% opacity — secondary hierarchy */
-        <p className="font-sans text-lg text-[#F5ECD7] leading-relaxed"
-           style={{ opacity: 'var(--opacity-low)' }}>
+        <p className="font-sans text-lg text-cream/60 leading-relaxed">
           {subtitle}
         </p>
       )}

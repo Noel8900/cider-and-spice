@@ -5,7 +5,7 @@ import SkeletonForm from '@/components/ui/SkeletonForm';
 
 export default function CiderClubLoading() {
   return (
-    <main className="min-h-screen bg-[#1C1209]">
+    <main className="min-h-screen bg-bg">
       <SkeletonForm />
     </main>
   );

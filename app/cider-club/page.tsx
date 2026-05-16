@@ -107,30 +107,29 @@ function SuccessScreen({ tier }: { tier: CiderClubTier }) {
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-24">
       <div className="mx-auto max-w-md text-center">
-        <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-[#C4622D]/30 bg-[#C4622D]/10 text-5xl">
+        <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-ember/30 bg-ember/10 text-5xl">
           🍾
         </div>
-        <h2 className="mb-4 font-serif text-3xl font-bold text-[#F5ECD7]">
+        <h2 className="mb-4 font-serif text-3xl font-bold text-cream">
           Welcome to the Club!
         </h2>
-        <p className="mb-3 font-sans text-base leading-relaxed text-[#F5ECD7]" style={{ opacity: 0.70 }}>
-          You&apos;re now on the <strong className="text-[#C4622D]">{tierName}</strong> waitlist.
+        <p className="mb-3 font-sans text-base leading-relaxed text-cream/70">
+          You&apos;re now on the <strong className="text-ember">{tierName}</strong> waitlist.
         </p>
-        <p className="mb-10 font-sans text-base leading-relaxed text-[#F5ECD7]" style={{ opacity: 0.70 }}>
+        <p className="mb-10 font-sans text-base leading-relaxed text-cream/70">
           We&apos;ll be in touch before Grand Opening (Q1–Q2 2027) to confirm your
           membership and lock in your founding-member rate.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/"
-            className="rounded-xl bg-[#C4622D] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#a8521f]"
+            className="rounded-xl bg-ember px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ember-hover"
           >
             Back to Home
           </Link>
           <Link
             href="/vendors"
-            className="rounded-xl border border-[#F5ECD7]/20 px-6 py-3 text-sm font-semibold text-[#F5ECD7] transition-colors hover:border-[#C4622D]/40 hover:text-[#C4622D]"
-            style={{ opacity: 0.80 }}
+            className="rounded-xl border border-cream/20 px-6 py-3 text-sm font-semibold text-cream/80 transition-colors hover:border-ember/40 hover:text-ember"
           >
             Become a Vendor →
           </Link>
@@ -175,36 +174,35 @@ export default function CiderClubPage() {
 
   if (success) {
     return (
-      <main className="min-h-screen bg-[#1C1209]">
+      <main className="min-h-screen bg-bg">
         <SuccessScreen tier={form.tier} />
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#1C1209]">
+    <main className="min-h-screen bg-bg">
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="px-6 pb-20 pt-28">
         <div className="mx-auto max-w-4xl">
           <Link
             href="/"
-            className="mb-10 inline-flex items-center gap-1.5 font-sans text-sm font-medium text-[#C4622D] transition-opacity hover:opacity-70"
+            className="mb-10 inline-flex items-center gap-1.5 font-sans text-sm font-medium text-ember transition-opacity hover:opacity-70"
           >
             <BackArrow />
             Back to the Hub
           </Link>
 
           <div className="text-center">
-            <span className="mb-4 inline-block rounded-full border border-[#C4622D]/40 px-4 py-1.5 font-sans text-xs font-semibold uppercase tracking-widest text-[#C4622D]">
+            <span className="mb-4 inline-block rounded-full border border-ember/40 px-4 py-1.5 font-sans text-xs font-semibold uppercase tracking-widest text-ember">
               Membership
             </span>
-            <h1 className="mb-5 font-serif text-5xl font-bold leading-tight text-[#F5ECD7] md:text-6xl">
+            <h1 className="mb-5 font-serif text-5xl font-bold leading-tight text-cream md:text-6xl">
               Cider Club
             </h1>
             <p
-              className="mx-auto max-w-xl font-sans text-lg leading-relaxed text-[#F5ECD7]"
-              style={{ opacity: 0.65 }}
+              className="mx-auto max-w-xl font-sans text-lg leading-relaxed text-cream/65"
             >
               Southern New Mexico&apos;s first specialty cider bar — 400 years of
               apple-growing heritage in every pour. Pre-register now to lock in
@@ -228,26 +226,26 @@ export default function CiderClubPage() {
                   onClick={() => selectTier(tier.id)}
                   className={`relative text-left rounded-2xl border p-6 transition-all duration-200 ${
                     selected
-                      ? 'border-[#C4622D]/60 bg-[#C4622D]/10 ring-2 ring-[#C4622D]/30'
-                      : 'border-[#F5ECD7]/10 bg-white/5 hover:border-[#F5ECD7]/20 hover:bg-white/8'
+                      ? 'border-ember/60 bg-ember/10 ring-2 ring-ember/30'
+                      : 'border-cream/10 bg-white/5 hover:border-cream/20 hover:bg-white/[0.08]'
                   }`}
                   aria-pressed={selected}
                   aria-label={`Select ${tier.name} tier`}
                 >
                   {tier.featured && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#C4622D] px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-widest text-white">
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-ember px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-widest text-white">
                       Most Popular
                     </span>
                   )}
 
                   <div className="mb-3 text-3xl" aria-hidden="true">{tier.icon}</div>
 
-                  <div className="mb-0.5 font-serif text-xl font-bold text-[#F5ECD7]">
+                  <div className="mb-0.5 font-serif text-xl font-bold text-cream">
                     {tier.name}
                   </div>
-                  <div className="mb-4 font-serif text-3xl font-bold text-[#C4622D]">
+                  <div className="mb-4 font-serif text-3xl font-bold text-ember">
                     {tier.price}
-                    <span className="font-sans text-sm font-normal text-[#F5ECD7]" style={{ opacity: 0.50 }}>
+                    <span className="font-sans text-sm font-normal text-cream/50">
                       &nbsp;{tier.sub}
                     </span>
                   </div>
@@ -256,17 +254,16 @@ export default function CiderClubPage() {
                     {tier.perks.map((perk) => (
                       <li
                         key={perk}
-                        className="flex items-start gap-2 font-sans text-sm text-[#F5ECD7]"
-                        style={{ opacity: 0.70 }}
+                        className="flex items-start gap-2 font-sans text-sm text-cream/70"
                       >
-                        <span className="mt-0.5 shrink-0 text-[#C4622D]" aria-hidden="true">✓</span>
+                        <span className="mt-0.5 shrink-0 text-ember" aria-hidden="true">✓</span>
                         {perk}
                       </li>
                     ))}
                   </ul>
 
                   {selected && (
-                    <div className="mt-4 rounded-lg bg-[#C4622D]/20 px-3 py-2 text-center font-sans text-xs font-semibold text-[#C4622D]">
+                    <div className="mt-4 rounded-lg bg-ember/20 px-3 py-2 text-center font-sans text-xs font-semibold text-ember">
                       Selected ✓
                     </div>
                   )}
@@ -277,12 +274,11 @@ export default function CiderClubPage() {
 
           {/* ── Signup form ──────────────────────────────────────────────── */}
           <div>
-            <h2 className="mb-2 text-center font-serif text-3xl font-bold text-[#F5ECD7]">
+            <h2 className="mb-2 text-center font-serif text-3xl font-bold text-cream">
               Pre-Register Now
             </h2>
             <p
-              className="mb-10 text-center font-sans text-sm text-[#F5ECD7]"
-              style={{ opacity: 0.50 }}
+              className="mb-10 text-center font-sans text-sm text-cream/50"
             >
               Lock in your founding-member rate. No payment required until opening day.
             </p>
@@ -291,11 +287,11 @@ export default function CiderClubPage() {
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
                 {/* Selected tier display */}
-                <div className="rounded-xl border border-[#C4622D]/30 bg-[#C4622D]/10 px-4 py-3 text-center">
-                  <span className="font-sans text-xs text-[#F5ECD7]" style={{ opacity: 0.60 }}>
+                <div className="rounded-xl border border-ember/30 bg-ember/10 px-4 py-3 text-center">
+                  <span className="font-sans text-xs text-cream/60">
                     Selected tier:
                   </span>{' '}
-                  <span className="font-sans text-sm font-semibold text-[#C4622D]">
+                  <span className="font-sans text-sm font-semibold text-ember">
                     {TIERS.find((t) => t.id === form.tier)?.name} —{' '}
                     {TIERS.find((t) => t.id === form.tier)?.price}/mo
                   </span>
@@ -374,8 +370,8 @@ export default function CiderClubPage() {
                   type="submit"
                   disabled={submitting}
                   className="flex w-full items-center justify-center gap-2.5 rounded-xl
-                             bg-[#C4622D] px-6 py-4 text-sm font-bold text-white
-                             transition-colors hover:bg-[#a8521f]
+                             bg-ember px-6 py-4 text-sm font-bold text-white
+                             transition-colors hover:bg-ember-hover
                              disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submitting ? (
@@ -388,10 +384,7 @@ export default function CiderClubPage() {
                   )}
                 </button>
 
-                <p
-                  className="text-center font-sans text-xs text-[#F5ECD7]"
-                  style={{ opacity: 0.35 }}
-                >
+                <p className="text-center font-sans text-xs text-cream/35">
                   No payment required until we open. Unsubscribe any time.
                 </p>
               </form>
@@ -399,10 +392,7 @@ export default function CiderClubPage() {
           </div>
 
           {/* ── Footnote ─────────────────────────────────────────────────── */}
-          <p
-            className="text-center font-sans text-xs text-[#F5ECD7]"
-            style={{ opacity: 0.35 }}
-          >
+          <p className="text-center font-sans text-xs text-cream/35">
             Cider Club membership pricing and perks are subject to change before
             Grand Opening. Founding members who pre-register are guaranteed their
             quoted rate for the first 12 months.
