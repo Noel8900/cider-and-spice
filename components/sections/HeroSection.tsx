@@ -29,6 +29,14 @@ export default function HeroSection() {
         <div className="hero__actions">
           <Link href="#opportunity" className="btn btn--primary">See the Opportunity</Link>
           <Link href="#financials" className="btn btn--ghost">Investor Overview</Link>
+          <Link
+            href="/floor-plan/"
+            className="btn btn--ghost"
+            style={{ borderColor: 'rgba(245,236,215,0.35)', color: '#F5ECD7', opacity: 0.85 }}
+          >
+            <span aria-hidden="true" style={{ marginRight: '0.4em' }}>🗺</span>
+            Explore the Floor Plan
+          </Link>
         </div>
         <div className="hero__badges">
           <span className="badge">8,000 sq ft Indoor Venue</span>

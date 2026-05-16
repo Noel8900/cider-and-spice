@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import Navbar from '@/components/layout/Navbar'
+import FloatingFloorPlanButton from '@/components/ui/FloatingFloorPlanButton'
 import './globals.css'
 
 /* ── Metadata (replaces <head> SEO tags) ─────────────────────── */
@@ -119,6 +120,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
+        <FloatingFloorPlanButton />
 
         {/* All DOM interaction (nav, FAQ, forms, lightbox, animations)
             runs after hydration via the existing vanilla-JS bundle.

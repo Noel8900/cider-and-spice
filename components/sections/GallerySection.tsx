@@ -4,6 +4,7 @@
 // CLAUDE.md: tenant-vision images show content disclaimer.
 
 import Image from 'next/image';
+import Link from 'next/link';
 import SectionHeader from '@/components/ui/SectionHeader';
 
 interface GalleryImage {
@@ -113,6 +114,28 @@ export default function GallerySection() {
           All images are architectural concept renderings for illustration purposes only.
           Vendor brands, pricing, and layouts are subject to change.
         </p>
+
+        {/* Floor plan deep link */}
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <p className="font-sans text-sm text-[#F5ECD7]/60">
+            Want to explore every zone, stall, and seat count in detail?
+          </p>
+          <Link
+            href="/floor-plan/"
+            className="inline-flex items-center gap-2 rounded-full border border-[#C4622D]/60
+                       px-6 py-3 font-sans text-sm font-semibold text-[#C4622D]
+                       transition-all duration-200 hover:bg-[#C4622D]/10 hover:border-[#C4622D]
+                       hover:gap-3"
+          >
+            <span aria-hidden="true">🗺</span>
+            View the Interactive Floor Plan
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                 strokeLinejoin="round" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
   );
