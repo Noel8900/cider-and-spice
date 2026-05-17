@@ -1,15 +1,23 @@
 'use client';
-// Get involved + newsletter — luxury editorial redesign.
-// No emoji. Gold glyphs. Refined engagement cards.
-// GSAP entrance animations.
+// Get Involved + Newsletter — Direction 3: Artisan Collective
+// Terracotta featured card, D3 tokens throughout, newsletter in D3 palette.
+// All existing logic (formspree, status states, GSAP) preserved.
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SectionHeader from '@/components/ui/SectionHeader';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const D3 = {
+  walnut:     '#2c2416',
+  chestnut:   '#5c4a30',
+  terracotta: '#c0622a',
+  sage:       '#6b8c6b',
+  wheat:      '#e8c18d',
+  parchment:  '#f7f3ec',
+} as const;
 
 const paths = [
   {
@@ -42,7 +50,7 @@ const paths = [
   {
     glyph: '◆',
     title: 'Partner with Us',
-    body: "We're actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to build this together.",
+    body: "We’re actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to build this together.",
     cta: 'Get in Touch',
     href: 'mailto:info@lccullinaryhub.com',
     external: true,
@@ -89,133 +97,151 @@ export default function GetInvolvedSection() {
     <section
       id="newsletter"
       ref={ref}
-      className="py-32 px-6"
-      style={{ background: 'linear-gradient(to bottom, #12100a 0%, #1C1209 100%)' }}
+      style={{ background: `linear-gradient(to bottom, #1e1710 0%, ${D3.walnut} 100%)`, padding: '8rem 1.5rem' }}
     >
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          badge="Get Involved"
-          title="Join the Movement"
-          subtitle="Las Cruces is ready for something like this. Here's how to be part of it from the very beginning."
-        />
+      <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
 
-        {/* Engagement cards */}
-        <div className="inv-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-cream/[0.06] mb-16">
+        {/* Section header */}
+        <div style={{ marginBottom: '3.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
+            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>Get Involved</span>
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.5rem', lineHeight: 1.15 }}>Join the Movement</h2>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '520px', lineHeight: 1.75 }}>
+            Las Cruces is ready for something like this. Here’s how to be part of it from the very beginning.
+          </p>
+        </div>
+
+        {/* Path cards */}
+        <div className="inv-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.07)', marginBottom: '4rem' }}>
           {paths.map(({ glyph, title, body, cta, href, external, featured }) => (
             <div
               key={title}
-              className={`inv-card group flex flex-col p-8 transition-colors duration-400
-                ${featured
-                  ? 'bg-ember/[0.07] hover:bg-ember/[0.12] border-b-0'
-                  : 'bg-bg hover:bg-white/[0.04]'
-                }`}
+              className="inv-card"
+              style={{
+                display: 'flex', flexDirection: 'column', padding: '2.25rem 2rem',
+                background: featured ? 'rgba(192,98,42,0.10)' : D3.walnut,
+                borderTop: featured ? `2px solid ${D3.terracotta}` : '2px solid transparent',
+                transition: 'background 0.35s, border-color 0.35s',
+              }}
+              onMouseEnter={e => {
+                if (!featured) {
+                  (e.currentTarget as HTMLDivElement).style.background = '#33291a';
+                  (e.currentTarget as HTMLDivElement).style.borderTopColor = `rgba(192,98,42,0.4)`;
+                }
+              }}
+              onMouseLeave={e => {
+                if (!featured) {
+                  (e.currentTarget as HTMLDivElement).style.background = D3.walnut;
+                  (e.currentTarget as HTMLDivElement).style.borderTopColor = 'transparent';
+                }
+              }}
             >
-              <span
-                className={`font-corp-display text-2xl mb-6 block transition-colors duration-300
-                  ${featured ? 'text-ember' : 'text-gold/50 group-hover:text-gold'}`}
-              >
-                {glyph}
-              </span>
+              <span style={{
+                fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem',
+                color: featured ? D3.terracotta : `${D3.terracotta}60`,
+                display: 'block', marginBottom: '1.25rem', lineHeight: 1,
+                transition: 'color 0.3s',
+              }} aria-hidden="true">{glyph}</span>
 
-              <h3 className="font-corp-display text-xl font-light text-cream mb-3 leading-snug">
+              <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.35rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.6rem', lineHeight: 1.25 }}>
                 {title}
               </h3>
 
-              <p className="font-sans text-sm leading-relaxed text-cream/50 mb-8 flex-1">
+              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, marginBottom: '2rem', flex: 1 }}>
                 {body}
               </p>
 
               {external ? (
-                <a
-                  href={href}
-                  className={`font-label text-[10px] tracking-[0.2em] uppercase pb-0.5 w-fit
-                              border-b transition-all duration-300
-                    ${featured
-                      ? 'border-ember/50 text-ember hover:border-ember'
-                      : 'border-cream/20 text-cream/50 hover:border-gold/50 hover:text-gold'
-                    }`}
-                >
-                  {cta} →
-                </a>
+                <a href={href} style={{
+                  fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem',
+                  letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none',
+                  paddingBottom: '2px', width: 'fit-content',
+                  borderBottom: featured ? `1px solid rgba(192,98,42,0.5)` : '1px solid rgba(232,193,141,0.25)',
+                  color: featured ? D3.terracotta : `${D3.wheat}80`,
+                  transition: 'color 0.25s, border-color 0.25s',
+                }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = D3.terracotta; (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = D3.terracotta; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = featured ? D3.terracotta : `${D3.wheat}80`; (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = featured ? 'rgba(192,98,42,0.5)' : 'rgba(232,193,141,0.25)'; }}
+                >{cta} →</a>
               ) : (
-                <Link
-                  href={href}
-                  className={`font-label text-[10px] tracking-[0.2em] uppercase pb-0.5 w-fit
-                              border-b transition-all duration-300
-                    ${featured
-                      ? 'border-ember/50 text-ember hover:border-ember'
-                      : 'border-cream/20 text-cream/50 hover:border-gold/50 hover:text-gold'
-                    }`}
-                >
-                  {cta} →
-                </Link>
+                <Link href={href} style={{
+                  fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem',
+                  letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none',
+                  paddingBottom: '2px', width: 'fit-content',
+                  borderBottom: featured ? `1px solid rgba(192,98,42,0.5)` : '1px solid rgba(232,193,141,0.25)',
+                  color: featured ? D3.terracotta : `${D3.wheat}80`,
+                  transition: 'color 0.25s, border-color 0.25s',
+                }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = D3.terracotta; (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = D3.terracotta; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = featured ? D3.terracotta : `${D3.wheat}80`; (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = featured ? 'rgba(192,98,42,0.5)' : 'rgba(232,193,141,0.25)'; }}
+                >{cta} →</Link>
               )}
             </div>
           ))}
         </div>
 
         {/* Newsletter */}
-        <div className="inv-newsletter border border-cream/[0.08] bg-white/[0.02] p-10 md:p-14
-                        max-w-3xl mx-auto text-center hover:border-cream/[0.14]
-                        transition-colors duration-400">
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <span className="block h-px w-8 bg-gold" />
-            <span className="font-label text-[9px] tracking-[0.3em] uppercase text-gold">
-              Stay Informed
-            </span>
-            <span className="block h-px w-8 bg-gold" />
+        <div className="inv-newsletter" style={{
+          border: '1px solid rgba(232,193,141,0.1)',
+          background: 'rgba(92,74,48,0.2)',
+          padding: '3.5rem',
+          maxWidth: '48rem', margin: '0 auto', textAlign: 'center',
+          transition: 'border-color 0.4s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.22)')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.1)')}>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '2rem' }}>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, opacity: 0.6 }} />
+            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: D3.terracotta }}>Stay Informed</span>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, opacity: 0.6 }} />
           </div>
 
-          <h3 className="font-corp-display text-3xl md:text-4xl font-light text-cream mb-4">
-            Stay in the Loop
-          </h3>
-          <p className="font-sans text-sm text-cream/50 mb-10 leading-relaxed max-w-md mx-auto">
-            Construction updates, event announcements, vendor spotlights, and early-access
-            invitations — delivered to your inbox.
+          <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.75rem' }}>Stay in the Loop</h3>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.5, lineHeight: 1.8, maxWidth: '400px', margin: '0 auto 2.5rem' }}>
+            Construction updates, event announcements, vendor spotlights, and early-access invitations — delivered to your inbox.
           </p>
 
           {status === 'done' ? (
-            <div
-              role="status"
-              className="border border-gold/25 bg-gold/5 px-8 py-5
-                         font-sans text-sm text-cream/80"
-            >
+            <div role="status" style={{ border: '1px solid rgba(192,98,42,0.3)', background: 'rgba(192,98,42,0.07)', padding: '1.25rem 2rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.85 }}>
               You&apos;re on the list — thank you for your support.
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-0">
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
               <input
-                type="email"
-                required
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="email" required placeholder="your@email.com"
+                value={email} onChange={e => setEmail(e.target.value)}
                 disabled={status === 'sending'}
-                className="flex-1 border border-cream/15 bg-white/[0.03] px-5 py-4
-                           font-sans text-sm text-cream placeholder-cream/25
-                           focus:border-gold/40 focus:outline-none focus:ring-1
-                           focus:ring-gold/15 disabled:opacity-50 transition-colors"
+                style={{
+                  flex: 1, border: '1px solid rgba(232,193,141,0.15)',
+                  background: '#3a2e1e', padding: '14px 18px',
+                  fontFamily: 'var(--font-inter), system-ui, sans-serif',
+                  fontSize: '0.875rem', color: D3.parchment, outline: 'none',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={e => (e.target.style.borderColor = 'rgba(192,98,42,0.5)')}
+                onBlur={e => (e.target.style.borderColor = 'rgba(232,193,141,0.15)')}
               />
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="shrink-0 bg-ember hover:bg-ember-hover px-8 py-4 font-label
-                           text-[10px] tracking-[0.25em] uppercase text-white
-                           disabled:opacity-60 transition-colors whitespace-nowrap
-                           focus-visible:ring-2 focus-visible:ring-ember/50"
-              >
-                {status === 'sending' ? 'Sending…' : 'Notify Me →'}
-              </button>
+              <button type="submit" disabled={status === 'sending'} style={{
+                flexShrink: 0, background: D3.terracotta, color: D3.parchment,
+                padding: '14px 28px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+                fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+                border: 'none', cursor: status === 'sending' ? 'not-allowed' : 'pointer',
+                opacity: status === 'sending' ? 0.6 : 1, whiteSpace: 'nowrap',
+                transition: 'opacity 0.25s',
+              }}>{ status === 'sending' ? 'Sending…' : 'Notify Me →' }</button>
             </form>
           )}
 
           {status === 'error' && (
-            <p role="alert" className="mt-4 font-sans text-xs text-red-400/80">
+            <p role="alert" style={{ marginTop: '1rem', fontFamily: 'var(--font-inter)', fontSize: '0.75rem', color: '#f87171', opacity: 0.8 }}>
               Something went wrong — please email us at info@lccullinaryhub.com
             </p>
           )}
 
-          <p className="mt-6 font-label text-[9px] tracking-[0.2em] uppercase text-cream/25">
+          <p style={{ marginTop: '1.5rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.25 }}>
             No spam · Unsubscribe anytime
           </p>
         </div>

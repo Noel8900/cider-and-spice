@@ -8,12 +8,21 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ── Animated counter hook ────────────────────────────────────────────────────
+// ── Direction 3 tokens ─────────────────────────────────────────────────
+const D3 = {
+  walnut:     '#2c2416',
+  chestnut:   '#5c4a30',
+  terracotta: '#c0622a',
+  sage:       '#6b8c6b',
+  wheat:      '#e8c18d',
+  parchment:  '#f7f3ec',
+} as const;
+
+// ── Stat badge ────────────────────────────────────────────────────────
 function useCountUp(target: number, suffix: string, decimals = 0, duration = 2.2) {
   const [display, setDisplay] = useState('0' + suffix);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -23,15 +32,9 @@ function useCountUp(target: number, suffix: string, decimals = 0, duration = 2.2
           started.current = true;
           const obj = { val: 0 };
           gsap.to(obj, {
-            val: target,
-            duration,
-            ease: 'power2.out',
-            onUpdate() {
-              setDisplay(obj.val.toFixed(decimals) + suffix);
-            },
-            onComplete() {
-              setDisplay(target.toFixed(decimals) + suffix);
-            },
+            val: target, duration, ease: 'power2.out',
+            onUpdate() { setDisplay(obj.val.toFixed(decimals) + suffix); },
+            onComplete() { setDisplay(target.toFixed(decimals) + suffix); },
           });
         }
       },
@@ -40,44 +43,37 @@ function useCountUp(target: number, suffix: string, decimals = 0, duration = 2.2
     observer.observe(el);
     return () => observer.disconnect();
   }, [target, suffix, decimals, duration]);
-
   return { ref, display };
 }
 
-// ── Stat badge component ─────────────────────────────────────────────────────
-function StatBadge({
-  prefix, target, suffix, label, decimals = 0,
-}: {
-  prefix?: string;
-  target: number;
-  suffix: string;
-  label: string;
-  decimals?: number;
+function StatBadge({ prefix, target, suffix, label, decimals = 0 }: {
+  prefix?: string; target: number; suffix: string; label: string; decimals?: number;
 }) {
   const { ref, display } = useCountUp(target, suffix, decimals);
   return (
-    <div
-      className="flex flex-col items-start border border-cream/15 px-5 py-4
-                 hover:border-gold/40 transition-colors duration-500"
-      style={{ background: 'rgba(28,18,9,0.45)', backdropFilter: 'blur(8px)' }}
-    >
-      <span
-        ref={ref}
-        className="font-corp-display text-3xl font-light leading-none"
-        style={{ color: '#D4A84B' }}
-        aria-live="polite"
-      >
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+      border: '1px solid rgba(247,243,236,0.12)',
+      padding: '1.1rem 1.4rem',
+      background: 'rgba(44,36,22,0.55)',
+      backdropFilter: 'blur(8px)',
+      transition: 'border-color 0.4s',
+    }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(192,98,42,0.45)')}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(247,243,236,0.12)')}>
+      <span ref={ref}
+        style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.9rem', fontWeight: 300, lineHeight: 1, color: D3.terracotta }}
+        aria-live="polite">
         {prefix}{display}
       </span>
-      <span className="font-label text-[8px] tracking-[0.22em] uppercase mt-1.5"
-        style={{ color: 'rgba(232,211,165,0.40)' }}>
+      <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: '0.4rem', color: `${D3.wheat}60` }}>
         {label}
       </span>
     </div>
   );
 }
 
-// ── Hero section ─────────────────────────────────────────────────────────────
+// ── Hero ───────────────────────────────────────────────────────────────
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
 
@@ -85,121 +81,126 @@ export default function HeroSection() {
     const ctx = gsap.context(() => {
       gsap.from(
         ['.hero-eyebrow', '.hero-headline', '.hero-subhead', '.hero-actions', '.hero-stats'],
-        {
-          opacity: 0,
-          y: 24,
-          duration: 0.9,
-          stagger: 0.12,
-          ease: 'power3.out',
-          delay: 0.2,
-        }
+        { opacity: 0, y: 24, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.2 }
       );
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      ref={ref}
-      className="relative flex min-h-svh items-center"
-      aria-label="Hero"
-    >
-      {/* Background image + overlay */}
-      <div className="absolute inset-0" aria-hidden="true">
+    <section ref={ref} style={{ position: 'relative', display: 'flex', minHeight: '100svh', alignItems: 'center' }} aria-label="Hero">
+
+      {/* Background image + D3 overlay */}
+      <div style={{ position: 'absolute', inset: 0 }} aria-hidden="true">
         <Image
           src="/images/cider-spice-bar-craft-cider-tap-pour-concept-rendering.png"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
+          alt="" fill priority sizes="100vw"
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(to right, rgba(28,18,9,0.90) 0%, rgba(28,18,9,0.55) 60%, rgba(28,18,9,0.28) 100%), ' +
-              'linear-gradient(to top, rgba(28,18,9,0.80) 0%, transparent 45%)',
-          }}
-        />
+        {/* Left-heavy walnut gradient — same directionality as before */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background:
+            `linear-gradient(to right, rgba(44,36,22,0.93) 0%, rgba(44,36,22,0.58) 60%, rgba(44,36,22,0.30) 100%), ` +
+            `linear-gradient(to top, rgba(44,36,22,0.85) 0%, transparent 45%)`,
+        }} />
+        {/* Subtle terracotta radial glow on left side */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 15% 50%, rgba(192,98,42,0.09) 0%, transparent 70%)' }} />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 pt-32">
+      <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '80rem', margin: '0 auto', padding: '6rem 1.5rem 4rem' }}>
 
         {/* Eyebrow */}
-        <div className="hero-eyebrow flex items-center gap-3 mb-8">
-          <span className="block h-px w-8 shrink-0" style={{ background: 'linear-gradient(90deg, #C97A3E, #D4A84B)' }} />
-          <span className="font-label text-[10px] tracking-[0.3em] uppercase" style={{ color: '#C97A3E' }}>
+        <div className="hero-eyebrow" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+          <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
+          <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>
             Opening Q1–Q2 2027 · Downtown Las Cruces, NM
           </span>
         </div>
 
         {/* Headline */}
-        <h1 className="hero-headline font-corp-display text-6xl sm:text-7xl md:text-8xl font-light
-                       text-cream leading-[0.92] tracking-tight mb-8 max-w-3xl">
+        <h1 className="hero-headline" style={{
+          fontFamily: 'var(--font-cormorant), Georgia, serif',
+          fontSize: 'clamp(3.2rem, 8vw, 6.5rem)',
+          fontWeight: 300,
+          lineHeight: 0.95,
+          letterSpacing: '-0.01em',
+          color: D3.parchment,
+          marginBottom: '1.75rem',
+          maxWidth: '820px',
+        }}>
           Where Las Cruces<br />
-          <em className="not-italic" style={{ color: '#D4A84B' }}>Eats the World</em>
+          <em style={{ fontStyle: 'italic', color: D3.terracotta }}>Eats the World</em>
         </h1>
 
+        {/* Wheat rule */}
+        <div style={{ width: '56px', height: '1px', background: `linear-gradient(to right, ${D3.wheat}, transparent)`, marginBottom: '1.75rem' }} />
+
         {/* Subhead */}
-        <p className="hero-subhead font-sans text-base md:text-lg leading-relaxed text-cream/65
-                      max-w-xl mb-10">
+        <p className="hero-subhead" style={{
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
+          fontSize: '1rem', lineHeight: 1.85, color: D3.wheat, opacity: 0.7,
+          maxWidth: '520px', marginBottom: '2.5rem', letterSpacing: '0.02em',
+        }}>
           A next-generation food hall, culinary incubator, and Southern New Mexico&apos;s
           only craft cider bar — giving Borderland food makers a permanent downtown home.
         </p>
 
         {/* CTAs */}
-        <div className="hero-actions flex flex-wrap gap-3 mb-14">
-          <Link
-            href="#opportunity"
-            className="px-8 py-4 font-label text-[10px] tracking-[0.25em] uppercase text-[#100E0A]
-                       transition-all duration-300"
-            style={{ background: 'linear-gradient(135deg, #C97A3E, #D4A84B)', fontWeight: 500 }}
-          >
-            See the Opportunity
-          </Link>
-          <Link
-            href="/investors"
-            className="border border-cream/20 hover:border-gold/50 px-8 py-4 font-label
-                       text-[10px] tracking-[0.25em] uppercase text-cream/70 hover:text-gold
-                       transition-all duration-300"
-          >
-            Investor Overview
-          </Link>
-          <Link
-            href="/floor-plan/"
-            className="border border-cream/20 hover:border-gold/50 px-8 py-4 font-label
-                       text-[10px] tracking-[0.25em] uppercase text-cream/70 hover:text-gold
-                       transition-all duration-300 flex items-center gap-2"
-          >
-            <span className="font-corp-display text-sm" style={{ color: 'rgba(212,168,75,0.60)' }} aria-hidden="true">✦</span>
+        <div className="hero-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '3.5rem' }}>
+          <Link href="#opportunity" style={{
+            display: 'inline-block', background: D3.terracotta, color: D3.parchment,
+            padding: '14px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+            fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+            textDecoration: 'none', fontWeight: 600,
+          }}>See the Opportunity</Link>
+
+          <Link href="/investors" style={{
+            display: 'inline-block', border: '1px solid rgba(247,243,236,0.2)',
+            color: `${D3.wheat}bb`, padding: '13px 36px',
+            fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+            fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+            textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s',
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)'; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}
+          >Investor Overview</Link>
+
+          <Link href="/floor-plan/" style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+            border: '1px solid rgba(247,243,236,0.2)', color: `${D3.wheat}bb`,
+            padding: '13px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+            fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+            textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s',
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)'; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}>
+            <span style={{ color: 'rgba(192,98,42,0.65)', fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1rem' }} aria-hidden="true">✦</span>
             Explore the Floor Plan
           </Link>
         </div>
 
-        {/* ── Animated stat badges ── */}
-        <div className="hero-stats grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
-          <StatBadge target={8000}  suffix=" sq ft"  label="Indoor Venue"                     />
-          <StatBadge target={13}    suffix=""         label="Global Concepts"    prefix="Up to " />
-          <StatBadge target={25}    suffix=" taps"    label="Rotating Cider"     prefix="Up to " />
+        {/* Stat badges */}
+        <div className="hero-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, auto))', gap: '0.75rem', maxWidth: '560px' }}>
+          <StatBadge target={8000} suffix=" sq ft" label="Indoor Venue" />
+          <StatBadge target={13}   suffix=""        label="Global Concepts" prefix="Up to " />
+          <StatBadge target={25}   suffix=" taps"   label="Rotating Cider"  prefix="Up to " />
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <a
-        href="#opportunity"
-        aria-label="Scroll to the opportunity section"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center
-                   gap-1.5 font-label text-[9px] tracking-[0.2em] uppercase text-cream/40
-                   hover:text-gold transition-colors duration-300 z-10"
-      >
+      <a href="#opportunity" aria-label="Scroll to the opportunity section" style={{
+        position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
+        fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+        fontSize: '0.55rem', letterSpacing: '0.3em', textTransform: 'uppercase',
+        color: `${D3.wheat}55`, textDecoration: 'none', transition: 'color 0.3s', zIndex: 10,
+      }}
+        onMouseEnter={e => (e.currentTarget.style.color = D3.terracotta)}
+        onMouseLeave={e => (e.currentTarget.style.color = `${D3.wheat}55`)}>
         <span>Explore</span>
-        <svg
-          width="16" height="16" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
-          strokeLinejoin="round" aria-hidden="true"
-        >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 5v14M5 12l7 7 7-7" />
         </svg>
       </a>
