@@ -1,14 +1,22 @@
 'use client';
-// Entrepreneur pathways — luxury editorial redesign.
-// Roman numeral pillar labels, GSAP count-up stats, no emoji.
+// Direction 3 — Artisan Collective entrepreneur pathways.
+// Terracotta numerals, sage accents, D3 count-up stats.
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SectionHeader from '@/components/ui/SectionHeader';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const D3 = {
+  walnut:     '#2c2416',
+  chestnut:   '#5c4a30',
+  terracotta: '#c0622a',
+  sage:       '#6b8c6b',
+  wheat:      '#e8c18d',
+  parchment:  '#f7f3ec',
+} as const;
 
 const pillars = [
   {
@@ -44,19 +52,18 @@ const pillars = [
 ];
 
 const stats = [
-  { value: 34,    display: '34',    suffix: '',   label: 'FTE Jobs, Year 1'        },
-  { value: 12,    display: '12+',   suffix: '+',  label: 'Vendor Stalls Available'  },
-  { value: 60,    display: '~60%',  suffix: '%',  label: 'Cost Savings vs. Solo'    },
-  { value: 0,     display: '$0',    suffix: '',   label: 'Franchise Fees Ever'       },
+  { value: 34,  display: '34',   suffix: '',   label: 'FTE Jobs, Year 1'        },
+  { value: 12,  display: '12+',  suffix: '+',  label: 'Vendor Stalls Available'  },
+  { value: 60,  display: '~60%', suffix: '%',  label: 'Cost Savings vs. Solo'    },
+  { value: 0,   display: '$0',   suffix: '',   label: 'Franchise Fees Ever'       },
 ];
 
 export default function EntrepreneurSection() {
-  const ref        = useRef<HTMLElement>(null);
-  const statRefs   = useRef<(HTMLElement | null)[]>([]);
+  const ref      = useRef<HTMLElement>(null);
+  const statRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Stat count-up animation
       statRefs.current.forEach((el, i) => {
         if (!el || stats[i].value === 0) return;
         const obj = { val: 0 };
@@ -71,93 +78,58 @@ export default function EntrepreneurSection() {
           },
         });
       });
-
-      // Pillar cards stagger
-      gsap.from('.ent-pillar', {
-        opacity: 0, y: 36, duration: 0.9, stagger: 0.14, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ent-pillars', start: 'top 78%', once: true },
-      });
-
-      // Callout
-      gsap.from('.ent-callout', {
-        opacity: 0, y: 24, duration: 0.85, ease: 'power3.out',
-        scrollTrigger: { trigger: '.ent-callout', start: 'top 82%', once: true },
-      });
+      gsap.from('.ent-pillar', { opacity: 0, y: 36, duration: 0.9, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: '.ent-pillars', start: 'top 78%', once: true } });
+      gsap.from('.ent-callout', { opacity: 0, y: 24, duration: 0.85, ease: 'power3.out', scrollTrigger: { trigger: '.ent-callout', start: 'top 82%', once: true } });
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      id="incubator"
-      ref={ref}
-      className="py-32 px-6"
-      style={{ background: 'linear-gradient(to bottom, #1C1209 0%, #12100a 100%)' }}
-    >
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          badge="Entrepreneur Pathways"
-          title="Built for Borderland Food Makers"
-          subtitle="Southern New Mexico's first culinary incubator — lowering barriers so local food entrepreneurs can build real, lasting businesses."
-        />
+    <section id="incubator" ref={ref} style={{ background: `linear-gradient(to bottom, #1e1710, ${D3.walnut})`, padding: '8rem 1.5rem' }}>
+      <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
+
+        {/* Section header */}
+        <div style={{ marginBottom: '3.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
+            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>Entrepreneur Pathways</span>
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>Built for Borderland Food Makers</h2>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '560px', lineHeight: 1.75 }}>Southern New Mexico’s first culinary incubator — lowering barriers so local food entrepreneurs can build real, lasting businesses.</p>
+        </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-cream/[0.06] mb-16">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1px', background: `rgba(232,193,141,0.07)`, marginBottom: '4rem' }}>
           {stats.map(({ display, label }, i) => (
-            <div
-              key={label}
-              className="bg-bg p-8 md:p-10 text-center hover:bg-white/[0.03]
-                         transition-colors duration-400"
-            >
-              <div
-                ref={(el) => { statRefs.current[i] = el; }}
-                className="font-corp-display text-5xl md:text-6xl font-light text-gold mb-3 leading-none"
-              >
+            <div key={label} style={{ background: D3.walnut, padding: '2rem 2.5rem', textAlign: 'center', transition: 'background 0.4s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
+              onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}>
+              <div ref={(el) => { statRefs.current[i] = el; }}
+                style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 300, color: i % 2 === 0 ? D3.terracotta : D3.sage, lineHeight: 1, marginBottom: '0.6rem' }}>
                 {display}
               </div>
-              <div className="font-label text-[9px] tracking-[0.25em] uppercase text-cream/40">
-                {label}
-              </div>
+              <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}60` }}>{label}</div>
             </div>
           ))}
         </div>
 
         {/* Pillar cards */}
-        <div className="ent-pillars grid grid-cols-1 md:grid-cols-3 gap-px bg-cream/[0.06] mb-16">
+        <div className="ent-pillars" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1px', background: `rgba(232,193,141,0.07)`, marginBottom: '4rem' }}>
           {pillars.map((p) => (
-            <div
-              key={p.title}
-              className="ent-pillar group relative bg-bg p-10 hover:bg-white/[0.04]
-                         transition-colors duration-500 overflow-hidden"
-            >
-              {/* Roman numeral background */}
-              <span
-                className="absolute top-6 right-8 font-corp-display text-7xl font-light
-                           text-cream/[0.04] group-hover:text-cream/[0.07] select-none
-                           pointer-events-none transition-colors duration-500"
-                aria-hidden="true"
-              >
-                {p.numeral}
-              </span>
-
-              <div className="flex items-center gap-3 mb-6">
-                <span className="font-corp-display text-2xl font-light text-gold">
-                  {p.numeral}
-                </span>
-                <span className="h-px flex-1 bg-cream/[0.08] max-w-[2rem]" aria-hidden="true" />
+            <div key={p.title} className="ent-pillar" style={{ position: 'relative', background: D3.walnut, padding: '2.5rem', overflow: 'hidden', transition: 'background 0.4s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
+              onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}>
+              {/* Ghost numeral */}
+              <span aria-hidden="true" style={{ position: 'absolute', top: '1.25rem', right: '1.75rem', fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '5rem', fontWeight: 300, color: `${D3.wheat}06`, lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>{p.numeral}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 300, color: D3.terracotta }}>{p.numeral}</span>
+                <span style={{ height: '1px', width: '2rem', background: `rgba(232,193,141,0.12)` }} aria-hidden="true" />
               </div>
-
-              <h3 className="font-corp-display text-2xl font-light text-cream mb-6 leading-snug">
-                {p.title}
-              </h3>
-
-              <ul className="space-y-3.5">
+              <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '1.25rem', lineHeight: 1.25 }}>{p.title}</h3>
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                 {p.bullets.map((b) => (
-                  <li
-                    key={b}
-                    className="flex items-start gap-3 font-sans text-sm text-cream/55 leading-relaxed"
-                  >
-                    <span className="mt-[0.35em] text-gold shrink-0 text-xs" aria-hidden="true">◈</span>
+                  <li key={b} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.75rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.83rem', lineHeight: 1.75, color: D3.wheat, opacity: 0.55 }}>
+                    <span style={{ color: D3.sage, flexShrink: 0, marginTop: '0.35em', fontSize: '0.7rem' }} aria-hidden="true">◈</span>
                     {b}
                   </li>
                 ))}
@@ -167,34 +139,19 @@ export default function EntrepreneurSection() {
         </div>
 
         {/* Workforce callout */}
-        <div
-          className="ent-callout border border-cream/[0.08] bg-white/[0.02]
-                     p-10 md:p-14 flex flex-col md:flex-row items-start gap-8
-                     hover:border-cream/[0.14] transition-colors duration-400"
-        >
-          <span className="font-corp-display text-4xl font-light text-gold shrink-0">◆</span>
-          <div className="flex-1">
-            <p className="font-label text-[9px] tracking-[0.25em] uppercase text-gold mb-3">
-              Academic Partnership
-            </p>
-            <h3 className="font-corp-display text-2xl font-light text-cream mb-3 leading-snug">
-              NMSU &amp; DACC Workforce Partnership
-            </h3>
-            <p className="font-sans text-sm leading-relaxed text-cream/55 max-w-2xl">
-              Cider &amp; Spice is partnering with New Mexico State University and Doña Ana Community College
-              to create a formal culinary certificate pipeline. Students gain real-world experience inside
-              the hub; vendors gain trained staff. The program launches in coordination with our Q1–Q2 2027 opening.
-            </p>
+        <div className="ent-callout" style={{ border: `1px solid rgba(232,193,141,0.1)`, background: 'rgba(92,74,48,0.18)', padding: '3rem 3.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: '2rem', transition: 'border-color 0.4s' }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.22)')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.1)')}>
+          <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '2.5rem', color: D3.terracotta, flexShrink: 0, lineHeight: 1 }}>◆</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: D3.sage, marginBottom: '0.5rem' }}>Academic Partnership</p>
+            <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.6rem', lineHeight: 1.25 }}>NMSU &amp; DACC Workforce Partnership</h3>
+            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, maxWidth: '48rem' }}>Cider &amp; Spice is partnering with New Mexico State University and Doña Ana Community College to create a formal culinary certificate pipeline. Students gain real-world experience inside the hub; vendors gain trained staff. The program launches in coordination with our Q1–Q2 2027 opening.</p>
           </div>
-          <Link
-            href="/vendors"
-            className="shrink-0 self-start md:self-center border border-cream/25 px-7 py-3.5
-                       font-label text-[10px] tracking-[0.2em] uppercase text-cream/70
-                       hover:border-gold/60 hover:text-gold transition-all duration-300
-                       whitespace-nowrap"
-          >
-            Apply as a Vendor →
-          </Link>
+          <Link href="/vendors" style={{ flexShrink: 0, alignSelf: 'center', border: `1px solid rgba(247,243,236,0.2)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}bb`, whiteSpace: 'nowrap', textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = `rgba(192,98,42,0.5)`; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}
+          >Apply as a Vendor →</Link>
         </div>
       </div>
     </section>

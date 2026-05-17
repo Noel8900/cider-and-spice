@@ -1,14 +1,22 @@
 'use client';
-// Luxury feature cards — no emoji, sharp corners, GSAP scroll reveal.
-// Three practice cards + full-width floor plan card.
+// Direction 3 — Artisan Collective feature cards.
+// Ghost index numbers, terracotta glyph accents, GSAP scroll reveal.
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SectionHeader from '@/components/ui/SectionHeader';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const D3 = {
+  walnut:     '#2c2416',
+  chestnut:   '#5c4a30',
+  terracotta: '#c0622a',
+  sage:       '#6b8c6b',
+  wheat:      '#e8c18d',
+  parchment:  '#f7f3ec',
+} as const;
 
 const features = [
   {
@@ -49,97 +57,68 @@ export default function FeaturesSection() {
   }, []);
 
   return (
-    <section id="opportunity" ref={ref} className="py-32 px-6 bg-bg">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          badge="The Opportunity"
-          title="Built for Food Makers"
-          subtitle="Designed for makers, growers, and culinary innovators across the Borderland."
-        />
+    <section id="opportunity" ref={ref} style={{ background: D3.walnut, padding: '8rem 1.5rem' }}>
+      <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-cream/[0.06]">
+        {/* Section header */}
+        <div style={{ marginBottom: '3.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
+            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>The Opportunity</span>
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>Built for Food Makers</h2>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>Designed for makers, growers, and culinary innovators across the Borderland.</p>
+        </div>
+
+        {/* Feature cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1px', background: `rgba(232,193,141,0.07)` }}>
           {features.map((f) => (
             <div
               key={f.title}
-              className="feat-card group relative bg-bg p-10 hover:bg-white/[0.04]
-                         transition-colors duration-500 overflow-hidden"
+              className="feat-card"
+              style={{ position: 'relative', background: D3.walnut, padding: '2.5rem', overflow: 'hidden', transition: 'background 0.4s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
+              onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}
             >
-              {/* Background index number */}
-              <span
-                className="absolute top-6 right-8 font-corp-display text-7xl font-light
-                           text-cream/[0.04] group-hover:text-cream/[0.07] transition-colors
-                           duration-500 select-none pointer-events-none"
-                aria-hidden="true"
-              >
-                {f.index}
-              </span>
+              {/* Ghost index */}
+              <span aria-hidden="true" style={{
+                position: 'absolute', top: '1.25rem', right: '1.75rem',
+                fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '5rem', fontWeight: 300,
+                color: `${D3.wheat}06`, lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
+              }}>{f.index}</span>
 
-              {/* Glyph */}
-              <span className="font-corp-display text-3xl text-gold mb-8 block leading-none">
-                {f.glyph}
-              </span>
+              <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem', color: D3.terracotta, display: 'block', marginBottom: '1.5rem', lineHeight: 1 }}>{f.glyph}</span>
 
-              <h3 className="font-corp-display text-2xl font-light text-cream mb-4 leading-snug">
-                {f.title}
-              </h3>
+              <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.75rem', lineHeight: 1.25 }}>{f.title}</h3>
+              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, marginBottom: '2rem' }}>{f.body}</p>
 
-              <p className="font-sans text-sm leading-relaxed text-cream/55 mb-8">
-                {f.body}
-              </p>
-
-              {/* Hover gold accent line */}
-              <div
-                className="h-px w-0 bg-gold group-hover:w-10
-                           transition-all duration-500 ease-out"
-                aria-hidden="true"
-              />
+              {/* Hover terracotta rule */}
+              <div style={{ height: '1px', width: '0', background: D3.terracotta, transition: 'width 0.5s ease' }}
+                className="feat-rule" />
             </div>
           ))}
         </div>
 
-        {/* Floor Plan — full-width architectural card */}
-        <Link href="/floor-plan/" className="feat-floor group block mt-px">
+        {/* Floor Plan CTA */}
+        <Link href="/floor-plan/" className="feat-floor" style={{ display: 'block', marginTop: '1px', textDecoration: 'none' }}>
           <div
-            className="relative bg-white/[0.02] border-t border-cream/[0.06]
-                       p-10 md:p-12 flex flex-col md:flex-row md:items-center gap-8
-                       hover:bg-white/[0.04] transition-colors duration-500 overflow-hidden"
+            style={{ position: 'relative', background: `rgba(92,74,48,0.2)`, borderTop: `1px solid rgba(232,193,141,0.07)`, padding: '2.5rem 3rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2rem', overflow: 'hidden', transition: 'background 0.4s' }}
+            onMouseEnter={e => { (e.currentTarget.style.background = `rgba(92,74,48,0.35)`) }}
+            onMouseLeave={e => { (e.currentTarget.style.background = `rgba(92,74,48,0.2)`) }}
           >
-            {/* Ambient glow */}
-            <div
-              className="pointer-events-none absolute right-0 top-0 bottom-0 w-64 opacity-0
-                         group-hover:opacity-100 transition-opacity duration-700"
-              style={{ background: 'radial-gradient(ellipse at right, rgba(196,98,45,0.08) 0%, transparent 70%)' }}
-              aria-hidden="true"
-            />
-
-            <span className="font-corp-display text-5xl text-gold/60 group-hover:text-gold
-                             transition-colors duration-300 shrink-0">
-              ◇
-            </span>
-
-            <div className="flex-1">
-              <p className="font-label text-[9px] tracking-[0.3em] uppercase text-gold mb-2">
-                Venue Layout
-              </p>
-              <h3 className="font-corp-display text-2xl font-light text-cream mb-2 leading-snug">
-                22,400 sq ft Across Two Levels
-              </h3>
-              <p className="font-sans text-sm leading-relaxed text-cream/55">
-                Explore every vendor stall, dining zone, private event room, and BOH space
-                interactively. Filter by seating, vendor, event, or operations view.
-              </p>
+            <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '16rem', background: 'radial-gradient(ellipse at right, rgba(192,98,42,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} aria-hidden="true" />
+            <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '3.5rem', color: `${D3.terracotta}66`, flexShrink: 0, transition: 'color 0.3s' }}>◇</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '0.4rem' }}>Venue Layout</p>
+              <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.4rem' }}>22,400 sq ft Across Two Levels</h3>
+              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.55, lineHeight: 1.75 }}>Explore every vendor stall, dining zone, private event room, and BOH space interactively.</p>
             </div>
-
-            <div className="shrink-0 flex items-center gap-3 border border-cream/20
-                            px-7 py-3.5 font-label text-[10px] tracking-[0.2em] uppercase
-                            text-cream/70 group-hover:border-gold/60 group-hover:text-gold
-                            transition-all duration-400 whitespace-nowrap">
+            <div style={{ flexShrink: 0, border: `1px solid rgba(247,243,236,0.18)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}bb`, display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', transition: 'border-color 0.3s, color 0.3s' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = `rgba(192,98,42,0.6)`; (e.currentTarget as HTMLDivElement).style.color = D3.parchment; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(247,243,236,0.18)'; (e.currentTarget as HTMLDivElement).style.color = `${D3.wheat}bb`; }}
+            >
               Explore the Floor Plan
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                   strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </div>
           </div>
         </Link>
