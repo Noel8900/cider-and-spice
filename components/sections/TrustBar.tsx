@@ -1,6 +1,12 @@
-// Refined luxury partner strip.
+// Refined luxury partner strip — animated via GSAP ScrollTrigger.
 // Horizontal layout with pipe separators on desktop.
 // No rounded pills — clean editorial presentation.
+'use client'
+
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+gsap.registerPlugin(ScrollTrigger)
 
 const partners = [
   { abbr: 'City of Las Cruces',  full: 'City of Las Cruces, NM'              },
@@ -8,11 +14,32 @@ const partners = [
   { abbr: 'SCORE',               full: 'SCORE Mentors'                        },
   { abbr: 'Sandia Labs',         full: 'Sandia National Laboratories'         },
   { abbr: 'NMSU',                full: 'New Mexico State University'          },
-];
+]
 
 export default function TrustBar() {
+  const ref = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.trust-item', {
+        opacity: 0,
+        y: 12,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top 85%',
+          once: true,
+        },
+      })
+    }, ref)
+    return () => ctx.revert()
+  }, [])
+
   return (
     <section
+      ref={ref}
       className="border-y border-cream/[0.07] bg-white/[0.015] py-8 px-6"
       aria-label="Community partners and supporters"
     >
@@ -28,7 +55,7 @@ export default function TrustBar() {
             role="list"
           >
             {partners.map(({ abbr, full }, i) => (
-              <li key={abbr} className="flex items-center">
+              <li key={abbr} className="trust-item flex items-center">
                 {i > 0 && (
                   <span className="mx-6 md:mx-8 h-3 w-px bg-cream/20 shrink-0" aria-hidden="true" />
                 )}
@@ -47,5 +74,5 @@ export default function TrustBar() {
         </div>
       </div>
     </section>
-  );
+  )
 }

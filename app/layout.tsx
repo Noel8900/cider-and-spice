@@ -1,6 +1,30 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+import { Inter, Josefin_Sans, Cormorant_Garamond } from 'next/font/google'
 import ConditionalCulinaryUI from '@/components/layout/ConditionalCulinaryUI'
 import './globals.css'
+
+/* ── next/font — self-hosted, zero layout shift ───────────────── */
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const josefinSans = Josefin_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '600'],
+  variable: '--font-josefin',
+  display: 'swap',
+})
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
+})
 
 /* ── Metadata (replaces <head> SEO tags) ─────────────────────── */
 export const metadata: Metadata = {
@@ -27,8 +51,7 @@ export const metadata: Metadata = {
     images:      ['/opengraph-image'],
   },
   other: {
-    'theme-color':                        '#1C1209',
-    'apple-mobile-web-app-capable':       'yes',
+    'apple-mobile-web-app-capable':          'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
     'geo.region':    'US-NM',
     'geo.placename': 'Las Cruces, New Mexico',
@@ -37,21 +60,24 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#1C1209',
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" id="top" className="scroll-smooth">
+    <html
+      lang="en"
+      id="top"
+      className={`scroll-smooth ${inter.variable} ${josefinSans.variable} ${cormorantGaramond.variable}`}
+    >
       <head>
-        {/* Google Fonts — preconnect then load */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap"
-          rel="stylesheet"
-        />
         {/* Hero LCP preload — Next.js Image with priority also injects a preload,
             but this explicit hint fires earlier in the head for faster paint. */}
         <link

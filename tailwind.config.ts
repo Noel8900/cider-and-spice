@@ -8,26 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Mirror the brand token palette from styles.css for Tailwind use
       colors: {
-        // ── Core brand palette ──────────────────────────────────────────────
+        // ── Cider & Spice — culinary hub palette ────────────────────────────
         bg:    '#1C1209',                          // Dark background (midnight ember)
         ember: { DEFAULT: '#C4622D', hover: '#a8521f' }, // Terracotta accent
         cream: '#F5ECD7',                          // Off-white text / parchment
         grove: '#2D5016',                          // Deep sage green
-        // ── Supporting palette ──────────────────────────────────────────────
         gold: {
           DEFAULT: '#d4a84b',
           light:   '#e8d5a0',
           muted:   'rgba(212,168,75,0.22)',
-        },
-        sage: {
-          DEFAULT: '#5A7A5F',
-          light:   '#7A9E80',
-        },
-        sand: {
-          DEFAULT: '#F5EDE0',
-          dark:    '#EAD9C5',
         },
         // ── Nexus Capital Group — corporate palette ─────────────────────────
         corp: {
@@ -45,14 +35,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans:           ['Inter', 'system-ui', 'sans-serif'],
-        label:          ['"Josefin Sans"', 'system-ui', 'sans-serif'],
-        'corp-display': ['"Cormorant Garamond"', 'Georgia', 'serif'],
-      },
-      borderRadius: {
-        DEFAULT: '0.5rem',
-        lg:      '0.75rem',
-        xl:      '1rem',
+        sans:           ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        label:          ['var(--font-josefin)', 'system-ui', 'sans-serif'],
+        'corp-display': ['var(--font-cormorant)', 'Georgia', 'serif'],
       },
     },
   },

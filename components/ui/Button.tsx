@@ -54,7 +54,7 @@ export default function Button({
   children,
   onClick,
 }: ButtonProps) {
-  const base = 'inline-flex items-center justify-center gap-2 font-sans focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/50 disabled:cursor-not-allowed disabled:opacity-60';
+  const base = 'inline-flex items-center justify-center gap-2 rounded-none font-sans focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/50 disabled:cursor-not-allowed disabled:opacity-60';
   const classes = `${base} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
   if (href) {

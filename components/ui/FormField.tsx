@@ -36,5 +36,3 @@ export const darkInput =
   'focus:ring-1 focus:ring-gold/15 ' +
   'disabled:opacity-50 disabled:cursor-not-allowed';
 
-// lightInput is an alias — vendor form also lives on a dark bg.
-export const lightInput = darkInput;
