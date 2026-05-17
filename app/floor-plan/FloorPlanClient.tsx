@@ -10,80 +10,71 @@ type Zone   = 'all' | 'vendor' | 'cider' | 'kitchen' | 'seating' | 'support';
 type Status = 'available' | 'reserved' | 'anchor';
 
 interface Stall {
-  id:         string;
-  label:      string;
-  sqft:       number;
-  rent:       string;
-  status:     Status;
-  zone:       Exclude<Zone, 'all'>;
-  // SVG rect geometry
-  x: number; y: number; w: number; h: number;
-  // label anchor
-  lx?: number; ly?: number;
+  id:          string;
+  label:       string;
+  sqft:        number;
+  rent:        string;
+  status:      Status;
+  zone:        Exclude<Zone, 'all'>;
+  x: number;  y: number;  w: number;  h: number;
   description: string;
 }
 
-// ─── Floor plan data — 8,000 sq ft ───────────────────────────────────────────
-// Canvas: 900 × 600 viewBox units  (≈ 100 units = ~8 ft)
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const STALLS: Stall[] = [
-  // ── North vendor row (top)
   { id:'S01', label:'Stall 01', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:60,  y:60,  w:100, h:80,  description:'8×12 ft · North row · ideal for counter-service concepts.' },
   { id:'S02', label:'Stall 02', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',  x:168, y:60,  w:100, h:80,  description:'8×12 ft · North row · reserved — under letter of intent.' },
   { id:'S03', label:'Stall 03', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:276, y:60,  w:100, h:80,  description:'8×12 ft · North row · high-visibility corner approach.' },
   { id:'S04', label:'Stall 04', sqft:120, rent:'~$1,100/mo', status:'available', zone:'vendor',  x:384, y:60,  w:120, h:80,  description:'8×15 ft · Centre-north · expanded prep line available.' },
   { id:'S05', label:'Stall 05', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',  x:512, y:60,  w:100, h:80,  description:'8×12 ft · North row · reserved — under letter of intent.' },
   { id:'S06', label:'Stall 06', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:620, y:60,  w:100, h:80,  description:'8×12 ft · North row · adjacent to Cider Bar pass-through.' },
-  // ── South vendor row (bottom)
   { id:'S07', label:'Stall 07', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:60,  y:450, w:100, h:80,  description:'8×12 ft · South row · near main entry — maximum foot traffic.' },
   { id:'S08', label:'Stall 08', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:168, y:450, w:100, h:80,  description:'8×12 ft · South row · open.' },
   { id:'S09', label:'Stall 09', sqft:120, rent:'~$1,100/mo', status:'available', zone:'vendor',  x:276, y:450, w:120, h:80,  description:'8×15 ft · Centre-south · expanded space with extra storage.' },
   { id:'S10', label:'Stall 10', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',  x:404, y:450, w:100, h:80,  description:'8×12 ft · South row · reserved — under letter of intent.' },
   { id:'S11', label:'Stall 11', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:512, y:450, w:100, h:80,  description:'8×12 ft · South row · open.' },
-  // ── Anchor: Cider Bar (east)
-  { id:'CB',  label:'Cider Bar', sqft:480, rent:'Anchor',     status:'anchor',    zone:'cider',   x:728, y:60,  w:152, h:280, description:'Cider & Spice Bar · 20–25 rotating taps · 480 sq ft · bar-top seating for 14.' },
-  // ── Commissary Kitchen (west)
-  { id:'CK',  label:'Kitchen',   sqft:320, rent:'Shared',     status:'anchor',    zone:'kitchen', x:60,  y:180, w:152, h:200, description:'Shared commissary kitchen · 320 sq ft · licensed · available for vendor prep and private bookings.' },
-  // ── Event stage (east-south)
-  { id:'EV',  label:'Stage',     sqft:200, rent:'Rentable',   status:'available', zone:'seating', x:728, y:360, w:152, h:170, description:'Flexible event stage · 200 sq ft · retractable seating for 40 · available for private hire.' },
-  // ── Central seating atrium
-  { id:'AT',  label:'Atrium',    sqft:1800,rent:'Common',     status:'anchor',    zone:'seating', x:240, y:180, w:460, h:240, description:'Central seating atrium · 1,800 sq ft · communal tables, bar-height counters, and lounge zones.' },
-  // ── Support: entry + restrooms
-  { id:'EN',  label:'Entry',     sqft:120, rent:'—',          status:'anchor',    zone:'support', x:60,  y:390, w:152, h:50,  description:'Main entry vestibule · accessible entry · bike parking adjacent.' },
-  { id:'RR',  label:'Restrooms', sqft:120, rent:'—',          status:'anchor',    zone:'support', x:728, y:540, w:152, h:50,  description:'ADA-compliant restrooms · gender-neutral single-occupancy.' },
+  { id:'CB',  label:'Cider Bar', sqft:480, rent:'Anchor',    status:'anchor',    zone:'cider',   x:728, y:60,  w:152, h:280, description:'Cider & Spice Bar · 20–25 rotating taps · 480 sq ft · bar-top seating for 14.' },
+  { id:'CK',  label:'Kitchen',   sqft:320, rent:'Shared',    status:'anchor',    zone:'kitchen', x:60,  y:180, w:152, h:200, description:'Shared commissary kitchen · 320 sq ft · licensed · available for vendor prep and private bookings.' },
+  { id:'EV',  label:'Stage',     sqft:200, rent:'Rentable',  status:'available', zone:'seating', x:728, y:360, w:152, h:170, description:'Flexible event stage · 200 sq ft · retractable seating for 40 · available for private hire.' },
+  { id:'AT',  label:'Atrium',    sqft:1800,rent:'Common',    status:'anchor',    zone:'seating', x:240, y:180, w:460, h:240, description:'Central seating atrium · 1,800 sq ft · communal tables, bar-height counters, and lounge zones.' },
+  { id:'EN',  label:'Entry',     sqft:120, rent:'—',         status:'anchor',    zone:'support', x:60,  y:390, w:152, h:50,  description:'Main entry vestibule · accessible entry · bike parking adjacent.' },
+  { id:'RR',  label:'Restrooms', sqft:120, rent:'—',         status:'anchor',    zone:'support', x:728, y:540, w:152, h:50,  description:'ADA-compliant restrooms · gender-neutral single-occupancy.' },
 ];
 
 const ZONES: { id: Zone; label: string }[] = [
-  { id: 'all',     label: 'All Zones'  },
-  { id: 'vendor',  label: 'Vendor Stalls' },
-  { id: 'cider',   label: 'Cider Bar'  },
-  { id: 'kitchen', label: 'Kitchen'    },
-  { id: 'seating', label: 'Seating'    },
-  { id: 'support', label: 'Support'    },
+  { id: 'all',     label: 'All Zones'    },
+  { id: 'vendor',  label: 'Vendor Stalls'},
+  { id: 'cider',   label: 'Cider Bar'   },
+  { id: 'kitchen', label: 'Kitchen'     },
+  { id: 'seating', label: 'Seating'     },
+  { id: 'support', label: 'Support'     },
 ];
 
-// ─── Style helpers ────────────────────────────────────────────────────────────
+// ─── Palette — rich copper-gold, deep ebony ───────────────────────────────────
+// Gold:     #D4A84B   Copper:  #C97A3E   Champagne: #E8D3A5
+// Teal:     #4F98A3   Ebony:   #100E0A   Canvas:    #13110D
 
 const ZONE_FILL: Record<Exclude<Zone,'all'>, string> = {
-  vendor:  'rgba(212,168,75,0.07)',
-  cider:   'rgba(196,93,42,0.10)',
-  kitchen: 'rgba(79,152,163,0.10)',
-  seating: 'rgba(255,255,255,0.03)',
-  support: 'rgba(255,255,255,0.02)',
+  vendor:  'rgba(201,122,62,0.06)',
+  cider:   'rgba(196,93,42,0.09)',
+  kitchen: 'rgba(79,152,163,0.08)',
+  seating: 'rgba(232,211,165,0.025)',
+  support: 'rgba(255,255,255,0.015)',
 };
 
 const ZONE_STROKE: Record<Exclude<Zone,'all'>, string> = {
-  vendor:  'rgba(212,168,75,0.35)',
-  cider:   'rgba(196,93,42,0.50)',
-  kitchen: 'rgba(79,152,163,0.45)',
-  seating: 'rgba(255,255,255,0.10)',
-  support: 'rgba(255,255,255,0.08)',
+  vendor:  'rgba(212,168,75,0.28)',
+  cider:   'rgba(201,122,62,0.55)',
+  kitchen: 'rgba(79,152,163,0.40)',
+  seating: 'rgba(232,211,165,0.12)',
+  support: 'rgba(232,211,165,0.07)',
 };
 
 const STATUS_COLOR: Record<Status, string> = {
-  available: '#d4a84b',
-  reserved:  '#c45d2a',
-  anchor:    '#4f98a3',
+  available: '#D4A84B',
+  reserved:  '#C45D2A',
+  anchor:    '#4F98A3',
 };
 
 const STATUS_LABEL: Record<Status, string> = {
@@ -95,45 +86,79 @@ const STATUS_LABEL: Record<Status, string> = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function FloorPlanClient() {
-  const svgRef        = useRef<SVGSVGElement>(null);
-  const containerRef  = useRef<HTMLDivElement>(null);
+  const svgRef           = useRef<SVGSVGElement>(null);
+  const containerRef     = useRef<HTMLDivElement>(null);
+  const glowRef          = useRef<gsap.core.Tween | null>(null);
+  const activeGlowRef    = useRef<SVGRectElement | null>(null);
   const [activeZone, setActiveZone]   = useState<Zone>('all');
   const [activeStall, setActiveStall] = useState<Stall | null>(null);
   const [tooltipPos, setTooltipPos]   = useState({ x: 0, y: 0 });
+  const [hoverStall, setHoverStall]   = useState<string | null>(null);
 
-  // GSAP entrance: stagger stall rects
+  // ── Cinematic entrance: perimeter → grid → zones staggered by type
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.fp-stall', {
-        opacity: 0,
-        scale: 0.92,
-        transformOrigin: 'center center',
-        duration: 0.6,
-        stagger: 0.04,
-        ease: 'power3.out',
-        delay: 0.2,
-      });
+      const tl = gsap.timeline({ delay: 0.15 });
+
+      // 1. Perimeter wall fades in
+      tl.from('#fp-perimeter', { opacity: 0, duration: 1.2, ease: 'power2.out' });
+
+      // 2. Zone section labels ghost in
+      tl.from('.fp-zone-label', {
+        opacity: 0, duration: 1.0, stagger: 0.12, ease: 'power1.out',
+      }, '-=0.6');
+
+      // 3. Anchor spaces first
+      tl.from('.fp-stall-anchor', {
+        opacity: 0, scale: 0.96, transformOrigin: 'center center',
+        duration: 0.8, stagger: 0.1, ease: 'power3.out',
+      }, '-=0.4');
+
+      // 4. Vendor stalls stagger in rows
+      tl.from('.fp-stall-vendor', {
+        opacity: 0, y: 6,
+        duration: 0.55, stagger: 0.045, ease: 'power2.out',
+      }, '-=0.3');
+
+      // 5. Support stalls
+      tl.from('.fp-stall-support', {
+        opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power1.out',
+      }, '-=0.2');
+
+      // 6. Cartouche + instruments
+      tl.from('#fp-instruments', {
+        opacity: 0, duration: 0.8, ease: 'power1.out',
+      }, '-=0.1');
     }, svgRef);
     return () => ctx.revert();
   }, []);
 
-  const isVisible = useCallback((stall: Stall) => {
-    return activeZone === 'all' || stall.zone === activeZone;
-  }, [activeZone]);
-
-  function handleStallClick(stall: Stall, e: React.MouseEvent) {
-    if (activeStall?.id === stall.id) {
-      setActiveStall(null);
-      return;
+  // ── Breathing glow on active stall
+  useEffect(() => {
+    if (glowRef.current) {
+      glowRef.current.kill();
+      glowRef.current = null;
     }
-    // Position tooltip relative to container
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) {
-      setTooltipPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+    if (activeGlowRef.current) {
+      glowRef.current = gsap.to(activeGlowRef.current, {
+        opacity: 0.15,
+        duration: 1.4,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
       });
     }
+    return () => { glowRef.current?.kill(); };
+  }, [activeStall]);
+
+  const isVisible = useCallback((stall: Stall) =>
+    activeZone === 'all' || stall.zone === activeZone,
+  [activeZone]);
+
+  function handleStallClick(stall: Stall, e: React.MouseEvent) {
+    if (activeStall?.id === stall.id) { setActiveStall(null); return; }
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     setActiveStall(stall);
   }
 
@@ -144,50 +169,73 @@ export default function FloorPlanClient() {
     }
   }
 
-  const vendorCount     = STALLS.filter(s => s.zone === 'vendor').length;
-  const availableCount  = STALLS.filter(s => s.zone === 'vendor' && s.status === 'available').length;
+  const vendorCount    = STALLS.filter(s => s.zone === 'vendor').length;
+  const availableCount = STALLS.filter(s => s.zone === 'vendor' && s.status === 'available').length;
 
   return (
-    <main className="min-h-screen bg-bg text-cream">
+    <main className="min-h-screen text-cream" style={{ background: '#100E0A' }}>
 
-      {/* ── Page header ──────────────────────────────────────────────────── */}
-      <div className="px-6 pb-10 pt-28">
-        <div className="mx-auto max-w-5xl">
+      {/* ── Page header ─────────────────────────────────────────────────── */}
+      <div className="relative px-6 pb-12 pt-28 overflow-hidden">
+        {/* Radial gold spotlight behind header */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212,168,75,0.07) 0%, transparent 70%)',
+          }}
+          aria-hidden="true"
+        />
+        <div className="mx-auto max-w-5xl relative">
           <Link
             href="/"
-            className="mb-10 inline-flex items-center gap-2 font-label text-[9px]
-                       tracking-[0.2em] uppercase text-cream/40 hover:text-gold
-                       transition-colors duration-300"
+            className="mb-12 inline-flex items-center gap-2.5 font-label text-[9px]
+                       tracking-[0.25em] uppercase text-cream/35 hover:text-gold
+                       transition-colors duration-500"
           >
-            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Back to the Hub
           </Link>
 
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="block h-px w-8 bg-gold shrink-0" />
-                <span className="font-label text-[10px] tracking-[0.3em] uppercase text-gold">
-                  Interactive Floor Plan
+              {/* Eyebrow */}
+              <div className="flex items-center gap-4 mb-5">
+                <span className="block h-px w-12 shrink-0" style={{ background: 'linear-gradient(90deg, #C97A3E, #D4A84B)' }} />
+                <span className="font-label text-[9px] tracking-[0.35em] uppercase" style={{ color: '#C97A3E' }}>
+                  Las Cruces Culinary Hub · Plan A-1
                 </span>
               </div>
-              <h1 className="font-corp-display text-5xl sm:text-6xl font-light leading-[0.92] text-cream">
+              <h1
+                className="font-corp-display text-5xl sm:text-6xl font-light leading-[0.92]"
+                style={{ color: '#E8D3A5' }}
+              >
                 8,000 Sq Ft
               </h1>
-              <p className="mt-3 font-sans text-sm text-cream/45 max-w-md">
-                {vendorCount} vendor stalls · Craft Cider Bar · Commissary Kitchen · Event Stage
+              <p className="mt-4 font-sans text-sm leading-relaxed max-w-md" style={{ color: 'rgba(232,211,165,0.40)' }}>
+                {vendorCount} vendor stalls &nbsp;·&nbsp; Craft Cider Bar &nbsp;·&nbsp;
+                Commissary Kitchen &nbsp;·&nbsp; Event Stage
+              </p>
+              <p className="mt-2 font-label text-[8px] tracking-[0.2em] uppercase" style={{ color: 'rgba(232,211,165,0.20)' }}>
+                Conceptual plan — subject to refinement with anchor tenants
               </p>
             </div>
 
-            {/* Availability pill */}
-            <div className="border border-gold/20 bg-gold/[0.05] px-6 py-4 text-center">
-              <div className="font-corp-display text-3xl font-light text-gold">
+            {/* Availability tile */}
+            <div
+              className="px-8 py-5 text-center"
+              style={{
+                border: '1px solid rgba(212,168,75,0.18)',
+                background: 'linear-gradient(135deg, rgba(212,168,75,0.06) 0%, rgba(201,122,62,0.04) 100%)',
+                boxShadow: '0 0 40px rgba(212,168,75,0.04) inset',
+              }}
+            >
+              <div className="font-corp-display text-4xl font-light" style={{ color: '#D4A84B' }}>
                 {availableCount}
-                <span className="font-sans text-base font-normal text-cream/40"> / {vendorCount}</span>
+                <span className="font-sans text-lg font-normal" style={{ color: 'rgba(232,211,165,0.35)' }}> / {vendorCount}</span>
               </div>
-              <div className="font-label text-[9px] tracking-[0.25em] uppercase text-cream/40 mt-1">
+              <div className="font-label text-[8px] tracking-[0.3em] uppercase mt-1.5" style={{ color: 'rgba(232,211,165,0.35)' }}>
                 Vendor Spots Open
               </div>
             </div>
@@ -196,24 +244,31 @@ export default function FloorPlanClient() {
       </div>
 
       {/* ── Zone filter bar ───────────────────────────────────────────────── */}
-      <div className="border-y border-cream/[0.07] px-6 py-4">
+      <div
+        className="px-6 py-5"
+        style={{ borderTop: '1px solid rgba(232,211,165,0.07)', borderBottom: '1px solid rgba(232,211,165,0.07)' }}
+      >
         <div className="mx-auto max-w-5xl">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-label text-[9px] tracking-[0.2em] uppercase text-cream/30 mr-2">
-              Zone
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="font-label text-[8px] tracking-[0.25em] uppercase mr-2" style={{ color: 'rgba(232,211,165,0.25)' }}>
+              Filter Zone
             </span>
             {ZONES.map(({ id, label }) => (
               <button
                 key={id}
                 onClick={() => { setActiveZone(id); setActiveStall(null); }}
                 aria-pressed={activeZone === id}
-                className={`border px-4 py-2 font-label text-[9px] tracking-[0.18em] uppercase
-                  transition-all duration-200
-                  ${
-                    activeZone === id
-                      ? 'border-gold/50 bg-gold/[0.09] text-gold'
-                      : 'border-cream/[0.10] text-cream/35 hover:border-cream/25 hover:text-cream/55'
-                  }`}
+                className="px-4 py-2 font-label text-[8px] tracking-[0.2em] uppercase transition-all duration-300"
+                style={{
+                  border: activeZone === id
+                    ? '1px solid rgba(212,168,75,0.45)'
+                    : '1px solid rgba(232,211,165,0.09)',
+                  background: activeZone === id
+                    ? 'linear-gradient(135deg, rgba(212,168,75,0.10), rgba(201,122,62,0.07))'
+                    : 'transparent',
+                  color: activeZone === id ? '#D4A84B' : 'rgba(232,211,165,0.30)',
+                  boxShadow: activeZone === id ? '0 0 16px rgba(212,168,75,0.08) inset' : 'none',
+                }}
               >
                 {label}
               </button>
@@ -227,15 +282,28 @@ export default function FloorPlanClient() {
         <div className="mx-auto max-w-5xl">
           <div
             ref={containerRef}
-            className="relative border border-cream/[0.08] bg-[#0e0c09] overflow-hidden"
-            style={{ boxShadow: '0 0 80px rgba(212,168,75,0.04) inset, 0 24px 64px rgba(0,0,0,0.5)' }}
+            className="relative overflow-hidden"
+            style={{
+              background: 'radial-gradient(ellipse 70% 60% at 50% 45%, #1A1510 0%, #100E0A 65%, #0C0A07 100%)',
+              border: '1px solid rgba(212,168,75,0.12)',
+              boxShadow: '0 0 120px rgba(212,168,75,0.05) inset, 0 0 1px rgba(232,211,165,0.08) inset, 0 32px 80px rgba(0,0,0,0.7)',
+            }}
           >
-            {/* Subtle grain overlay */}
+            {/* Fine grain texture */}
             <div
-              className="pointer-events-none absolute inset-0 z-10 opacity-[0.025]"
+              className="pointer-events-none absolute inset-0 z-10"
               style={{
-                backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
-                backgroundSize: '200px 200px',
+                opacity: 0.035,
+                backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
+                backgroundSize: '180px 180px',
+              }}
+              aria-hidden="true"
+            />
+            {/* Vignette edges */}
+            <div
+              className="pointer-events-none absolute inset-0 z-10"
+              style={{
+                background: 'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, rgba(10,8,5,0.6) 100%)',
               }}
               aria-hidden="true"
             />
@@ -247,67 +315,157 @@ export default function FloorPlanClient() {
               role="img"
               aria-label="Interactive floor plan of the Las Cruces Culinary Innovation Hub"
             >
-              {/* ── Background grid ── */}
               <defs>
-                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" />
+                {/* Fine grid */}
+                <pattern id="grid-fine" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(212,168,75,0.03)" strokeWidth="0.4" />
                 </pattern>
-                {/* Gold glow filter for active stall */}
-                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="4" result="blur" />
+                {/* Major grid */}
+                <pattern id="grid-major" width="100" height="100" patternUnits="userSpaceOnUse">
+                  <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(212,168,75,0.055)" strokeWidth="0.5" />
+                </pattern>
+                {/* Spotlight centre gradient */}
+                <radialGradient id="canvas-light" cx="50%" cy="50%" r="55%">
+                  <stop offset="0%"   stopColor="rgba(212,168,75,0.04)" />
+                  <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+                </radialGradient>
+                {/* Active glow filter */}
+                <filter id="glow-gold" x="-25%" y="-25%" width="150%" height="150%">
+                  <feGaussianBlur stdDeviation="5" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
-                {/* Ember pulse filter */}
-                <filter id="ember-glow" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="6" result="blur" />
+                {/* Soft outer aura */}
+                <filter id="aura" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="10" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
+                {/* Inner bevel shadow */}
+                <filter id="bevel" x="-5%" y="-5%" width="110%" height="110%">
+                  <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="rgba(0,0,0,0.6)" floodOpacity="1" />
+                </filter>
+                {/* Copper gradient fill for active stalls */}
+                <linearGradient id="copper-fill" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stopColor="rgba(212,168,75,0.14)" />
+                  <stop offset="100%" stopColor="rgba(201,122,62,0.09)" />
+                </linearGradient>
               </defs>
 
-              <rect width="900" height="620" fill="url(#grid)" />
+              {/* ── Canvas base layers ── */}
+              <rect width="900" height="620" fill="url(#grid-fine)" />
+              <rect width="900" height="620" fill="url(#grid-major)" />
+              <rect width="900" height="620" fill="url(#canvas-light)" />
 
-              {/* ── Outer perimeter wall ── */}
-              <rect x="40" y="40" width="820" height="540" fill="none"
-                stroke="rgba(212,168,75,0.25)" strokeWidth="1.5" />
+              {/* ── Double perimeter — outer thin, inner thicker ── */}
+              <g id="fp-perimeter">
+                <rect x="30" y="30" width="840" height="560" fill="none"
+                  stroke="rgba(232,211,165,0.06)" strokeWidth="1" />
+                <rect x="40" y="40" width="820" height="540" fill="none"
+                  stroke="rgba(212,168,75,0.22)" strokeWidth="1.5" />
+                {/* Corner ornament marks */}
+                {[[40,40],[860,40],[40,580],[860,580]].map(([cx,cy], i) => (
+                  <g key={i} transform={`translate(${cx},${cy})`}>
+                    <line x1={i % 2 === 0 ? 0 : -10} y1="0" x2={i % 2 === 0 ? 10 : 0} y2="0"
+                      stroke="rgba(201,122,62,0.50)" strokeWidth="1.5" />
+                    <line x1="0" y1={i < 2 ? 0 : -10} x2="0" y2={i < 2 ? 10 : 0}
+                      stroke="rgba(201,122,62,0.50)" strokeWidth="1.5" />
+                  </g>
+                ))}
+                {/* Corridor dash lines */}
+                <line x1="40" y1="150" x2="860" y2="150"
+                  stroke="rgba(212,168,75,0.06)" strokeWidth="0.5" strokeDasharray="3 7" />
+                <line x1="40" y1="440" x2="860" y2="440"
+                  stroke="rgba(212,168,75,0.06)" strokeWidth="0.5" strokeDasharray="3 7" />
+                <line x1="220" y1="40" x2="220" y2="580"
+                  stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" strokeDasharray="3 9" />
+                <line x1="720" y1="40" x2="720" y2="580"
+                  stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" strokeDasharray="3 9" />
+              </g>
 
-              {/* ── North/South corridor lines ── */}
-              <line x1="40"  y1="150" x2="860" y2="150" stroke="rgba(212,168,75,0.08)" strokeWidth="0.5" strokeDasharray="4 6" />
-              <line x1="40"  y1="440" x2="860" y2="440" stroke="rgba(212,168,75,0.08)" strokeWidth="0.5" strokeDasharray="4 6" />
+              {/* ── Ghost zone section labels (architectural watermark) ── */}
+              <g className="fp-zone-label" aria-hidden="true">
+                <text x="340" y="40" textAnchor="middle" fill="rgba(212,168,75,0.06)"
+                  fontSize="22" fontFamily="var(--font-cormorant, Georgia, serif)"
+                  fontWeight="300" letterSpacing="0.18em">
+                  NORTH VENDOR ROW
+                </text>
+                <text x="340" y="612" textAnchor="middle" fill="rgba(212,168,75,0.06)"
+                  fontSize="22" fontFamily="var(--font-cormorant, Georgia, serif)"
+                  fontWeight="300" letterSpacing="0.18em">
+                  SOUTH VENDOR ROW
+                </text>
+                <text x="470" y="308" textAnchor="middle" fill="rgba(232,211,165,0.03)"
+                  fontSize="42" fontFamily="var(--font-cormorant, Georgia, serif)"
+                  fontWeight="200" letterSpacing="0.22em">
+                  ATRIUM
+                </text>
+              </g>
 
               {/* ── Stalls ── */}
               {STALLS.map((stall) => {
                 const visible  = isVisible(stall);
                 const isActive = activeStall?.id === stall.id;
-                const cx       = stall.x + stall.w / 2;
-                const cy       = stall.y + stall.h / 2;
+                const isHover  = hoverStall === stall.id;
+                const cx = stall.x + stall.w / 2;
+                const cy = stall.y + stall.h / 2;
+                const zoneClass = `fp-stall-${stall.zone}`;
 
                 return (
                   <g
                     key={stall.id}
-                    className="fp-stall"
+                    className={`fp-stall ${zoneClass}`}
                     role="button"
                     tabIndex={visible ? 0 : -1}
                     aria-label={`${stall.label} — ${stall.sqft} sq ft, ${STATUS_LABEL[stall.status]}`}
                     aria-pressed={isActive}
                     onClick={(e) => visible && handleStallClick(stall, e)}
                     onKeyDown={(e) => visible && handleKeyDown(stall, e)}
+                    onMouseEnter={() => visible && setHoverStall(stall.id)}
+                    onMouseLeave={() => setHoverStall(null)}
                     style={{
-                      cursor:  visible ? 'pointer' : 'default',
-                      opacity: visible ? 1 : 0.18,
-                      transition: 'opacity 0.3s ease',
+                      cursor: visible ? 'pointer' : 'default',
+                      opacity: visible ? 1 : 0.12,
+                      transition: 'opacity 0.4s ease',
                     }}
                   >
-                    {/* Active glow ring */}
+                    {/* Breathing aura (active only — GSAP targets this ref via activeGlowRef) */}
                     {isActive && (
                       <rect
-                        x={stall.x - 4} y={stall.y - 4}
-                        width={stall.w + 8} height={stall.h + 8}
+                        ref={activeGlowRef}
+                        x={stall.x - 8} y={stall.y - 8}
+                        width={stall.w + 16} height={stall.h + 16}
+                        fill={STATUS_COLOR[stall.status]}
+                        opacity={0.25}
+                        filter="url(#aura)"
+                        rx="2"
+                        style={{ pointerEvents: 'none' }}
+                      />
+                    )}
+
+                    {/* Outer glow ring (active) */}
+                    {isActive && (
+                      <rect
+                        x={stall.x - 3} y={stall.y - 3}
+                        width={stall.w + 6} height={stall.h + 6}
                         fill="none"
                         stroke={STATUS_COLOR[stall.status]}
-                        strokeWidth="1"
-                        opacity="0.5"
-                        filter="url(#glow)"
+                        strokeWidth="0.8"
+                        opacity={0.6}
+                        filter="url(#glow-gold)"
                         rx="1"
+                        style={{ pointerEvents: 'none' }}
+                      />
+                    )}
+
+                    {/* Hover highlight ring */}
+                    {isHover && !isActive && (
+                      <rect
+                        x={stall.x - 2} y={stall.y - 2}
+                        width={stall.w + 4} height={stall.h + 4}
+                        fill="none"
+                        stroke="rgba(232,211,165,0.25)"
+                        strokeWidth="0.75"
+                        rx="1"
+                        style={{ pointerEvents: 'none' }}
                       />
                     )}
 
@@ -315,129 +473,217 @@ export default function FloorPlanClient() {
                     <rect
                       x={stall.x} y={stall.y}
                       width={stall.w} height={stall.h}
-                      fill={isActive ? `${ZONE_FILL[stall.zone].replace(')', ', 0.18)')}` : ZONE_FILL[stall.zone]}
+                      fill={isActive ? 'url(#copper-fill)' : ZONE_FILL[stall.zone]}
                       stroke={isActive ? STATUS_COLOR[stall.status] : ZONE_STROKE[stall.zone]}
-                      strokeWidth={isActive ? 1.5 : 0.75}
+                      strokeWidth={isActive ? 1.2 : 0.65}
                       rx="1"
-                      style={{ transition: 'fill 0.2s, stroke 0.2s' }}
+                      filter={isActive ? 'url(#bevel)' : undefined}
+                      style={{ transition: 'fill 0.25s, stroke 0.25s' }}
                     />
 
-                    {/* Status dot */}
+                    {/* Inner micro-border (inlaid panel effect) */}
+                    <rect
+                      x={stall.x + 3} y={stall.y + 3}
+                      width={stall.w - 6} height={stall.h - 6}
+                      fill="none"
+                      stroke={isActive
+                        ? `${STATUS_COLOR[stall.status]}33`
+                        : 'rgba(232,211,165,0.04)'}
+                      strokeWidth="0.5"
+                      rx="0.5"
+                      style={{ pointerEvents: 'none', transition: 'stroke 0.25s' }}
+                    />
+
+                    {/* Status dot — upper right */}
                     <circle
                       cx={stall.x + stall.w - 10}
                       cy={stall.y + 10}
-                      r="3.5"
+                      r="3"
                       fill={STATUS_COLOR[stall.status]}
-                      opacity="0.85"
+                      opacity={isActive ? 1 : 0.75}
                     />
 
-                    {/* Stall ID label */}
+                    {/* Stall name label */}
                     <text
                       x={cx}
-                      y={stall.h > 60 ? cy - 10 : cy}
+                      y={stall.h > 100 ? cy - 12 : stall.h > 60 ? cy - 8 : cy}
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      fill={isActive ? STATUS_COLOR[stall.status] : 'rgba(255,255,255,0.55)'}
-                      fontSize={stall.zone === 'seating' ? '11' : stall.w > 120 ? '11' : '9'}
+                      fill={isActive
+                        ? STATUS_COLOR[stall.status]
+                        : isHover ? '#E8D3A5' : 'rgba(232,211,165,0.50)'}
+                      fontSize={stall.zone === 'seating' ? '12' : stall.w > 140 ? '11' : '9'}
                       fontFamily="var(--font-cormorant, Georgia, serif)"
                       fontWeight="300"
-                      letterSpacing="0.08em"
+                      letterSpacing="0.10em"
                       style={{ transition: 'fill 0.2s', pointerEvents: 'none', userSelect: 'none' }}
                     >
                       {stall.label.toUpperCase()}
                     </text>
 
-                    {/* Sq ft sub-label for larger cells */}
+                    {/* Sq ft sub-label */}
                     {stall.h > 80 && (
                       <text
                         x={cx}
-                        y={cy + 14}
+                        y={stall.h > 100 ? cy + 8 : cy + 14}
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        fill="rgba(212,168,75,0.45)"
-                        fontSize="8"
+                        fill={isActive ? 'rgba(201,122,62,0.75)' : 'rgba(201,122,62,0.35)'}
+                        fontSize="7.5"
                         fontFamily="var(--font-josefin, sans-serif)"
-                        letterSpacing="0.12em"
+                        letterSpacing="0.14em"
+                        style={{ transition: 'fill 0.2s', pointerEvents: 'none', userSelect: 'none' }}
+                      >
+                        {stall.sqft.toLocaleString()} SQ FT
+                      </text>
+                    )}
+
+                    {/* Zone identity chip for anchors */}
+                    {(stall.zone === 'cider' || stall.zone === 'kitchen') && stall.h > 180 && (
+                      <text
+                        x={cx}
+                        y={cy + 26}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fill="rgba(79,152,163,0.45)"
+                        fontSize="6.5"
+                        fontFamily="var(--font-josefin, sans-serif)"
+                        letterSpacing="0.18em"
                         style={{ pointerEvents: 'none', userSelect: 'none' }}
                       >
-                        {stall.sqft} SQ FT
+                        ANCHOR TENANT
                       </text>
                     )}
                   </g>
                 );
               })}
 
-              {/* ── Compass rose ── */}
-              <g transform="translate(850,570)" opacity="0.3" aria-hidden="true">
-                <line x1="0" y1="-12" x2="0" y2="12" stroke="#d4a84b" strokeWidth="0.8" />
-                <line x1="-12" y1="0" x2="12" y2="0" stroke="#d4a84b" strokeWidth="0.8" />
-                <text x="0" y="-16" textAnchor="middle" fill="#d4a84b" fontSize="7" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">N</text>
-              </g>
+              {/* ── Instruments: compass + scale + cartouche ── */}
+              <g id="fp-instruments" opacity="1">
 
-              {/* ── Scale bar ── */}
-              <g transform="translate(60,598)" opacity="0.35" aria-hidden="true">
-                <line x1="0" y1="0" x2="80" y2="0" stroke="#d4a84b" strokeWidth="0.8" />
-                <line x1="0" y1="-4" x2="0" y2="4" stroke="#d4a84b" strokeWidth="0.8" />
-                <line x1="80" y1="-4" x2="80" y2="4" stroke="#d4a84b" strokeWidth="0.8" />
-                <text x="40" y="-7" textAnchor="middle" fill="#d4a84b" fontSize="7" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">~60 FT</text>
+                {/* Compass rose — refined */}
+                <g transform="translate(845,562)" opacity="0.45">
+                  {/* Outer ring */}
+                  <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(212,168,75,0.25)" strokeWidth="0.5" />
+                  {/* Cardinal arms */}
+                  <line x1="0" y1="-14" x2="0" y2="14"  stroke="#D4A84B" strokeWidth="0.75" />
+                  <line x1="-14" y1="0" x2="14" y2="0"  stroke="#D4A84B" strokeWidth="0.75" />
+                  {/* Diagonal ticks */}
+                  {[45,135,225,315].map(deg => (
+                    <line
+                      key={deg}
+                      x1={Math.cos(deg*Math.PI/180)*6}
+                      y1={Math.sin(deg*Math.PI/180)*6}
+                      x2={Math.cos(deg*Math.PI/180)*10}
+                      y2={Math.sin(deg*Math.PI/180)*10}
+                      stroke="rgba(212,168,75,0.30)" strokeWidth="0.5"
+                    />
+                  ))}
+                  {/* North diamond */}
+                  <polygon points="0,-14 3,-6 0,-2 -3,-6" fill="#D4A84B" opacity="0.9" />
+                  <polygon points="0,14 3,6 0,2 -3,6"   fill="rgba(212,168,75,0.35)" />
+                  <text x="0" y="-18" textAnchor="middle" fill="#D4A84B" fontSize="6"
+                    fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">N</text>
+                </g>
+
+                {/* Scale bar */}
+                <g transform="translate(60,604)" opacity="0.38">
+                  <line x1="0" y1="0" x2="100" y2="0" stroke="#C97A3E" strokeWidth="0.75" />
+                  {[0,25,50,75,100].map(x => (
+                    <line key={x} x1={x} y1="-3.5" x2={x} y2="3.5" stroke="#C97A3E" strokeWidth="0.75" />
+                  ))}
+                  <text x="50" y="-7" textAnchor="middle" fill="#C97A3E" fontSize="6.5"
+                    fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.12em">~75 FT</text>
+                </g>
+
+                {/* Cartouche / title block — bottom right */}
+                <g transform="translate(640,594)" opacity="0.30">
+                  <rect x="0" y="-14" width="180" height="20" fill="none"
+                    stroke="rgba(212,168,75,0.20)" strokeWidth="0.5" />
+                  <text x="90" y="0" textAnchor="middle" fill="#E8D3A5" fontSize="6.5"
+                    fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.18em">
+                    LC CULINARY HUB · PLAN A-1 · 2027
+                  </text>
+                </g>
               </g>
             </svg>
 
-            {/* ── Tooltip panel ─────────────────────────────────────────── */}
+            {/* ── Stall tooltip / detail panel ────────────────────────── */}
             {activeStall && (
               <div
-                className="absolute z-20 w-72 border border-gold/30 bg-[#0e0c09]/95
-                           backdrop-blur-sm shadow-2xl pointer-events-auto"
+                className="absolute z-20 w-[288px] pointer-events-auto"
                 style={{
-                  left: Math.min(tooltipPos.x + 12, (containerRef.current?.offsetWidth ?? 600) - 300),
-                  top:  Math.max(tooltipPos.y - 160, 8),
+                  left: Math.min(tooltipPos.x + 14, (containerRef.current?.offsetWidth ?? 600) - 304),
+                  top:  Math.max(tooltipPos.y - 170, 8),
+                  border: `1px solid ${STATUS_COLOR[activeStall.status]}44`,
+                  background: 'linear-gradient(160deg, rgba(26,21,16,0.97) 0%, rgba(16,14,10,0.99) 100%)',
+                  boxShadow: `0 0 40px ${STATUS_COLOR[activeStall.status]}18, 0 24px 48px rgba(0,0,0,0.7)`,
+                  backdropFilter: 'blur(16px)',
                 }}
                 role="dialog"
                 aria-label={`Details for ${activeStall.label}`}
               >
-                {/* Colour band */}
+                {/* Top status band */}
                 <div
-                  className="h-0.5 w-full"
-                  style={{ background: STATUS_COLOR[activeStall.status] }}
+                  className="h-[2px] w-full"
+                  style={{ background: `linear-gradient(90deg, ${STATUS_COLOR[activeStall.status]}, transparent)` }}
                 />
 
                 <div className="p-5">
-                  {/* Header */}
+                  {/* Header row */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div>
-                      <div className="font-corp-display text-xl font-light text-cream leading-tight">
+                      <div
+                        className="font-corp-display text-xl font-light leading-tight"
+                        style={{ color: '#E8D3A5' }}
+                      >
                         {activeStall.label}
                       </div>
-                      <div className="font-label text-[8px] tracking-[0.25em] uppercase mt-1"
-                        style={{ color: STATUS_COLOR[activeStall.status] }}>
+                      <div
+                        className="font-label text-[7.5px] tracking-[0.28em] uppercase mt-1.5"
+                        style={{ color: STATUS_COLOR[activeStall.status] }}
+                      >
                         {STATUS_LABEL[activeStall.status]}
                       </div>
                     </div>
                     <button
                       onClick={() => setActiveStall(null)}
-                      className="text-cream/30 hover:text-cream/70 transition-colors mt-0.5"
+                      className="transition-colors duration-300 mt-0.5"
+                      style={{ color: 'rgba(232,211,165,0.25)' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = 'rgba(232,211,165,0.70)')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'rgba(232,211,165,0.25)')}
                       aria-label="Close stall details"
                     >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
                   </div>
 
-                  {/* Stats grid */}
-                  <div className="grid grid-cols-2 gap-px bg-cream/[0.06] mb-4">
-                    <div className="bg-[#0e0c09] px-3 py-3">
-                      <div className="font-corp-display text-lg font-light text-gold">{activeStall.sqft}</div>
-                      <div className="font-label text-[8px] tracking-[0.2em] uppercase text-cream/35">Sq Ft</div>
+                  {/* Stats tiles */}
+                  <div
+                    className="grid grid-cols-2 mb-4"
+                    style={{ gap: '1px', background: 'rgba(232,211,165,0.06)' }}
+                  >
+                    <div style={{ background: 'rgba(26,21,16,1)', padding: '10px 12px' }}>
+                      <div className="font-corp-display text-xl font-light" style={{ color: '#D4A84B' }}>
+                        {activeStall.sqft.toLocaleString()}
+                      </div>
+                      <div className="font-label text-[7px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.30)' }}>Sq Ft</div>
                     </div>
-                    <div className="bg-[#0e0c09] px-3 py-3">
-                      <div className="font-corp-display text-lg font-light text-gold">{activeStall.rent}</div>
-                      <div className="font-label text-[8px] tracking-[0.2em] uppercase text-cream/35">Est. Rent</div>
+                    <div style={{ background: 'rgba(26,21,16,1)', padding: '10px 12px' }}>
+                      <div className="font-corp-display text-xl font-light" style={{ color: '#D4A84B' }}>
+                        {activeStall.rent}
+                      </div>
+                      <div className="font-label text-[7px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.30)' }}>Est. Rent</div>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="font-sans text-xs leading-relaxed text-cream/50 mb-5">
+                  <p
+                    className="font-sans text-xs leading-relaxed mb-5"
+                    style={{ color: 'rgba(232,211,165,0.40)' }}
+                  >
                     {activeStall.description}
                   </p>
 
@@ -446,23 +692,39 @@ export default function FloorPlanClient() {
                     <Link
                       href="/vendors"
                       className="flex w-full items-center justify-center gap-2
-                                 bg-ember hover:bg-ember-hover px-4 py-3
-                                 font-label text-[9px] tracking-[0.22em] uppercase
-                                 text-white transition-colors"
+                                 font-label text-[8.5px] tracking-[0.24em] uppercase
+                                 transition-all duration-300"
+                      style={{
+                        background: 'linear-gradient(135deg, #C97A3E, #D4A84B)',
+                        padding: '12px 16px',
+                        color: '#100E0A',
+                        fontWeight: 500,
+                      }}
                     >
                       Apply for This Stall →
                     </Link>
                   )}
                   {activeStall.status === 'reserved' && (
-                    <div className="border border-ember/25 bg-ember/[0.06] px-4 py-3 text-center
-                                    font-label text-[9px] tracking-[0.2em] uppercase text-ember/70">
+                    <div
+                      className="px-4 py-3 text-center font-label text-[8px] tracking-[0.22em] uppercase"
+                      style={{
+                        border: '1px solid rgba(196,93,42,0.25)',
+                        background: 'rgba(196,93,42,0.06)',
+                        color: 'rgba(196,93,42,0.65)',
+                      }}
+                    >
                       Under Letter of Intent
                     </div>
                   )}
                   {activeStall.status === 'anchor' && (
-                    <div className="border border-teal/25 bg-teal/[0.06] px-4 py-3 text-center
-                                    font-label text-[9px] tracking-[0.2em] uppercase text-cream/40"
-                      style={{ borderColor: 'rgba(79,152,163,0.25)', background: 'rgba(79,152,163,0.05)' }}>
+                    <div
+                      className="px-4 py-3 text-center font-label text-[8px] tracking-[0.22em] uppercase"
+                      style={{
+                        border: '1px solid rgba(79,152,163,0.20)',
+                        background: 'rgba(79,152,163,0.05)',
+                        color: 'rgba(79,152,163,0.55)',
+                      }}
+                    >
                       Hub Anchor Space
                     </div>
                   )}
@@ -471,81 +733,129 @@ export default function FloorPlanClient() {
             )}
           </div>
 
-          {/* ── Legend ───────────────────────────────────────────────── */}
-          <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 px-1">
+          {/* ── Legend ─────────────────────────────────────────────────── */}
+          <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 px-1">
             {(Object.entries(STATUS_COLOR) as [Status, string][]).map(([status, color]) => (
-              <div key={status} className="flex items-center gap-2">
-                <span className="block h-2.5 w-2.5 rounded-full" style={{ background: color }} />
-                <span className="font-label text-[9px] tracking-[0.18em] uppercase text-cream/40">
+              <div key={status} className="flex items-center gap-2.5">
+                <span
+                  className="block h-2 w-2 rounded-full"
+                  style={{ background: color, boxShadow: `0 0 6px ${color}55` }}
+                />
+                <span
+                  className="font-label text-[8px] tracking-[0.20em] uppercase"
+                  style={{ color: 'rgba(232,211,165,0.35)' }}
+                >
                   {STATUS_LABEL[status]}
                 </span>
               </div>
             ))}
-            <div className="ml-auto font-label text-[9px] tracking-[0.18em] uppercase text-cream/25">
+            <div
+              className="ml-auto font-label text-[8px] tracking-[0.18em] uppercase"
+              style={{ color: 'rgba(232,211,165,0.18)' }}
+            >
               Click any stall for details
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Stall list (mobile fallback + detail reference) ───────────── */}
-      <div className="px-6 pb-24">
+      {/* ── Stall directory ───────────────────────────────────────────── */}
+      <div className="px-6 pb-28">
         <div className="mx-auto max-w-5xl">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="block h-px w-8 bg-gold/40 shrink-0" />
-            <span className="font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">
+          {/* Section rule */}
+          <div className="flex items-center gap-5 mb-8">
+            <span
+              className="block h-px flex-1"
+              style={{ background: 'linear-gradient(90deg, rgba(201,122,62,0.30), transparent)' }}
+            />
+            <span
+              className="font-label text-[8.5px] tracking-[0.35em] uppercase shrink-0"
+              style={{ color: 'rgba(201,122,62,0.55)' }}
+            >
               Stall Directory
             </span>
+            <span
+              className="block h-px flex-1"
+              style={{ background: 'linear-gradient(270deg, rgba(201,122,62,0.30), transparent)' }}
+            />
           </div>
 
-          <div className="grid grid-cols-1 gap-px bg-cream/[0.06] sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            style={{ gap: '1px', background: 'rgba(232,211,165,0.05)' }}
+          >
             {STALLS.filter(s => s.zone === 'vendor').map((stall) => (
               <button
                 key={stall.id}
-                onClick={(e) => { setActiveZone('all'); setActiveStall(stall); setTooltipPos({ x: 300, y: 200 }); }}
-                className={`group text-left bg-bg p-5 hover:bg-white/[0.04] transition-colors duration-300
-                  ${ activeStall?.id === stall.id ? 'outline outline-1 outline-gold/30' : '' }`}
+                onClick={() => { setActiveZone('all'); setActiveStall(stall); setTooltipPos({ x: 300, y: 200 }); }}
+                className="group text-left transition-all duration-400"
+                style={{
+                  background: activeStall?.id === stall.id
+                    ? 'linear-gradient(135deg, rgba(212,168,75,0.08), rgba(201,122,62,0.05))'
+                    : 'rgba(16,14,10,1)',
+                  padding: '20px',
+                  outline: activeStall?.id === stall.id ? `1px solid rgba(212,168,75,0.25)` : 'none',
+                }}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="font-corp-display text-base font-light text-cream group-hover:text-gold
-                                   transition-colors duration-300">
+                  <span
+                    className="font-corp-display text-base font-light transition-colors duration-300"
+                    style={{ color: activeStall?.id === stall.id ? '#D4A84B' : '#E8D3A5' }}
+                  >
                     {stall.label}
                   </span>
                   <span
-                    className="font-label text-[8px] tracking-[0.15em] uppercase px-2 py-0.5 border"
+                    className="font-label text-[7.5px] tracking-[0.16em] uppercase px-2 py-0.5"
                     style={{
-                      color:        STATUS_COLOR[stall.status],
-                      borderColor:  STATUS_COLOR[stall.status] + '55',
-                      background:   STATUS_COLOR[stall.status] + '11',
+                      color:       STATUS_COLOR[stall.status],
+                      border:      `1px solid ${STATUS_COLOR[stall.status]}44`,
+                      background:  `${STATUS_COLOR[stall.status]}11`,
                     }}
                   >
                     {STATUS_LABEL[stall.status]}
                   </span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="font-sans text-xs text-cream/40">{stall.sqft} sq ft</span>
-                  <span className="font-sans text-xs text-cream/40">{stall.rent}</span>
+                  <span className="font-sans text-xs" style={{ color: 'rgba(232,211,165,0.32)' }}>{stall.sqft} sq ft</span>
+                  <span className="font-sans text-xs" style={{ color: 'rgba(232,211,165,0.32)' }}>{stall.rent}</span>
                 </div>
               </button>
             ))}
           </div>
 
           {/* CTA strip */}
-          <div className="mt-10 border border-cream/[0.08] bg-white/[0.02] p-8 flex flex-col
-                          items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
+          <div
+            className="mt-10 p-8 flex flex-col items-center gap-6 text-center
+                       sm:flex-row sm:justify-between sm:text-left"
+            style={{
+              borderTop: '1px solid rgba(212,168,75,0.20)',
+              borderBottom: '1px solid rgba(212,168,75,0.08)',
+              background: 'linear-gradient(135deg, rgba(212,168,75,0.05) 0%, rgba(201,122,62,0.03) 100%)',
+              boxShadow: '0 -1px 0 rgba(212,168,75,0.06)',
+            }}
+          >
             <div>
-              <div className="font-corp-display text-xl font-light text-cream mb-1">
+              <div
+                className="font-corp-display text-2xl font-light mb-1.5"
+                style={{ color: '#E8D3A5' }}
+              >
                 Ready to claim your stall?
               </div>
-              <p className="font-sans text-sm text-cream/45">
+              <p className="font-sans text-sm" style={{ color: 'rgba(232,211,165,0.38)' }}>
                 {availableCount} vendor spots remain in the founding cohort.
               </p>
             </div>
             <Link
               href="/vendors"
-              className="shrink-0 bg-ember hover:bg-ember-hover px-8 py-4 font-label
-                         text-[10px] tracking-[0.25em] uppercase text-white
-                         transition-colors whitespace-nowrap"
+              className="shrink-0 font-label text-[9px] tracking-[0.28em] uppercase
+                         transition-all duration-300 whitespace-nowrap"
+              style={{
+                background: 'linear-gradient(135deg, #C97A3E 0%, #D4A84B 100%)',
+                padding: '16px 36px',
+                color: '#100E0A',
+                fontWeight: 500,
+                boxShadow: '0 8px 32px rgba(212,168,75,0.18)',
+              }}
             >
               Apply as a Vendor →
             </Link>
