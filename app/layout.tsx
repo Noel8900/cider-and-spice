@@ -3,7 +3,7 @@ import { Inter, Josefin_Sans, Cormorant_Garamond } from 'next/font/google'
 import ConditionalCulinaryUI from '@/components/layout/ConditionalCulinaryUI'
 import './globals.css'
 
-/* ── next/font — self-hosted, zero layout shift ───────────────── */
+/* ── next/font ────────────────────────────────────────────────────────── */
 const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
@@ -26,7 +26,7 @@ const cormorantGaramond = Cormorant_Garamond({
   display: 'swap',
 })
 
-/* ── Metadata (replaces <head> SEO tags) ─────────────────────── */
+/* ── Metadata ──────────────────────────────────────────────────────────── */
 export const metadata: Metadata = {
   title: 'Las Cruces Culinary Innovation Hub | Food Hall, Craft Cider Bar & Culinary Incubator — Downtown Las Cruces, NM',
   description:
@@ -78,18 +78,15 @@ export default function RootLayout({
       className={`scroll-smooth ${inter.variable} ${josefinSans.variable} ${cormorantGaramond.variable}`}
     >
       <head>
-        {/* Hero LCP preload — Next.js Image with priority also injects a preload,
-            but this explicit hint fires earlier in the head for faster paint. */}
         <link
           rel="preload"
           as="image"
           href="/images/cider-spice-bar-craft-cider-tap-pour-concept-rendering.png"
           type="image/png"
         />
-        {/* Favicon — gold diamond glyph on dark bg */}
         <link
           rel="icon"
-          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231C1209'/><text y='.85em' x='12' font-size='76' fill='%23d4a84b'>◈</text></svg>"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231C1209'/><text y='.85em' x='12' font-size='76' fill='%23d4a84b'>&#9672;</text></svg>"
         />
 
         {/* JSON-LD structured data */}
@@ -100,23 +97,31 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@graph': [
                 {
-                  '@type': 'FoodEstablishment',
+                  '@type': ['FoodEstablishment', 'LocalBusiness'],
                   '@id': 'https://www.lccullinaryhub.com/#business',
                   name: 'Las Cruces Culinary Innovation Hub',
-                  alternateName: 'LC Culinary Hub',
+                  alternateName: ['LC Culinary Hub', 'Cider & Spice'],
                   description:
                     "Southern New Mexico's premier food hall, craft cider bar, and culinary incubator. Features 10–13 global food concepts, 20–25 rotating cider taps, a shared commissary kitchen, and a structured pathway for food entrepreneurs.",
                   url: 'https://www.lccullinaryhub.com',
                   email: 'info@lccullinaryhub.com',
                   address: {
                     '@type': 'PostalAddress',
+                    streetAddress: 'East Lohman Ave Corridor',
                     addressLocality: 'Las Cruces',
                     addressRegion: 'NM',
+                    postalCode: '88001',
                     addressCountry: 'US',
                   },
                   geo: { '@type': 'GeoCoordinates', latitude: 32.3199, longitude: -106.7637 },
-                  servesCuisine: ['New Mexican', 'Mexican', 'Mediterranean', 'Southern BBQ', 'Asian Fusion', 'American', 'International'],
+                  openingHoursSpecification: [
+                    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday','Wednesday','Thursday'], opens: '11:00', closes: '21:00' },
+                    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday','Saturday'], opens: '11:00', closes: '23:00' },
+                    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday'], opens: '11:00', closes: '20:00' },
+                  ],
+                  servesCuisine: ['New Mexican','Mexican','Mediterranean','Southern BBQ','Asian Fusion','American','International'],
                   priceRange: '$$',
+                  hasMap: 'https://maps.google.com/?q=32.3199,-106.7637',
                   sameAs: [
                     'https://www.instagram.com/lccullinaryhub',
                     'https://www.facebook.com/lccullinaryhub',
@@ -142,7 +147,28 @@ export default function RootLayout({
                       name: 'What is the Cider Club membership?',
                       acceptedAnswer: { '@type': 'Answer', text: 'The Cider Club is a tiered monthly membership (Taster $25/mo, Enthusiast $45/mo, Connoisseur $85/mo) offering tasting flights, pour discounts, exclusive producer events, and reserved seating.' },
                     },
+                    {
+                      '@type': 'Question',
+                      name: 'How can I invest in the Las Cruces Culinary Innovation Hub?',
+                      acceptedAnswer: { '@type': 'Answer', text: 'Investor inquiries are open. Visit the Investor Overview page or contact info@lccullinaryhub.com to request the full investment brief.' },
+                    },
+                    {
+                      '@type': 'Question',
+                      name: 'How do I apply as a food vendor?',
+                      acceptedAnswer: { '@type': 'Answer', text: 'Vendor applications are open at lccullinaryhub.com/vendors. The founding cohort of 10–13 vendors will be selected in Q3–Q4 2026.' },
+                    },
                   ],
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://www.lccullinaryhub.com/#website',
+                  url: 'https://www.lccullinaryhub.com',
+                  name: 'Las Cruces Culinary Innovation Hub',
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: { '@type': 'EntryPoint', urlTemplate: 'https://www.lccullinaryhub.com/?s={search_term_string}' },
+                    'query-input': 'required name=search_term_string',
+                  },
                 },
               ],
             }),
@@ -150,10 +176,20 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <ConditionalCulinaryUI />
-        {children}
+        {/* Skip-to-content for keyboard / screen-reader users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999]
+                     focus:bg-bg focus:border focus:border-gold/60 focus:px-4 focus:py-2
+                     focus:font-label focus:text-[10px] focus:tracking-[0.2em] focus:uppercase
+                     focus:text-gold"
+        >
+          Skip to main content
+        </a>
 
+        <ConditionalCulinaryUI />
+        <main id="main-content">{children}</main>
       </body>
     </html>
-  )
+  );
 }
