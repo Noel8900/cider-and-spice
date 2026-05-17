@@ -1,26 +1,28 @@
 'use client';
-// Renders the Culinary Hub navbar + floating button on culinary routes only.
-// Corporate routes get their own CorpNavbar via the (corp) route group layout
-// — culinary chrome must not appear there.
 
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
-import FloatingFloorPlanButton from '@/components/ui/FloatingFloorPlanButton';
-import ScrollProgressBar from '@/components/ui/ScrollProgressBar';
+import ThemeToggle from './ThemeToggle';
+import ActiveSectionHighlight from './ActiveSectionHighlight';
 
-const CORP_PREFIXES = ['/home', '/about', '/services', '/insights'];
+const HIDE_NAV_PREFIXES = ['/admin'];
 
 export default function ConditionalCulinaryUI() {
-  const pathname = usePathname();
-  const isCorp = CORP_PREFIXES.some(p =>
-    pathname === p || pathname.startsWith(p + '/')
-  );
-  if (isCorp) return null;
+  const pathname = usePathname() ?? '';
+  const hideNav  = HIDE_NAV_PREFIXES.some(p => pathname.startsWith(p));
+  const isHome   = pathname === '/';
+
+  if (hideNav) return null;
+
   return (
     <>
-      <ScrollProgressBar />
       <Navbar />
-      <FloatingFloorPlanButton />
+      {/* Theme toggle — fixed top-right, outside nav to avoid layout conflicts */}
+      <div className="fixed top-4 right-20 z-[60] hidden md:flex items-center">
+        <ThemeToggle />
+      </div>
+      {/* Active section sidebar dots — homepage only */}
+      {isHome && <ActiveSectionHighlight />}
     </>
   );
 }
