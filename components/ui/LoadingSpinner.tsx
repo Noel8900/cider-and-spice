@@ -8,7 +8,7 @@ interface SpinnerProps {
 
 const sizeMap = { sm: 'h-4 w-4', md: 'h-6 w-6', lg: 'h-8 w-8' };
 
-export default function LoadingSpinner({ size = 'md', color = '#C4622D' }: SpinnerProps) {
+export default function LoadingSpinner({ size = 'md', color = '#d4a84b' }: SpinnerProps) {
   return (
     <svg
       className={`animate-spin ${sizeMap[size]}`}

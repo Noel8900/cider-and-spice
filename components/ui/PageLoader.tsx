@@ -1,14 +1,24 @@
-// Used as Suspense fallback for route-level loading
-// Centered spinner with brand logo text — never jarring
-import LoadingSpinner from './LoadingSpinner';
+// Route-level Suspense fallback — luxury editorial style.
+// Pulsing gold glyph + brand name: no spinning wheel.
 
 export default function PageLoader() {
   return (
-    <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-4">
-      <p className="font-serif text-2xl text-cream/80">
+    <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6">
+      {/* Pulsing glyph */}
+      <span
+        className="font-corp-display text-4xl text-gold/60 select-none animate-pulse"
+        aria-hidden="true"
+      >
+        ◈
+      </span>
+
+      {/* Brand name */}
+      <p className="font-corp-display text-2xl font-light text-cream/40 tracking-widest">
         Cider &amp; Spice
       </p>
-      <LoadingSpinner size="lg" />
+
+      {/* Thin animated gold rule */}
+      <span className="block h-px w-12 bg-gradient-to-r from-transparent via-gold/40 to-transparent animate-pulse" />
     </div>
   );
 }

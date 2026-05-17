@@ -1,54 +1,73 @@
-// §NEWSLETTER / GET INVOLVED — Multiple resident engagement pathways + email signup
-// Four cards covering vendor, cider club, events, and newsletter.
-
 'use client';
+// Get involved + newsletter — luxury editorial redesign.
+// No emoji. Gold glyphs. Refined engagement cards.
+// GSAP entrance animations.
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionHeader from '@/components/ui/SectionHeader';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const paths = [
   {
-    icon: '🍽️',
+    glyph: '◈',
     title: 'Apply as a Vendor',
-    body: 'Have a food concept? We want to hear from you. Applications are open for our first cohort of 10–13 stall vendors launching Q1–Q2 2027.',
+    body: 'Have a food concept? We want to hear from you. Applications are open for our founding cohort of 10–13 stall vendors launching Q1–Q2 2027.',
     cta: 'Start Your Application',
     href: '/vendors',
     external: false,
-    accent: true,
+    featured: true,
   },
   {
-    icon: '🍺',
+    glyph: '◉',
     title: 'Join the Cider Club',
     body: 'Get early access, exclusive event invitations, and member pricing at the craft cider bar. Three tiers available — from Taster to Connoisseur.',
     cta: 'Explore Membership',
     href: '/cider-club',
     external: false,
-    accent: false,
+    featured: false,
   },
   {
-    icon: '🎉',
-    title: 'Attend a Community Event',
-    body: 'From live music Fridays and chile harvest festivals to pop-up cooking classes — there\'s always something happening at Cider & Spice.',
-    cta: 'See What\'s Coming',
-    href: 'mailto:hello@lccullinaryhub.com',
-    external: true,
-    accent: false,
+    glyph: '✦',
+    title: 'Invest in the Hub',
+    body: 'The Hub is seeking $1.5M in total capital. Qualifying for six grant categories with a 17–20% illustrative IRR and Month 18–20 cash-flow breakeven.',
+    cta: 'View Investor Overview',
+    href: '/investors',
+    external: false,
+    featured: false,
   },
   {
-    icon: '🤝',
+    glyph: '◆',
     title: 'Partner with Us',
-    body: 'We\'re actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to build this together.',
+    body: "We're actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to build this together.",
     cta: 'Get in Touch',
-    href: 'mailto:hello@lccullinaryhub.com',
+    href: 'mailto:info@lccullinaryhub.com',
     external: true,
-    accent: false,
+    featured: false,
   },
 ];
 
 export default function GetInvolvedSection() {
+  const ref = useRef<HTMLElement>(null);
   const [email, setEmail]   = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.inv-card', {
+        opacity: 0, y: 36, duration: 0.9, stagger: 0.12, ease: 'power3.out',
+        scrollTrigger: { trigger: '.inv-grid', start: 'top 78%', once: true },
+      });
+      gsap.from('.inv-newsletter', {
+        opacity: 0, y: 28, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: '.inv-newsletter', start: 'top 82%', once: true },
+      });
+    }, ref);
+    return () => ctx.revert();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,8 +86,12 @@ export default function GetInvolvedSection() {
   }
 
   return (
-    /* Keep CSS gradient — two-stop dark-to-bg can't be expressed cleanly in Tailwind */
-    <section id="newsletter" className="py-24 px-6" style={{ background: 'linear-gradient(to bottom, #12100a 0%, #1C1209 100%)' }}>
+    <section
+      id="newsletter"
+      ref={ref}
+      className="py-32 px-6"
+      style={{ background: 'linear-gradient(to bottom, #12100a 0%, #1C1209 100%)' }}
+    >
       <div className="max-w-6xl mx-auto">
         <SectionHeader
           badge="Get Involved"
@@ -76,77 +99,91 @@ export default function GetInvolvedSection() {
           subtitle="Las Cruces is ready for something like this. Here's how to be part of it from the very beginning."
         />
 
-        {/* Engagement path cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
-          {paths.map(({ icon, title, body, cta, href, external, accent }) => (
+        {/* Engagement cards */}
+        <div className="inv-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-cream/[0.06] mb-16">
+          {paths.map(({ glyph, title, body, cta, href, external, featured }) => (
             <div
               key={title}
-              className={`flex flex-col rounded-2xl border p-7 transition-all duration-300
-                ${accent
-                  ? 'border-ember/40 bg-ember/[0.08] hover:bg-ember/[0.12]'
-                  : 'border-cream/10 bg-white/[0.03] hover:border-ember/25 hover:bg-white/[0.06]'
+              className={`inv-card group flex flex-col p-8 transition-colors duration-400
+                ${featured
+                  ? 'bg-ember/[0.07] hover:bg-ember/[0.12] border-b-0'
+                  : 'bg-bg hover:bg-white/[0.04]'
                 }`}
             >
-              <span className="text-3xl mb-4 block">{icon}</span>
-              <h3 className="font-serif text-lg font-semibold text-cream mb-3">
+              <span
+                className={`font-corp-display text-2xl mb-6 block transition-colors duration-300
+                  ${featured ? 'text-ember' : 'text-gold/50 group-hover:text-gold'}`}
+              >
+                {glyph}
+              </span>
+
+              <h3 className="font-corp-display text-xl font-light text-cream mb-3 leading-snug">
                 {title}
               </h3>
-              <p className="font-sans text-sm leading-relaxed text-cream/60 mb-5 flex-1">
+
+              <p className="font-sans text-sm leading-relaxed text-cream/50 mb-8 flex-1">
                 {body}
               </p>
+
               {external ? (
                 <a
                   href={href}
-                  className={`inline-block rounded-xl px-5 py-2.5 text-sm font-semibold
-                              text-center transition-colors
-                    ${accent
-                      ? 'bg-ember text-white hover:bg-ember-hover'
-                      : 'border border-cream/20 text-cream/80 hover:border-ember/50 hover:text-ember'
+                  className={`font-label text-[10px] tracking-[0.2em] uppercase pb-0.5 w-fit
+                              border-b transition-all duration-300
+                    ${featured
+                      ? 'border-ember/50 text-ember hover:border-ember'
+                      : 'border-cream/20 text-cream/50 hover:border-gold/50 hover:text-gold'
                     }`}
                 >
-                  {cta}
+                  {cta} →
                 </a>
               ) : (
                 <Link
                   href={href}
-                  className={`inline-block rounded-xl px-5 py-2.5 text-sm font-semibold
-                              text-center transition-colors
-                    ${accent
-                      ? 'bg-ember text-white hover:bg-ember-hover'
-                      : 'border border-cream/20 text-cream/80 hover:border-ember/50 hover:text-ember'
+                  className={`font-label text-[10px] tracking-[0.2em] uppercase pb-0.5 w-fit
+                              border-b transition-all duration-300
+                    ${featured
+                      ? 'border-ember/50 text-ember hover:border-ember'
+                      : 'border-cream/20 text-cream/50 hover:border-gold/50 hover:text-gold'
                     }`}
                 >
-                  {cta}
+                  {cta} →
                 </Link>
               )}
             </div>
           ))}
         </div>
 
-        {/* Newsletter signup */}
-        <div
-          className="rounded-2xl border border-cream/10 bg-white/[0.03]
-                     p-8 md:p-12 text-center max-w-2xl mx-auto"
-        >
-          <div className="text-4xl mb-4" aria-hidden="true">📬</div>
-          <h3 className="font-serif text-2xl font-semibold text-cream mb-3">
+        {/* Newsletter */}
+        <div className="inv-newsletter border border-cream/[0.08] bg-white/[0.02] p-10 md:p-14
+                        max-w-3xl mx-auto text-center hover:border-cream/[0.14]
+                        transition-colors duration-400">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className="block h-px w-8 bg-gold" />
+            <span className="font-label text-[9px] tracking-[0.3em] uppercase text-gold">
+              Stay Informed
+            </span>
+            <span className="block h-px w-8 bg-gold" />
+          </div>
+
+          <h3 className="font-corp-display text-3xl md:text-4xl font-light text-cream mb-4">
             Stay in the Loop
           </h3>
-          <p className="font-sans text-sm text-cream/60 mb-8 leading-relaxed">
-            Get construction updates, event announcements, vendor spotlights, and early access
-            to our opening — straight to your inbox.
+          <p className="font-sans text-sm text-cream/50 mb-10 leading-relaxed max-w-md mx-auto">
+            Construction updates, event announcements, vendor spotlights, and early-access
+            invitations — delivered to your inbox.
           </p>
 
           {status === 'done' ? (
             <div
               role="status"
-              className="rounded-xl bg-grove/20 border border-grove/30
-                         px-6 py-4 font-sans text-sm text-cream"
+              className="border border-gold/25 bg-gold/5 px-8 py-5
+                         font-sans text-sm text-cream/80"
             >
-              ✅ You&apos;re on the list — thank you for your support!
+              You&apos;re on the list — thank you for your support.
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-0">
               <input
                 type="email"
                 required
@@ -154,17 +191,16 @@ export default function GetInvolvedSection() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === 'sending'}
-                className="flex-1 rounded-xl border border-cream/20 bg-white/5
-                           px-4 py-3 font-sans text-sm text-cream
-                           placeholder-cream/30 focus:border-ember/60
-                           focus:outline-none focus:ring-2 focus:ring-ember/20
-                           disabled:opacity-50 transition-colors"
+                className="flex-1 border border-cream/15 bg-white/[0.03] px-5 py-4
+                           font-sans text-sm text-cream placeholder-cream/25
+                           focus:border-gold/40 focus:outline-none focus:ring-1
+                           focus:ring-gold/15 disabled:opacity-50 transition-colors"
               />
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="rounded-xl bg-ember px-6 py-3 font-sans text-sm
-                           font-semibold text-white hover:bg-ember-hover
+                className="shrink-0 bg-ember hover:bg-ember-hover px-8 py-4 font-label
+                           text-[10px] tracking-[0.25em] uppercase text-white
                            disabled:opacity-60 transition-colors whitespace-nowrap
                            focus-visible:ring-2 focus-visible:ring-ember/50"
               >
@@ -174,13 +210,13 @@ export default function GetInvolvedSection() {
           )}
 
           {status === 'error' && (
-            <p role="alert" className="mt-3 font-sans text-xs text-red-400">
-              Something went wrong — please try emailing us at hello@lccullinaryhub.com
+            <p role="alert" className="mt-4 font-sans text-xs text-red-400/80">
+              Something went wrong — please email us at info@lccullinaryhub.com
             </p>
           )}
 
-          <p className="mt-4 font-sans text-xs text-cream/35">
-            No spam. Unsubscribe anytime.
+          <p className="mt-6 font-label text-[9px] tracking-[0.2em] uppercase text-cream/25">
+            No spam · Unsubscribe anytime
           </p>
         </div>
       </div>

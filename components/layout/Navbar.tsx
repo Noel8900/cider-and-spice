@@ -16,16 +16,17 @@ const navLinks = [
   { label: 'Home',        href: '/'            },
   { label: 'Vendors',     href: '/vendors'     },
   { label: 'Cider Club',  href: '/cider-club'  },
+  { label: 'Invest',      href: '/investors'   },
   { label: 'Get Involved',href: '/#newsletter' },
 ] as const;
 
 // ── "The Space" dropdown items ────────────────────────────────────────────────
 const spaceLinks = [
-  { label: 'The Hub',      href: '/#opportunity', icon: '🏛️' },
-  { label: 'How It Works', href: '/#concept',     icon: '⚙️' },
-  { label: 'Community',    href: '/#impact',      icon: '🤝' },
-  { label: 'Cider Bar',    href: '/#cider-bar',   icon: '🍎' },
-  { label: 'Floor Plan',   href: '/floor-plan/',  icon: '🗺' },
+  { label: 'The Hub',      href: '/#opportunity', icon: '◈' },
+  { label: 'How It Works', href: '/#concept',     icon: '◉' },
+  { label: 'Community',    href: '/#impact',      icon: '◆' },
+  { label: 'Cider Bar',    href: '/#cider-bar',   icon: '◇' },
+  { label: 'Floor Plan',   href: '/floor-plan/',  icon: '✦' },
 ] as const;
 
 /**
@@ -131,7 +132,8 @@ export default function Navbar() {
         {/* ── Logo ──────────────────────────────────────────────────────── */}
         <Link
           href="/"
-          className="font-serif text-xl font-bold text-cream transition-opacity hover:opacity-80"
+          className="font-corp-display text-2xl font-light text-cream hover:text-gold
+                     transition-colors duration-300 tracking-tight leading-none"
         >
           Cider &amp; Spice
         </Link>
@@ -143,13 +145,13 @@ export default function Navbar() {
           <li>
             <Link
               href="/"
-              className={`relative font-sans text-sm transition-colors
-                          hover:text-ember ${isActive('/', pathname ?? '') ? 'text-ember' : 'text-cream/75'}`}
+              className={`relative font-label text-[10px] tracking-[0.15em] uppercase transition-colors
+                          hover:text-gold ${isActive('/', pathname ?? '') ? 'text-gold' : 'text-cream/60'}`}
               aria-current={isActive('/', pathname ?? '') ? 'page' : undefined}
             >
               Home
               {isActive('/', pathname ?? '') && (
-                <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember" aria-hidden="true" />
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />
               )}
             </Link>
           </li>
@@ -161,9 +163,9 @@ export default function Navbar() {
               onClick={() => setSpaceOpen((o) => !o)}
               aria-expanded={spaceOpen}
               aria-haspopup="menu"
-              className={`flex items-center gap-1 font-sans text-sm transition-colors
-                          hover:text-ember
-                          ${spaceActive ? 'text-ember' : 'text-cream/75'}`}
+              className={`flex items-center gap-1 font-label text-[10px] tracking-[0.15em]
+                          uppercase transition-colors hover:text-gold
+                          ${spaceActive ? 'text-gold' : 'text-cream/60'}`}
             >
               The Space
               <svg
@@ -175,7 +177,7 @@ export default function Navbar() {
                 <path d="M6 9l6 6 6-6" />
               </svg>
               {spaceActive && (
-                <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember" aria-hidden="true" />
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />
               )}
             </button>
 
@@ -183,7 +185,7 @@ export default function Navbar() {
             <div
               role="menu"
               className={`absolute left-1/2 top-full mt-3 w-52 -translate-x-1/2
-                          rounded-2xl border border-cream/10 bg-bg/[0.98]
+                          border border-cream/10 bg-bg/[0.98]
                           backdrop-blur-md shadow-2xl shadow-black/50 overflow-hidden
                           transition-all duration-200 origin-top
                           ${spaceOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}
@@ -196,16 +198,17 @@ export default function Navbar() {
                     href={href}
                     role="menuitem"
                     onClick={() => setSpaceOpen(false)}
-                    className={`flex items-center gap-3 px-5 py-3 font-sans text-sm
-                                transition-colors hover:bg-ember/15 hover:text-ember
-                                ${active ? 'text-ember bg-ember/10' : 'text-cream/80'}`}
+                    className={`flex items-center gap-3 px-5 py-3 font-label text-[9px]
+                                tracking-[0.15em] uppercase transition-colors
+                                hover:bg-gold/10 hover:text-gold
+                                ${active ? 'text-gold bg-gold/[0.07]' : 'text-cream/70'}`}
                     aria-current={active ? 'page' : undefined}
                   >
-                    <span aria-hidden="true" className="text-base">{icon}</span>
+                    <span aria-hidden="true" className="font-corp-display text-sm text-gold/60">{icon}</span>
                     {label}
                     {label === 'Floor Plan' && (
-                      <span className="ml-auto rounded-full bg-ember/20 px-2 py-0.5
-                                       text-[10px] font-semibold text-ember uppercase tracking-wide">
+                      <span className="ml-auto border border-gold/30 px-2 py-0.5
+                                       text-[9px] font-label text-gold uppercase tracking-widest">
                         New
                       </span>
                     )}
@@ -222,13 +225,13 @@ export default function Navbar() {
               <li key={label}>
                 <Link
                   href={href}
-                  className={`relative font-sans text-sm transition-colors
-                              hover:text-ember ${active ? 'text-ember' : 'text-cream/75'}`}
+                  className={`relative font-label text-[10px] tracking-[0.15em] uppercase
+                              transition-colors hover:text-gold ${active ? 'text-gold' : 'text-cream/60'}`}
                   aria-current={active ? 'page' : undefined}
                 >
                   {label}
                   {active && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-ember" aria-hidden="true" />
+                    <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />
                   )}
                 </Link>
               </li>
@@ -240,15 +243,16 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/vendors"
-            className="hidden rounded-xl bg-ember px-5 py-2.5 text-sm font-semibold
-                       text-white transition-colors hover:bg-ember-hover md:inline-block"
+            className="hidden border border-cream/20 hover:border-gold/60 px-6 py-2.5
+                       font-label text-[9px] tracking-[0.2em] uppercase text-cream/70
+                       hover:text-gold transition-all duration-300 md:inline-block"
           >
             Apply Now →
           </Link>
 
           <button
             type="button"
-            className="rounded-lg p-2 text-cream transition-colors hover:bg-white/10 md:hidden focus-visible:ring-2 focus-visible:ring-ember/50"
+            className="p-2 text-cream transition-colors hover:bg-white/10 md:hidden focus-visible:ring-2 focus-visible:ring-ember/50"
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
@@ -274,9 +278,9 @@ export default function Navbar() {
           <li>
             <Link
               href="/"
-              className={`block rounded-lg px-3 py-2.5 font-sans text-base
-                          transition-colors hover:bg-white/5 hover:text-ember
-                          ${isActive('/', pathname ?? '') ? 'text-ember bg-white/[0.04]' : 'text-cream/80'}`}
+              className={`block px-3 py-3 font-label text-[10px] tracking-[0.2em] uppercase
+                          transition-colors hover:text-gold
+                          ${isActive('/', pathname ?? '') ? 'text-gold' : 'text-cream/60'}`}
               onClick={() => setMenuOpen(false)}
             >
               Home
@@ -285,28 +289,27 @@ export default function Navbar() {
 
           {/* The Space sub-items inline in mobile */}
           <li>
-            <p className="px-3 pt-3 pb-1 font-sans text-xs font-semibold uppercase
-                           tracking-widest text-cream/40">
+            <p className="px-3 pt-4 pb-2 font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">
               The Space
             </p>
-            <ul className="space-y-0.5 border-l-2 border-ember/30 ml-3 pl-3">
+            <ul className="space-y-0 border-l border-gold/20 ml-3 pl-4">
               {spaceLinks.map(({ label, href, icon }) => {
                 const active = isActive(href, pathname ?? '');
                 return (
                   <li key={label}>
                     <Link
                       href={href}
-                      className={`flex items-center gap-2 rounded-lg px-3 py-2 font-sans
-                                  text-sm transition-colors hover:bg-white/5 hover:text-ember
-                                  ${active ? 'text-ember bg-white/[0.04]' : 'text-cream/75'}`}
+                      className={`flex items-center gap-3 px-3 py-2.5 font-label text-[10px]
+                                  tracking-[0.15em] uppercase transition-colors hover:text-gold
+                                  ${active ? 'text-gold' : 'text-cream/55'}`}
                       aria-current={active ? 'page' : undefined}
                       onClick={() => setMenuOpen(false)}
                     >
-                      <span aria-hidden="true">{icon}</span>
+                      <span aria-hidden="true" className="font-corp-display text-sm text-gold/50">{icon}</span>
                       {label}
                       {label === 'Floor Plan' && (
-                        <span className="ml-auto rounded-full bg-ember/20 px-2 py-0.5
-                                         text-[10px] font-semibold text-ember uppercase tracking-wide">
+                        <span className="ml-auto border border-gold/30 px-2 py-0.5
+                                         text-[9px] font-label text-gold uppercase tracking-widest">
                           New
                         </span>
                       )}
@@ -324,9 +327,9 @@ export default function Navbar() {
               <li key={label}>
                 <Link
                   href={href}
-                  className={`block rounded-lg px-3 py-2.5 font-sans text-base
-                              transition-colors hover:bg-white/5
-                              ${active ? 'text-ember bg-white/[0.04]' : 'text-cream/80 hover:text-ember'}`}
+                  className={`block px-3 py-3 font-label text-[10px] tracking-[0.2em] uppercase
+                              transition-colors hover:text-gold
+                              ${active ? 'text-gold' : 'text-cream/60'}`}
                   aria-current={active ? 'page' : undefined}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -337,11 +340,12 @@ export default function Navbar() {
           })}
 
           {/* Mobile CTA */}
-          <li className="pt-3">
+          <li className="pt-4 pb-2">
             <Link
               href="/vendors"
-              className="block rounded-xl bg-ember px-5 py-3 text-center font-semibold
-                         text-white transition-colors hover:bg-ember-hover"
+              className="block border border-cream/20 hover:border-gold/50 px-5 py-3.5
+                         text-center font-label text-[10px] tracking-[0.25em] uppercase
+                         text-cream/70 hover:text-gold transition-all duration-300"
               onClick={() => setMenuOpen(false)}
             >
               Apply Now →

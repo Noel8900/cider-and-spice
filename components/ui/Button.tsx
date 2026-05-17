@@ -17,9 +17,9 @@ interface ButtonProps {
 }
 
 const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary:   'bg-ember hover:bg-ember-hover text-white font-semibold rounded-xl transition-colors',
-  secondary: 'border border-cream/20 text-cream hover:border-cream/50 rounded-xl transition-all',
-  ghost:     'text-cream/70 hover:text-ember hover:bg-white/5 rounded-lg transition-colors',
+  primary:   'bg-ember hover:bg-ember-hover text-white font-semibold transition-colors',
+  secondary: 'border border-cream/20 text-cream hover:border-cream/50 transition-all',
+  ghost:     'text-cream/70 hover:text-ember hover:bg-white/5 transition-colors',
 };
 
 const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {

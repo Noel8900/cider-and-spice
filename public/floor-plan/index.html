@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LC Culinary Hub — Floor Plan</title>
+<title>Cider & Spice — Floor Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
 :root {
   --bg:#0a0908;--s1:#141210;--s2:#1a1814;--s3:#222018;--s4:#2a2820;--s5:#322e26;
   --border:rgba(255,255,255,0.065);--border-mid:rgba(255,255,255,0.11);--border-hi:rgba(255,255,255,0.18);
   --t1:#f0ece2;--t2:#9c9488;--t3:#5c5448;--t4:#3a3428;
-  --accent:#c9914a;--accent-d:rgba(201,145,74,0.14);--accent-g:rgba(201,145,74,0.40);--accent-b:rgba(201,145,74,0.06);
+  --accent:#d4a84b;--accent-d:rgba(212,168,75,0.14);--accent-g:rgba(212,168,75,0.40);--accent-b:rgba(212,168,75,0.06);
   --toolbar-h:58px;--panel-w:340px;--statusbar-h:36px;
   --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:22px;
   --ease-out:cubic-bezier(0.16,1,0.3,1);--ease-in-out:cubic-bezier(0.4,0,0.2,1);
-  --font-d:'DM Serif Display',Georgia,serif;--font-b:'DM Sans',system-ui,sans-serif;
+  --font-d:'Cormorant Garamond',Georgia,serif;--font-b:'DM Sans',system-ui,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
@@ -37,7 +37,7 @@ body::before{content:'';position:fixed;inset:0;
   display:flex;align-items:center;padding:0 18px;gap:12px;z-index:100;user-select:none;}
 #logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
 #logo-text{display:flex;flex-direction:column;gap:1px;}
-#logo-name{font-family:var(--font-d);font-size:15px;color:var(--t1);line-height:1.1;white-space:nowrap;}
+#logo-name{font-family:var(--font-d);font-size:18px;font-weight:400;color:var(--t1);line-height:1.1;white-space:nowrap;letter-spacing:0.01em;}
 #logo-sub{font-size:9px;font-weight:500;color:var(--t3);letter-spacing:2.5px;text-transform:uppercase;white-space:nowrap;}
 .t-div{width:1px;height:22px;background:var(--border);flex-shrink:0;}
 .pill-group{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);border-radius:var(--r-md);padding:3px;}
@@ -316,7 +316,7 @@ body::before{content:'';position:fixed;inset:0;
   gap: 12px;
 }
 #op-logo { display: flex; align-items: center; gap: 8px; }
-#op-logo-name { font-family: var(--font-d); font-size: 15px; color: var(--t1); }
+#op-logo-name { font-family: var(--font-d); font-size: 18px; font-weight: 400; color: var(--t1); letter-spacing: 0.01em; }
 #op-badge {
   font-size: 9px;
   font-weight: 700;
@@ -641,8 +641,8 @@ APP_SEMANTICS:
       <circle cx="22.5" cy="7.8" r="1.3" fill="#c9914a" opacity="0.65"/>
     </svg>
     <div id="logo-text">
-      <span id="logo-name">LC Culinary Hub</span>
-      <span id="logo-sub">Interactive Floor Plan · v20</span>
+      <span id="logo-name">Cider &amp; Spice</span>
+      <span id="logo-sub">Interactive Floor Plan</span>
     </div>
   </div>
 
@@ -1494,7 +1494,7 @@ document.addEventListener('keydown', e => {
         <path d="M22 8.5 C22.8 7.5 24.5 7.5 25.5 9.5 C26.5 11.5 25.5 16 23 18.5 C21 20.5 19 21 19 23 C19 25.5 21 27 21.5 28.5" stroke="#c9914a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
         <circle cx="22.5" cy="7.8" r="1.3" fill="#c9914a" opacity="0.65"/>
       </svg>
-      <span id="op-logo-name">LC Culinary Hub</span>
+      <span id="op-logo-name">Cider &amp; Spice</span>
       <span id="op-badge">Operator</span>
     </div>
     <div id="op-time" aria-live="polite"></div>

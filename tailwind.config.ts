@@ -29,12 +29,25 @@ const config: Config = {
           DEFAULT: '#F5EDE0',
           dark:    '#EAD9C5',
         },
+        // ── Nexus Capital Group — corporate palette ─────────────────────────
+        corp: {
+          ink:      '#060910',   // Deepest background (hero, footer)
+          navy:     '#0C1420',   // Primary surface
+          card:     '#111D2E',   // Card background
+          gold: {
+            DEFAULT: '#C9A84C', // Champagne gold — primary accent
+            light:   '#E8D5A0', // Light gold
+            muted:   'rgba(201,168,76,0.12)', // Subtle fill
+          },
+          platinum: '#E8EAEF',  // Primary text
+          steel:    '#8896B3',  // Secondary text / labels
+          azure:    '#1A3F7A',  // Deep blue hover surface
+        },
       },
       fontFamily: {
-        display: ['"Abril Fatface"', 'Georgia', 'serif'],
-        serif:   ['"Playfair Display"', 'Georgia', 'serif'],
-        sans:    ['Inter', 'system-ui', 'sans-serif'],
-        label:   ['"Josefin Sans"', 'system-ui', 'sans-serif'],
+        sans:           ['Inter', 'system-ui', 'sans-serif'],
+        label:          ['"Josefin Sans"', 'system-ui', 'sans-serif'],
+        'corp-display': ['"Cormorant Garamond"', 'Georgia', 'serif'],
       },
       borderRadius: {
         DEFAULT: '0.5rem',

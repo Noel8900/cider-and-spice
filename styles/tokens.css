@@ -2,24 +2,21 @@
 :root {
   /* Brand colors */
   --color-bg:        #1C1209;
-  --color-surface:   rgba(255,255,255,0.05);
-  --color-border:    rgba(245,236,215,0.12);
+  --color-surface:   rgba(255,255,255,0.03);
+  --color-border:    rgba(245,236,215,0.08);
   --color-cream:     #F5ECD7;
+  --color-gold:      #d4a84b;
   --color-ember:     #C4622D;
   --color-grove:     #2D5016;
 
-  /* Typography — anchor font: Playfair Display, support: Inter */
-  --font-anchor:     'Playfair Display', Georgia, serif;
-  --font-support:    'Inter', system-ui, sans-serif;
+  /* Typography */
+  --font-display:    'Cormorant Garamond', Georgia, serif;
+  --font-label:      'Josefin Sans', system-ui, sans-serif;
+  --font-body:       'Inter', system-ui, sans-serif;
 
-  /* Opacity hierarchy (Google Material principle) */
-  --opacity-high:    1;      /* Headlines — commands attention */
-  --opacity-mid:     0.70;   /* Subheadings — supporting role */
-  --opacity-low:     0.50;   /* Body text — readable, not dominant */
+  /* Opacity hierarchy */
+  --opacity-high:    1;      /* Headlines */
+  --opacity-mid:     0.70;   /* Subheadings */
+  --opacity-low:     0.50;   /* Body text */
   --opacity-mute:    0.30;   /* Labels, placeholders */
-
-  /* Spacing scale */
-  --radius-card:     1rem;
-  --radius-input:    0.75rem;
-  --radius-pill:     9999px;
 }

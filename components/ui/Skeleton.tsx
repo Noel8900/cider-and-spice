@@ -3,15 +3,16 @@
 
 interface SkeletonProps {
   className?: string;
-  rounded?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 const roundedMap = {
+  none: '',
   sm:   'rounded',
-  md:   'rounded-lg',
-  lg:   'rounded-2xl',
-  xl:   'rounded-xl',
-  full: 'rounded-full',
+  md:   'rounded-sm',
+  lg:   'rounded',
+  xl:   'rounded',
+  full: 'rounded',
 };
 
 export default function Skeleton({ className = '', rounded = 'md' }: SkeletonProps) {

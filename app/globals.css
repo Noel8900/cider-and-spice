@@ -1,10 +1,76 @@
-/* New brand token layer — Cider & Spice design system */
+/* Brand token layer — CSS custom properties used by inline styles and floor plan */
 @import url('../styles/tokens.css');
-
-/* Legacy brand design system — existing custom properties + section styles */
-@import url('../styles.css');
 
 /* Tailwind base — utility classes available in new components */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Luxury base overrides ───────────────────────────────────────────────── */
+
+/* Gold text selection */
+::selection {
+  background: rgba(212, 168, 75, 0.25);
+  color: #F5ECD7;
+}
+
+/* Smooth font rendering */
+body {
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Cormorant Garamond refined rendering */
+.font-corp-display,
+[class*="font-corp"] {
+  font-feature-settings: 'liga' 1, 'kern' 1, 'onum' 1;
+}
+
+/* Scrollbar — subtle gold-tinted on dark bg */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #1C1209; }
+::-webkit-scrollbar-thumb { background: rgba(212,168,75,0.25); }
+::-webkit-scrollbar-thumb:hover { background: rgba(212,168,75,0.45); }
+
+/* Grain texture overlay — luxury tactile depth (pointer-events: none so it's invisible to UX) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Global focus-visible — gold outline for keyboard navigation */
+:focus-visible {
+  outline: 1px solid rgba(212, 168, 75, 0.6);
+  outline-offset: 3px;
+}
+/* Let components with their own focus-visible rings suppress the outline */
+[class*="focus-visible:ring"]:focus-visible,
+[class*="focus:ring"]:focus-visible,
+[class*="focus:outline-none"]:focus-visible {
+  outline: none;
+}
+
+/* ── Reduced motion — override all GSAP opacity/transform states ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* Ensure GSAP-animated elements are always visible */
+  [style*="opacity: 0"],
+  [style*="opacity:0"] {
+    opacity: 1 !important;
+  }
+  [style*="transform"] {
+    transform: none !important;
+  }
+}

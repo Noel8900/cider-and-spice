@@ -5,7 +5,7 @@ import SkeletonForm from '@/components/ui/SkeletonForm';
 
 export default function VendorsLoading() {
   return (
-    <main className="min-h-screen bg-[#faf8f5]">
+    <main className="min-h-screen bg-bg">
       <SkeletonForm />
     </main>
   );

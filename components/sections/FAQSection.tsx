@@ -1,11 +1,13 @@
 'use client';
-// Accordion FAQ — terracotta chevron, GlassCard wrapper.
-// CSS max-height transition avoids layout thrash (no JS height measurement).
-// Added below VendorCTA in app/page.tsx.
+// Luxury FAQ accordion — no GlassCard, flat bordered panel.
+// Cormorant Garamond questions. Gold chevron. GSAP entrance.
 
-import { useState } from 'react';
-import GlassCard from '@/components/ui/GlassCard';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionHeader from '@/components/ui/SectionHeader';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const faqs = [
   {
@@ -40,17 +42,15 @@ const faqs = [
   },
 ];
 
-// ── Chevron icon — rotates 180° when accordion is open ───────────────────────
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-5 w-5 flex-shrink-0 text-ember transition-transform duration-300 ${
-        open ? 'rotate-180' : ''
-      }`}
+      className={`h-4 w-4 flex-shrink-0 text-gold/60 transition-all duration-300
+                  ${open ? 'rotate-180 text-gold' : ''}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={2.5}
+      strokeWidth={1.5}
       aria-hidden="true"
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -58,44 +58,35 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-// ── Single accordion item ─────────────────────────────────────────────────────
-function FAQItem({
-  question,
-  answer,
-  index,
-}: {
-  question: string;
-  answer: string;
-  index: number;
-}) {
+function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
   const [open, setOpen] = useState(false);
   const answerId = `faq-panel-${index}`;
 
   return (
-    <div className="border-b border-cream/10 last:border-b-0">
+    <div className="faq-item border-b border-cream/[0.07] last:border-b-0">
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left
-                   transition-colors hover:bg-white/[0.03]"
+        className="flex w-full items-center justify-between gap-6 px-8 py-6 text-left
+                   hover:bg-white/[0.025] transition-colors duration-300 group"
         aria-expanded={open}
         aria-controls={answerId}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="font-serif text-base font-semibold text-cream/90">
+        <span className="font-corp-display text-xl font-light text-cream/85
+                         group-hover:text-cream transition-colors duration-300">
           {question}
         </span>
         <ChevronIcon open={open} />
       </button>
 
-      {/* CSS max-height accordion — no layout thrash */}
       <div
         id={answerId}
         role="region"
         aria-hidden={!open}
-        className="overflow-hidden transition-all duration-300 ease-in-out"
-        style={{ maxHeight: open ? '2000px' : '0px' }}
+        className="overflow-hidden transition-all duration-400 ease-in-out"
+        style={{ maxHeight: open ? '500px' : '0px' }}
       >
-        <p className="px-6 pb-5 font-sans text-sm leading-relaxed text-cream/60">
+        <p className="px-8 pb-7 pt-1 font-sans text-sm leading-relaxed text-cream/50 max-w-2xl">
           {answer}
         </p>
       </div>
@@ -103,40 +94,46 @@ function FAQItem({
   );
 }
 
-// ── Section ───────────────────────────────────────────────────────────────────
 export default function FAQSection() {
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.faq-item', {
+        opacity: 0, y: 20, duration: 0.75, stagger: 0.09, ease: 'power3.out',
+        scrollTrigger: { trigger: ref.current, start: 'top 78%', once: true },
+      });
+    }, ref);
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
       id="faq"
-      className="py-24 px-6 bg-bg"
+      ref={ref}
+      className="py-32 px-6 bg-bg"
       aria-labelledby="faq-heading"
     >
       <div className="mx-auto max-w-3xl">
         <SectionHeader
           id="faq-heading"
-          badge="Questions?"
+          badge="Questions"
           title="Frequently Asked"
           subtitle="Everything you need to know about the Hub, the Cider Bar, and how to get involved before we open."
         />
 
-        <GlassCard hover={false} className="overflow-hidden">
+        <div className="border border-cream/[0.08] overflow-hidden">
           {faqs.map((faq, i) => (
-            <FAQItem
-              key={i}
-              question={faq.question}
-              answer={faq.answer}
-              index={i}
-            />
+            <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
           ))}
-        </GlassCard>
+        </div>
 
-        <p
-          className="mt-8 text-center font-sans text-sm text-cream/45"
-        >
+        <p className="mt-8 text-center font-sans text-sm text-cream/40">
           Still have questions?{' '}
           <a
             href="mailto:info@lccullinaryhub.com"
-            className="underline underline-offset-2 transition-colors hover:text-ember"
+            className="text-cream/60 border-b border-cream/20 pb-px
+                       hover:border-gold/50 hover:text-gold transition-all duration-300"
           >
             Email us directly.
           </a>

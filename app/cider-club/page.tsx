@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { joinCiderClub } from './actions';
 import type { CiderClubFormData, CiderClubTier, CiderClubActionResult } from './actions';
-import GlassCard from '@/components/ui/GlassCard';
 import FormField from '@/components/ui/FormField';
 import { darkInput } from '@/components/ui/FormField';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ─── Tier data ────────────────────────────────────────────────────────────────
 
@@ -15,7 +18,7 @@ const TIERS: {
   name: string;
   price: string;
   sub: string;
-  icon: string;
+  glyph: string;
   perks: string[];
   featured?: boolean;
 }[] = [
@@ -24,7 +27,7 @@ const TIERS: {
     name:  'Taster',
     price: '$25',
     sub:   'per month',
-    icon:  '🍎',
+    glyph: '◇',
     perks: [
       '1 tasting flight/month (4 ciders)',
       '10% discount on all pours',
@@ -37,7 +40,7 @@ const TIERS: {
     name:     'Enthusiast',
     price:    '$45',
     sub:      'per month',
-    icon:     '🫙',
+    glyph:    '◈',
     featured: true,
     perks: [
       '2 tasting flights/month',
@@ -52,7 +55,7 @@ const TIERS: {
     name:  'Founding Member',
     price: '$85',
     sub:   'per month',
-    icon:  '🍾',
+    glyph: '◆',
     perks: [
       'Unlimited tasting flights',
       '20% discount on all pours',
@@ -71,14 +74,6 @@ const EMPTY: CiderClubFormData = {
 };
 
 // ─── Small helpers ────────────────────────────────────────────────────────────
-
-function BackArrow() {
-  return (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  );
-}
 
 function Spinner() {
   return (
@@ -107,30 +102,27 @@ function SuccessScreen({ tier }: { tier: CiderClubTier }) {
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-24">
       <div className="mx-auto max-w-md text-center">
-        <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-ember/30 bg-ember/10 text-5xl">
-          🍾
-        </div>
-        <h2 className="mb-4 font-serif text-3xl font-bold text-cream">
-          Welcome to the Club!
+        <span className="font-corp-display text-5xl text-gold block mb-8" aria-hidden="true">◆</span>
+        <h2 className="font-corp-display text-4xl font-light text-cream mb-4">
+          Welcome to the Club
         </h2>
-        <p className="mb-3 font-sans text-base leading-relaxed text-cream/70">
-          You&apos;re now on the <strong className="text-ember">{tierName}</strong> waitlist.
+        <p className="font-sans text-base leading-relaxed text-cream/60 mb-3">
+          You&apos;re now on the <strong className="text-gold">{tierName}</strong> waitlist.
         </p>
-        <p className="mb-10 font-sans text-base leading-relaxed text-cream/70">
+        <p className="font-sans text-base leading-relaxed text-cream/60 mb-10">
           We&apos;ll be in touch before Grand Opening (Q1–Q2 2027) to confirm your
           membership and lock in your founding-member rate.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Link
-            href="/"
-            className="rounded-xl bg-ember px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ember-hover"
-          >
+          <Link href="/"
+            className="bg-ember hover:bg-ember-hover px-8 py-4 font-label text-[10px]
+                       tracking-[0.25em] uppercase text-white transition-colors">
             Back to Home
           </Link>
-          <Link
-            href="/vendors"
-            className="rounded-xl border border-cream/20 px-6 py-3 text-sm font-semibold text-cream/80 transition-colors hover:border-ember/40 hover:text-ember"
-          >
+          <Link href="/vendors"
+            className="border border-cream/20 hover:border-gold/50 px-8 py-4 font-label
+                       text-[10px] tracking-[0.25em] uppercase text-cream/60 hover:text-gold
+                       transition-all duration-300">
             Become a Vendor →
           </Link>
         </div>
@@ -142,14 +134,23 @@ function SuccessScreen({ tier }: { tier: CiderClubTier }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CiderClubPage() {
+  const tiersRef = useRef<HTMLDivElement>(null);
   const [form, setForm]           = useState<CiderClubFormData>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess]     = useState(false);
   const [error, setError]         = useState<string | null>(null);
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.cc-tier-card', {
+        opacity: 0, y: 28, duration: 0.9, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: tiersRef.current, start: 'top 78%', once: true },
+      });
+    }, tiersRef);
+    return () => ctx.revert();
+  }, []);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (error) setError(null);
@@ -180,30 +181,37 @@ export default function CiderClubPage() {
     );
   }
 
+  const selectedTier = TIERS.find((t) => t.id === form.tier);
+
   return (
     <main className="min-h-screen bg-bg">
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="px-6 pb-20 pt-28">
         <div className="mx-auto max-w-4xl">
-          <Link
-            href="/"
-            className="mb-10 inline-flex items-center gap-1.5 font-sans text-sm font-medium text-ember transition-opacity hover:opacity-70"
-          >
-            <BackArrow />
+          <Link href="/"
+            className="mb-10 inline-flex items-center gap-2 font-label text-[9px]
+                       tracking-[0.2em] uppercase text-cream/40 hover:text-gold
+                       transition-colors duration-300">
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
             Back to the Hub
           </Link>
 
           <div className="text-center">
-            <span className="mb-4 inline-block rounded-full border border-ember/40 px-4 py-1.5 font-sans text-xs font-semibold uppercase tracking-widest text-ember">
-              Membership
-            </span>
-            <h1 className="mb-5 font-serif text-5xl font-bold leading-tight text-cream md:text-6xl">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="block h-px w-8 bg-gold shrink-0" />
+              <span className="font-label text-[10px] tracking-[0.3em] uppercase text-gold">
+                Membership
+              </span>
+              <span className="block h-px w-8 bg-gold shrink-0" />
+            </div>
+            <h1 className="font-corp-display text-5xl sm:text-6xl md:text-7xl font-light
+                            leading-[0.92] tracking-tight text-cream mb-6">
               Cider Club
             </h1>
-            <p
-              className="mx-auto max-w-xl font-sans text-lg leading-relaxed text-cream/65"
-            >
+            <p className="mx-auto max-w-xl font-sans text-base leading-relaxed text-cream/55">
               Southern New Mexico&apos;s first specialty cider bar — 400 years of
               apple-growing heritage in every pour. Pre-register now to lock in
               your founding-member rate before we open.
@@ -216,7 +224,7 @@ export default function CiderClubPage() {
         <div className="mx-auto max-w-5xl space-y-16">
 
           {/* ── Tier cards ───────────────────────────────────────────────── */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div ref={tiersRef} className="grid grid-cols-1 gap-px bg-cream/[0.06] md:grid-cols-3">
             {TIERS.map((tier) => {
               const selected = form.tier === tier.id;
               return (
@@ -224,46 +232,53 @@ export default function CiderClubPage() {
                   key={tier.id}
                   type="button"
                   onClick={() => selectTier(tier.id)}
-                  className={`relative text-left rounded-2xl border p-6 transition-all duration-200 ${
-                    selected
-                      ? 'border-ember/60 bg-ember/10 ring-2 ring-ember/30'
-                      : 'border-cream/10 bg-white/5 hover:border-cream/20 hover:bg-white/[0.08]'
-                  }`}
+                  className={`cc-tier-card relative text-left p-8 transition-colors duration-300
+                    ${tier.featured
+                      ? 'bg-ember/[0.07] hover:bg-ember/[0.12]'
+                      : 'bg-bg hover:bg-white/[0.04]'
+                    }
+                    ${selected ? 'outline outline-1 outline-gold/30' : ''}`}
                   aria-pressed={selected}
                   aria-label={`Select ${tier.name} tier`}
                 >
                   {tier.featured && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-ember px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-widest text-white">
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                     border border-gold/40 bg-bg px-4 py-1 font-label
+                                     text-[9px] tracking-[0.2em] uppercase text-gold">
                       Most Popular
                     </span>
                   )}
 
-                  <div className="mb-3 text-3xl" aria-hidden="true">{tier.icon}</div>
+                  <span className={`font-corp-display text-2xl mb-6 block leading-none
+                    ${tier.featured ? 'text-ember' : 'text-gold/50'}`}
+                    aria-hidden="true">
+                    {tier.glyph}
+                  </span>
 
-                  <div className="mb-0.5 font-serif text-xl font-bold text-cream">
+                  <div className="font-corp-display text-2xl font-light text-cream mb-1">
                     {tier.name}
                   </div>
-                  <div className="mb-4 font-serif text-3xl font-bold text-ember">
+                  <div className="font-corp-display text-4xl font-light text-gold mb-1">
                     {tier.price}
-                    <span className="font-sans text-sm font-normal text-cream/50">
+                    <span className="font-sans text-sm font-normal text-cream/40">
                       &nbsp;{tier.sub}
                     </span>
                   </div>
 
-                  <ul className="space-y-2">
+                  <div className="h-px bg-cream/[0.07] my-5" />
+
+                  <ul className="space-y-2.5">
                     {tier.perks.map((perk) => (
-                      <li
-                        key={perk}
-                        className="flex items-start gap-2 font-sans text-sm text-cream/70"
-                      >
-                        <span className="mt-0.5 shrink-0 text-ember" aria-hidden="true">✓</span>
+                      <li key={perk} className="flex items-start gap-2.5 font-sans text-sm text-cream/60">
+                        <span className="mt-0.5 shrink-0 text-gold/60" aria-hidden="true">—</span>
                         {perk}
                       </li>
                     ))}
                   </ul>
 
                   {selected && (
-                    <div className="mt-4 rounded-lg bg-ember/20 px-3 py-2 text-center font-sans text-xs font-semibold text-ember">
+                    <div className="mt-6 border-t border-gold/20 pt-4 font-label text-[9px]
+                                    tracking-[0.2em] uppercase text-gold">
                       Selected ✓
                     </div>
                   )}
@@ -274,89 +289,60 @@ export default function CiderClubPage() {
 
           {/* ── Signup form ──────────────────────────────────────────────── */}
           <div>
-            <h2 className="mb-2 text-center font-serif text-3xl font-bold text-cream">
-              Pre-Register Now
-            </h2>
-            <p
-              className="mb-10 text-center font-sans text-sm text-cream/50"
-            >
-              Lock in your founding-member rate. No payment required until opening day.
-            </p>
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <span className="block h-px w-8 bg-gold/40 shrink-0" />
+                <span className="font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">
+                  Pre-Register
+                </span>
+                <span className="block h-px w-8 bg-gold/40 shrink-0" />
+              </div>
+              <h2 className="font-corp-display text-4xl font-light text-cream mb-2">
+                Join the Waitlist
+              </h2>
+              <p className="font-sans text-sm text-cream/45">
+                Lock in your founding-member rate. No payment required until opening day.
+              </p>
+            </div>
 
-            <GlassCard hover={false} className="mx-auto max-w-xl p-8">
+            <div className="mx-auto max-w-xl border border-cream/[0.08] bg-white/[0.02] p-10">
+
+              {/* Selected tier display */}
+              <div className="border border-gold/20 bg-gold/[0.05] px-5 py-3 mb-6 text-center">
+                <span className="font-label text-[9px] tracking-[0.2em] uppercase text-cream/40">
+                  Selected tier:
+                </span>{' '}
+                <span className="font-corp-display text-base text-gold">
+                  {selectedTier?.name} — {selectedTier?.price}/mo
+                </span>
+              </div>
+
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
-                {/* Selected tier display */}
-                <div className="rounded-xl border border-ember/30 bg-ember/10 px-4 py-3 text-center">
-                  <span className="font-sans text-xs text-cream/60">
-                    Selected tier:
-                  </span>{' '}
-                  <span className="font-sans text-sm font-semibold text-ember">
-                    {TIERS.find((t) => t.id === form.tier)?.name} —{' '}
-                    {TIERS.find((t) => t.id === form.tier)?.price}/mo
-                  </span>
-                </div>
-
-                {/* Name + Email */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField id="cc-name" label="Full Name" required>
-                    <input
-                      id="cc-name"
-                      name="name"
-                      type="text"
-                      autoComplete="name"
-                      required
-                      value={form.name}
-                      onChange={handleChange}
-                      disabled={submitting}
-                      placeholder="Jane Smith"
-                      className={darkInput}
-                    />
+                    <input id="cc-name" name="name" type="text" autoComplete="name" required
+                      value={form.name} onChange={handleChange} disabled={submitting}
+                      placeholder="Jane Smith" className={darkInput} />
                   </FormField>
-
                   <FormField id="cc-email" label="Email Address" required>
-                    <input
-                      id="cc-email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      disabled={submitting}
-                      placeholder="jane@example.com"
-                      className={darkInput}
-                    />
+                    <input id="cc-email" name="email" type="email" autoComplete="email" required
+                      value={form.email} onChange={handleChange} disabled={submitting}
+                      placeholder="jane@example.com" className={darkInput} />
                   </FormField>
                 </div>
 
-                {/* Phone */}
-                <FormField
-                  id="cc-phone"
-                  label="Phone Number"
-                  hint="Optional — for membership confirmation texts only."
-                >
-                  <input
-                    id="cc-phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    value={form.phone}
-                    onChange={handleChange}
-                    disabled={submitting}
-                    placeholder="(575) 555-0100"
-                    className={darkInput}
-                  />
+                <FormField id="cc-phone" label="Phone Number"
+                  hint="Optional — for membership confirmation texts only.">
+                  <input id="cc-phone" name="phone" type="tel" autoComplete="tel"
+                    value={form.phone} onChange={handleChange} disabled={submitting}
+                    placeholder="(575) 555-0100" className={darkInput} />
                 </FormField>
 
-                {/* Error banner */}
                 {error && (
-                  <div
-                    role="alert"
-                    aria-live="assertive"
-                    className="flex items-start gap-3 rounded-xl border border-red-500/30
-                               bg-red-500/10 px-4 py-3 text-sm text-red-400"
-                  >
+                  <div role="alert" aria-live="assertive"
+                    className="flex items-start gap-3 border border-red-500/30
+                               bg-red-500/10 px-4 py-3 text-sm text-red-400">
                     <AlertCircle />
                     <span>
                       <strong className="font-semibold">Sign-up failed — </strong>
@@ -365,34 +351,22 @@ export default function CiderClubPage() {
                   </div>
                 )}
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="flex w-full items-center justify-center gap-2.5 rounded-xl
-                             bg-ember px-6 py-4 text-sm font-bold text-white
-                             transition-colors hover:bg-ember-hover
-                             disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {submitting ? (
-                    <>
-                      <Spinner />
-                      Signing up…
-                    </>
-                  ) : (
-                    'Join the Cider Club →'
-                  )}
+                <button type="submit" disabled={submitting}
+                  className="flex w-full items-center justify-center gap-2.5 bg-ember hover:bg-ember-hover
+                             px-6 py-4 font-label text-[10px] tracking-[0.25em] uppercase text-white
+                             transition-colors disabled:cursor-not-allowed disabled:opacity-60">
+                  {submitting ? <><Spinner />Signing up…</> : 'Join the Cider Club →'}
                 </button>
 
-                <p className="text-center font-sans text-xs text-cream/35">
+                <p className="text-center font-sans text-xs text-cream/30">
                   No payment required until we open. Unsubscribe any time.
                 </p>
               </form>
-            </GlassCard>
+            </div>
           </div>
 
           {/* ── Footnote ─────────────────────────────────────────────────── */}
-          <p className="text-center font-sans text-xs text-cream/35">
+          <p className="text-center font-sans text-xs text-cream/25">
             Cider Club membership pricing and perks are subject to change before
             Grand Opening. Founding members who pre-register are guaranteed their
             quoted rate for the first 12 months.

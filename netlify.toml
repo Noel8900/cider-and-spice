@@ -12,18 +12,25 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Content-Type-Options = "nosniff"
-    X-Frame-Options         = "SAMEORIGIN"
-    X-XSS-Protection        = "1; mode=block"
-    Referrer-Policy         = "strict-origin-when-cross-origin"
+    X-Content-Type-Options  = "nosniff"
+    X-Frame-Options          = "SAMEORIGIN"
+    Referrer-Policy          = "strict-origin-when-cross-origin"
+    Permissions-Policy       = "camera=(), microphone=(), geolocation=(), payment=()"
 
-# Cache immutable Next.js static assets
+# Cache immutable Next.js static assets (JS/CSS chunks — content-hashed filenames)
 [[headers]]
   for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Cache public images — 30 days (filenames are descriptive/stable)
 [[headers]]
   for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+# Floor plan static assets
+[[headers]]
+  for = "/floor-plan/*"
   [headers.values]
     Cache-Control = "public, max-age=86400"

@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import gsap from 'gsap'
 import { applyAsVendor } from './actions'
 import type { VendorFormData, VendorActionResult } from './actions'
 import SkeletonForm from '@/components/ui/SkeletonForm'
-import { lightInput } from '@/components/ui/FormField'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
 
@@ -45,17 +45,21 @@ const EMPTY_FORM: VendorFormData = {
 
 const DESC_MAX = 500
 
-// ─── Small shared components ──────────────────────────────────────────────────
+// ─── Luxury input class ───────────────────────────────────────────────────────
+
+const inputCls =
+  'block w-full border border-cream/20 bg-white/[0.03] px-5 py-4 ' +
+  'font-sans text-sm text-cream placeholder-cream/25 ' +
+  'transition-colors focus:border-gold/40 focus:outline-none ' +
+  'focus:ring-1 focus:ring-gold/15 disabled:opacity-50 disabled:cursor-not-allowed'
+
+const selectCls = `${inputCls} appearance-none cursor-pointer bg-bg`
+
+// ─── Small helpers ────────────────────────────────────────────────────────────
 
 function Spinner() {
   return (
-    <svg
-      className="h-5 w-5 animate-spin"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
+    <svg className="h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
@@ -64,16 +68,8 @@ function Spinner() {
 
 function AlertCircle() {
   return (
-    <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+    <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  )
-}
-
-function BackArrow() {
-  return (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   )
 }
@@ -91,23 +87,21 @@ interface FieldProps {
 function Field({ id, label, required, hint, children }: FieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-gray-700">
+      <label htmlFor={id} className="font-label text-[9px] tracking-[0.2em] uppercase text-cream/50 mb-2 block">
         {label}
-        {required && <span className="ml-0.5 text-red-500" aria-label="required">*</span>}
+        {required && <span className="ml-0.5 text-gold/60" aria-label="required">*</span>}
       </label>
       {children}
-      {hint && <p className="mt-1.5 text-xs text-gray-400">{hint}</p>}
+      {hint && <p className="mt-1.5 font-sans text-xs text-cream/30">{hint}</p>}
     </div>
   )
 }
-
-// Use shared lightInput from FormField for consistency
-const inputCls = lightInput
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function VendorsPage() {
   const router = useRouter()
+  const formRef = useRef<HTMLDivElement>(null)
   const [form, setForm]             = useState<VendorFormData>(EMPTY_FORM)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]           = useState<string | null>(null)
@@ -117,13 +111,17 @@ export default function VendorsPage() {
     setInitializing(false)
   }, [])
 
-  // ── Handlers ────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!initializing && formRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.from(formRef.current, { opacity: 0, y: 32, duration: 0.9, ease: 'power3.out', delay: 0.1 })
+      })
+      return () => ctx.revert()
+    }
+  }, [initializing])
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
-    // Clamp description to DESC_MAX chars
     const safe = name === 'description' ? value.slice(0, DESC_MAX) : value
     setForm(prev => ({ ...prev, [name]: safe }))
     if (error) setError(null)
@@ -133,9 +131,7 @@ export default function VendorsPage() {
     e.preventDefault()
     setSubmitting(true)
     setError(null)
-
     const result: VendorActionResult = await applyAsVendor(form)
-
     if (result.ok) {
       router.push('/vendors/thank-you')
     } else {
@@ -144,43 +140,44 @@ export default function VendorsPage() {
     }
   }
 
-  // ── Early exits ─────────────────────────────────────────────────────────────
-
   if (initializing) return (
     <main className="min-h-screen bg-bg">
       <SkeletonForm />
     </main>
   )
 
-  // ── Render ──────────────────────────────────────────────────────────────────
-
   return (
-    <main className="min-h-screen" style={{ background: '#faf8f5' }}>
+    <main className="min-h-screen bg-bg">
 
-      {/* ── Hero header ───────────────────────────────────────────────────── */}
-      <div className="bg-bg px-6 pb-16 pt-6">
-        <div className="mx-auto max-w-3xl">
+      {/* ── Hero header ─────────────────────────────────────────────────── */}
+      <div className="px-6 pb-20 pt-28">
+        <div className="mx-auto max-w-4xl">
           <Link
             href="/"
-            className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-ember transition-colors hover:text-ember/70"
+            className="mb-10 inline-flex items-center gap-2 font-label text-[9px]
+                       tracking-[0.2em] uppercase text-cream/40 hover:text-gold
+                       transition-colors duration-300"
           >
-            <BackArrow />
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
             Back to the Hub
           </Link>
 
           <div className="text-center">
-            <p
-              className="mb-3 text-xs font-bold uppercase tracking-widest text-ember font-label"
-            >
-              Vendor Applications
-            </p>
-            <h1
-              className="mb-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl"
-            >
-              Bring Your Concept{' '}
-              <em className="not-italic text-ember">to the Hub</em>
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="block h-px w-8 bg-gold shrink-0" />
+              <span className="font-label text-[10px] tracking-[0.3em] uppercase text-gold">
+                Vendor Applications
+              </span>
+              <span className="block h-px w-8 bg-gold shrink-0" />
+            </div>
+            <h1 className="font-corp-display text-5xl sm:text-6xl md:text-7xl font-light
+                            leading-[0.92] tracking-tight text-cream mb-6">
+              Bring Your Concept<br />
+              <em className="not-italic text-gold">to the Hub</em>
             </h1>
-            <p className="mx-auto max-w-xl text-base text-white/70">
+            <p className="mx-auto max-w-xl font-sans text-base leading-relaxed text-cream/55">
               We&apos;re curating 10–13 distinctive food concepts for our Q1–Q2 2027
               grand opening in downtown Las Cruces. Tell us about your idea and
               we&apos;ll be in touch.
@@ -189,161 +186,96 @@ export default function VendorsPage() {
         </div>
       </div>
 
-      {/* ── Form card ─────────────────────────────────────────────────────── */}
-      <div className="-mt-8 px-4 pb-24">
-        <div className="mx-auto max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+      {/* ── Form panel ──────────────────────────────────────────────────── */}
+      <div className="px-6 pb-24">
+        <div ref={formRef} className="mx-auto max-w-2xl border border-cream/[0.08] bg-white/[0.02] p-10 md:p-14">
 
-          {/* Card header */}
-          <div className="border-b border-gray-100 px-8 pb-6 pt-8">
-            <h2
-              className="text-xl font-bold text-gray-900"
-              style={{ fontFamily: 'Playfair Display, serif' }}
-            >
+          <div className="border-b border-cream/[0.07] pb-6 mb-8">
+            <h2 className="font-corp-display text-2xl font-light text-cream mb-1">
               Vendor Application
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Fields marked{' '}
-              <span className="font-semibold text-red-500">*</span>{' '}
-              are required.
+            <p className="font-sans text-xs text-cream/30">
+              Fields marked <span className="text-gold/60">*</span> are required.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-6 px-8 py-8">
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
 
-            {/* ── Row 1: Name + Business name ───────────────────────────── */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <Field id="name" label="Full Name" required>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  value={form.name}
-                  onChange={handleChange}
-                  disabled={submitting}
-                  placeholder="Jane Smith"
-                  className={inputCls}
-                />
+                <input id="name" name="name" type="text" autoComplete="name" required
+                  value={form.name} onChange={handleChange} disabled={submitting}
+                  placeholder="Jane Smith" className={inputCls} />
               </Field>
-
               <Field id="business_name" label="Business / Concept Name" required>
-                <input
-                  id="business_name"
-                  name="business_name"
-                  type="text"
-                  autoComplete="organization"
-                  required
-                  value={form.business_name}
-                  onChange={handleChange}
-                  disabled={submitting}
-                  placeholder="Spice Route Kitchen"
-                  className={inputCls}
-                />
+                <input id="business_name" name="business_name" type="text" autoComplete="organization" required
+                  value={form.business_name} onChange={handleChange} disabled={submitting}
+                  placeholder="Spice Route Kitchen" className={inputCls} />
               </Field>
             </div>
 
-            {/* ── Row 2: Email + Phone ───────────────────────────────────── */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <Field id="email" label="Email Address" required>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  disabled={submitting}
-                  placeholder="jane@example.com"
-                  className={inputCls}
-                />
+                <input id="email" name="email" type="email" autoComplete="email" required
+                  value={form.email} onChange={handleChange} disabled={submitting}
+                  placeholder="jane@example.com" className={inputCls} />
               </Field>
-
               <Field id="phone" label="Phone Number">
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  value={form.phone}
-                  onChange={handleChange}
-                  disabled={submitting}
-                  placeholder="(575) 555-0100"
-                  className={inputCls}
-                />
+                <input id="phone" name="phone" type="tel" autoComplete="tel"
+                  value={form.phone} onChange={handleChange} disabled={submitting}
+                  placeholder="(575) 555-0100" className={inputCls} />
               </Field>
             </div>
 
-            {/* ── Row 3: Cuisine type + Booth preference ─────────────────── */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <Field id="cuisine_type" label="Cuisine Type" required>
-                <select
-                  id="cuisine_type"
-                  name="cuisine_type"
-                  required
-                  value={form.cuisine_type}
-                  onChange={handleChange}
-                  disabled={submitting}
-                  className={`${inputCls} cursor-pointer`}
-                >
-                  {CUISINE_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value} disabled={!!opt.disabled}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select id="cuisine_type" name="cuisine_type" required
+                    value={form.cuisine_type} onChange={handleChange} disabled={submitting}
+                    className={selectCls}>
+                    {CUISINE_OPTIONS.map(opt => (
+                      <option key={opt.value} value={opt.value} disabled={!!opt.disabled} className="bg-bg">
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-3 w-3 text-gold/50"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </Field>
-
-              <Field
-                id="booth_preference"
-                label="Booth Size Preference"
-                hint="Pricing estimates — final rates confirmed at lease signing."
-              >
-                <select
-                  id="booth_preference"
-                  name="booth_preference"
-                  value={form.booth_preference}
-                  onChange={handleChange}
-                  disabled={submitting}
-                  className={`${inputCls} cursor-pointer`}
-                >
-                  {BOOTH_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value} disabled={!!opt.disabled}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+              <Field id="booth_preference" label="Booth Size Preference"
+                hint="Estimates — final rates confirmed at lease signing.">
+                <div className="relative">
+                  <select id="booth_preference" name="booth_preference"
+                    value={form.booth_preference} onChange={handleChange} disabled={submitting}
+                    className={selectCls}>
+                    {BOOTH_OPTIONS.map(opt => (
+                      <option key={opt.value} value={opt.value} disabled={!!opt.disabled} className="bg-bg">
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-3 w-3 text-gold/50"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </Field>
             </div>
 
-            {/* ── Row 4: Description ────────────────────────────────────── */}
-            <Field
-              id="description"
-              label="Short Description"
-              required
-              hint={`${form.description.length} / ${DESC_MAX} characters`}
-            >
-              <textarea
-                id="description"
-                name="description"
-                required
-                rows={5}
-                value={form.description}
-                onChange={handleChange}
-                disabled={submitting}
+            <Field id="description" label="Short Description" required
+              hint={`${form.description.length} / ${DESC_MAX} characters`}>
+              <textarea id="description" name="description" required rows={5}
+                value={form.description} onChange={handleChange} disabled={submitting}
                 placeholder="Tell us about your food concept, your experience in the industry, and why you'd be a great fit for the Hub…"
-                className={`${inputCls} resize-y`}
-              />
+                className={`${inputCls} resize-y`} />
             </Field>
 
-            {/* ── Error banner ──────────────────────────────────────────── */}
             {error && (
-              <div
-                role="alert"
-                aria-live="assertive"
-                className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-              >
+              <div role="alert" aria-live="assertive"
+                className="flex items-start gap-3 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
                 <AlertCircle />
                 <span>
                   <strong className="font-semibold">Submission failed — </strong>
@@ -352,27 +284,16 @@ export default function VendorsPage() {
               </div>
             )}
 
-            {/* ── Submit button ─────────────────────────────────────────── */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-ember hover:bg-ember-hover px-6 py-4 text-sm font-bold text-white shadow-lg transition-colors disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {submitting ? (
-                <>
-                  <Spinner />
-                  Submitting…
-                </>
-              ) : (
-                'Submit Application →'
-              )}
+            <button type="submit" disabled={submitting}
+              className="flex w-full items-center justify-center gap-2.5 bg-ember hover:bg-ember-hover
+                         px-6 py-4 font-label text-[10px] tracking-[0.25em] uppercase text-white
+                         transition-colors disabled:cursor-not-allowed disabled:opacity-60">
+              {submitting ? <><Spinner />Submitting…</> : 'Submit Application →'}
             </button>
 
-            {/* ── Privacy note ─────────────────────────────────────────── */}
-            <p className="text-center text-xs text-gray-400">
-              Your information is kept private and will only be used to evaluate
-              your application.{' '}
-              <Link href="/#contact" className="underline underline-offset-2 hover:text-gray-600">
+            <p className="text-center font-sans text-xs text-cream/30">
+              Your information is kept private and will only be used to evaluate your application.{' '}
+              <Link href="/#contact" className="border-b border-cream/20 pb-px hover:border-gold/50 hover:text-gold transition-all duration-300">
                 Questions? Contact us.
               </Link>
             </p>

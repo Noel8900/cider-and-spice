@@ -1,14 +1,18 @@
-// Depth layer — glass effect rhymes with hero orb material
-// Subtle, never competes with the star of the show
-// Used consistently across features, vendor cards, admin rows
-
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  flat?: boolean;
 }
 
-export default function GlassCard({ children, className = '', hover = true }: GlassCardProps) {
+export default function GlassCard({ children, className = '', hover = true, flat = false }: GlassCardProps) {
+  if (flat) {
+    return (
+      <div className={`border border-cream/[0.08] bg-white/[0.02] ${className}`}>
+        {children}
+      </div>
+    );
+  }
   return (
     <div className={`
       rounded-2xl border border-cream/10

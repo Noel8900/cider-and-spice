@@ -14,10 +14,10 @@ export default function SkeletonStats({ count = 3 }: SkeletonStatsProps) {
       {[...Array(count)].map((_, i) => (
         <div
           key={i}
-          className="rounded-2xl border border-[#F5ECD7]/10 bg-white/5 p-4 text-center space-y-2"
+          className="border border-cream/[0.07] bg-white/[0.02] p-6 text-center space-y-2"
         >
-          <Skeleton className="h-8 w-12 mx-auto" rounded="md" />
-          <Skeleton className="h-3 w-16 mx-auto" rounded="md" />
+          <Skeleton className="h-10 w-16 mx-auto" rounded="none" />
+          <Skeleton className="h-3 w-20 mx-auto" rounded="none" />
         </div>
       ))}
     </div>

@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
-import Navbar from '@/components/layout/Navbar'
-import FloatingFloorPlanButton from '@/components/ui/FloatingFloorPlanButton'
+import ConditionalCulinaryUI from '@/components/layout/ConditionalCulinaryUI'
 import './globals.css'
 
 /* ── Metadata (replaces <head> SEO tags) ─────────────────────── */
@@ -18,7 +16,7 @@ export const metadata: Metadata = {
     siteName:    'Las Cruces Culinary Innovation Hub',
     title:       'Las Cruces Culinary Innovation Hub | Food Hall & Craft Cider Bar',
     description: "Southern NM's first food hall, craft cider bar, and culinary incubator. 10–13 global concepts. Opening Q1–Q2 2027 in downtown Las Cruces.",
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
     locale: 'en_US',
   },
   twitter: {
@@ -26,10 +24,10 @@ export const metadata: Metadata = {
     site:        '@LCCulinaryHub',
     title:       'Las Cruces Culinary Innovation Hub',
     description: "Southern NM's first food hall, craft cider bar & culinary incubator. Opening 2027 in downtown Las Cruces.",
-    images:      ['/og-image.jpg'],
+    images:      ['/opengraph-image'],
   },
   other: {
-    'theme-color':                        '#B83A2E',
+    'theme-color':                        '#1C1209',
     'apple-mobile-web-app-capable':       'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
     'geo.region':    'US-NM',
@@ -45,19 +43,27 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" id="top" className="scroll-smooth">
       <head>
         {/* Google Fonts — preconnect then load */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap"
           rel="stylesheet"
         />
-        {/* Favicon placeholder */}
+        {/* Hero LCP preload — Next.js Image with priority also injects a preload,
+            but this explicit hint fires earlier in the head for faster paint. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/cider-spice-bar-craft-cider-tap-pour-concept-rendering.png"
+          type="image/png"
+        />
+        {/* Favicon — gold diamond glyph on dark bg */}
         <link
           rel="icon"
-          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌶</text></svg>"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231C1209'/><text y='.85em' x='12' font-size='76' fill='%23d4a84b'>◈</text></svg>"
         />
 
         {/* JSON-LD structured data */}
@@ -118,14 +124,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
+        <ConditionalCulinaryUI />
         {children}
-        <FloatingFloorPlanButton />
 
-        {/* All DOM interaction (nav, FAQ, forms, lightbox, animations)
-            runs after hydration via the existing vanilla-JS bundle.
-            Strategy="afterInteractive" ensures it fires client-side only. */}
-        <Script src="/main.js" strategy="afterInteractive" />
       </body>
     </html>
   )

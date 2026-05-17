@@ -1,25 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { submitInvestorInquiry } from './actions';
 import type { InvestorInquiryData, InvestorActionResult } from './actions';
-import GlassCard from '@/components/ui/GlassCard';
 import FormField from '@/components/ui/FormField';
 import { darkInput } from '@/components/ui/FormField';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 const METRICS = [
-  { value: '$1,505,000', label: 'Total Project Capital' },
-  { value: '$822K',      label: 'Year 1 Revenue (Appendix F)' },
-  { value: '18–20 mo',  label: 'Cash Flow Breakeven' },
-  { value: '17–20%',    label: 'Illustrative 3-Year IRR' },
+  { id: 'capital',   raw: 1505000, formatted: '$1,505,000', label: 'Total Project Capital',        prefix: '$', suffix: '' },
+  { id: 'revenue',   raw: 822,     formatted: '$822K',       label: 'Year 1 Revenue (Appendix F)',  prefix: '$', suffix: 'K' },
+  { id: 'breakeven', raw: null,    formatted: '18–20 mo',    label: 'Cash Flow Breakeven',          prefix: '', suffix: '' },
+  { id: 'irr',       raw: null,    formatted: '17–20%',      label: 'Illustrative 3-Year IRR',      prefix: '', suffix: '' },
 ] as const;
 
 interface InvestorTier {
   name:      string;
   range:     string;
+  glyph:     string;
   featured?: boolean;
   perks:     string[];
 }
@@ -28,6 +32,7 @@ const TIERS: InvestorTier[] = [
   {
     name:  'Community Investor',
     range: '$25K – $74,999',
+    glyph: '◇',
     perks: [
       'Investor newsletter & quarterly updates',
       'Named recognition in Hub materials',
@@ -38,6 +43,7 @@ const TIERS: InvestorTier[] = [
   {
     name:     'Growth Partner',
     range:    '$75K – $199,999',
+    glyph:    '◈',
     featured: true,
     perks: [
       'All Community Investor perks',
@@ -50,6 +56,7 @@ const TIERS: InvestorTier[] = [
   {
     name:  'Founding Investor',
     range: '$200K+',
+    glyph: '◆',
     perks: [
       'All Growth Partner perks',
       'Named feature in Hub signage & website',
@@ -79,14 +86,6 @@ const EMPTY: InvestorInquiryData = {
 
 // ─── Small helpers ────────────────────────────────────────────────────────────
 
-function BackArrow() {
-  return (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  );
-}
-
 function Spinner() {
   return (
     <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -104,44 +103,33 @@ function AlertCircle() {
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg className="h-12 w-12 text-ember" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  );
-}
-
 // ─── Success screen ───────────────────────────────────────────────────────────
 
 function SuccessScreen() {
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-24">
       <div className="mx-auto max-w-md text-center">
-        <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-ember/30 bg-ember/10">
-          <CheckIcon />
-        </div>
-        <h2 className="mb-4 font-serif text-3xl font-bold text-cream">
-          Inquiry Received!
+        <span className="font-corp-display text-5xl text-gold block mb-8" aria-hidden="true">◈</span>
+        <h2 className="font-corp-display text-4xl font-light text-cream mb-4">
+          Inquiry Received
         </h2>
-        <p className="mb-3 font-sans text-base leading-relaxed text-cream/70">
+        <p className="font-sans text-base leading-relaxed text-cream/60 mb-3">
           Thank you for your interest in the Las Cruces Culinary Innovation Hub.
         </p>
-        <p className="mb-10 font-sans text-base leading-relaxed text-cream/70">
+        <p className="font-sans text-base leading-relaxed text-cream/60 mb-10">
           We will review your inquiry and follow up at the email you provided
           within <strong className="text-cream">48 hours</strong>.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Link
-            href="/"
-            className="rounded-xl bg-ember px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ember-hover"
-          >
+          <Link href="/"
+            className="bg-ember hover:bg-ember-hover px-8 py-4 font-label text-[10px]
+                       tracking-[0.25em] uppercase text-white transition-colors">
             Back to Home
           </Link>
-          <Link
-            href="/cider-club"
-            className="rounded-xl border border-cream/20 px-6 py-3 text-sm font-semibold text-cream/80 transition-colors hover:border-ember/40 hover:text-ember"
-          >
+          <Link href="/cider-club"
+            className="border border-cream/20 hover:border-gold/50 px-8 py-4 font-label
+                       text-[10px] tracking-[0.25em] uppercase text-cream/60 hover:text-gold
+                       transition-all duration-300">
             Explore Cider Club →
           </Link>
         </div>
@@ -153,14 +141,59 @@ function SuccessScreen() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function InvestorsPage() {
-  const [form, setForm]           = useState<InvestorInquiryData>(EMPTY);
+  const metricsRef = useRef<HTMLDivElement>(null);
+  const tiersRef   = useRef<HTMLDivElement>(null);
+  const [form, setForm]             = useState<InvestorInquiryData>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess]     = useState(false);
-  const [error, setError]         = useState<string | null>(null);
+  const [success, setSuccess]       = useState(false);
+  const [error, setError]           = useState<string | null>(null);
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) {
+  // GSAP count-up on numeric metrics
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>('[data-metric-target]');
+    const triggers: ScrollTrigger[] = [];
+
+    els.forEach((el) => {
+      const target = Number(el.dataset.metricTarget);
+      const prefix = el.dataset.metricPrefix ?? '';
+      const suffix = el.dataset.metricSuffix ?? '';
+      const decimals = el.dataset.metricDecimals === '1' ? 1 : 0;
+      if (!target) return;
+
+      const obj = { val: 0 };
+      const st = ScrollTrigger.create({
+        trigger: el,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          gsap.to(obj, {
+            val: target,
+            duration: 2,
+            ease: 'power2.out',
+            onUpdate() {
+              el.textContent = prefix + (decimals ? obj.val.toFixed(decimals) : Math.round(obj.val).toLocaleString()) + suffix;
+            },
+          });
+        },
+      });
+      triggers.push(st);
+    });
+
+    return () => { triggers.forEach((t) => t.kill()); };
+  }, []);
+
+  // GSAP stagger on tier cards
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.inv-tier-card', {
+        opacity: 0, y: 28, duration: 0.9, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: tiersRef.current, start: 'top 78%', once: true },
+      });
+    }, tiersRef);
+    return () => ctx.revert();
+  }, []);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (error) setError(null);
@@ -185,24 +218,30 @@ export default function InvestorsPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="px-6 pb-20 pt-28">
         <div className="mx-auto max-w-4xl">
-          <Link
-            href="/"
-            className="mb-10 inline-flex items-center gap-1.5 font-sans text-sm font-medium text-ember transition-opacity hover:opacity-70"
-          >
-            <BackArrow />
+          <Link href="/"
+            className="mb-10 inline-flex items-center gap-2 font-label text-[9px]
+                       tracking-[0.2em] uppercase text-cream/40 hover:text-gold
+                       transition-colors duration-300">
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
             Back to the Hub
           </Link>
 
           <div className="text-center">
-            <span className="mb-4 inline-block rounded-full border border-ember/40 px-4 py-1.5 font-sans text-xs font-semibold uppercase tracking-widest text-ember">
-              Investor Overview
-            </span>
-            <h1 className="mb-5 font-serif text-5xl font-bold leading-tight text-cream md:text-6xl">
-              A Resilient, Diversified<br />Revenue Platform
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="block h-px w-8 bg-gold shrink-0" />
+              <span className="font-label text-[10px] tracking-[0.3em] uppercase text-gold">
+                Investor Overview
+              </span>
+              <span className="block h-px w-8 bg-gold shrink-0" />
+            </div>
+            <h1 className="font-corp-display text-5xl sm:text-6xl md:text-7xl font-light
+                            leading-[0.92] tracking-tight text-cream mb-6">
+              A Resilient, Diversified<br />
+              <em className="not-italic text-gold">Revenue Platform</em>
             </h1>
-            <p
-              className="mx-auto max-w-2xl font-sans text-lg leading-relaxed text-cream/65"
-            >
+            <p className="mx-auto max-w-2xl font-sans text-base leading-relaxed text-cream/55">
               Conservative assumptions. Six qualifying grant categories. A clear path
               to $1,068,000 in 3-year cumulative EBITDA for Southern New Mexico&apos;s
               first food hall and craft cider bar.
@@ -212,16 +251,19 @@ export default function InvestorsPage() {
       </div>
 
       {/* ── Metrics bar ──────────────────────────────────────────────────── */}
-      <div className="border-y border-cream/10 bg-white/[0.02] px-6 py-10">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
-          {METRICS.map(({ value, label }) => (
-            <div key={label} className="text-center">
-              <div className="mb-1 font-serif text-3xl font-bold text-ember">
-                {value}
-              </div>
+      <div ref={metricsRef} className="border-y border-cream/[0.07]">
+        <div className="grid grid-cols-2 gap-px bg-cream/[0.06] md:grid-cols-4">
+          {METRICS.map(({ id, raw, formatted, label, prefix, suffix }) => (
+            <div key={id} className="bg-bg px-6 py-10 text-center">
               <div
-                className="font-sans text-xs leading-snug text-cream/50"
+                className="font-corp-display text-4xl md:text-5xl font-light text-gold mb-2"
+                data-metric-target={raw ?? undefined}
+                data-metric-prefix={prefix}
+                data-metric-suffix={suffix}
               >
+                {formatted}
+              </div>
+              <div className="font-label text-[9px] tracking-[0.3em] uppercase text-cream/40 leading-snug">
                 {label}
               </div>
             </div>
@@ -234,177 +276,139 @@ export default function InvestorsPage() {
 
           {/* ── Investment tiers ─────────────────────────────────────────── */}
           <div>
-            <h2 className="mb-2 text-center font-serif text-3xl font-bold text-cream">
-              Investment Tiers
-            </h2>
-            <p
-              className="mb-12 text-center font-sans text-base text-cream/55"
-            >
-              All investment discussions are conducted privately. No online transactions.
-            </p>
+            <div className="text-center mb-12">
+              <h2 className="font-corp-display text-4xl font-light text-cream mb-2">
+                Investment Tiers
+              </h2>
+              <p className="font-sans text-sm text-cream/45">
+                All investment discussions are conducted privately. No online transactions.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div ref={tiersRef} className="grid grid-cols-1 gap-px bg-cream/[0.06] md:grid-cols-3">
               {TIERS.map((tier) => (
-                <GlassCard
+                <div
                   key={tier.name}
-                  hover={false}
-                  className={`p-6 ${tier.featured ? 'border-ember/40 bg-ember/5' : ''}`}
+                  className={`inv-tier-card p-8 transition-colors duration-300
+                    ${tier.featured ? 'bg-ember/[0.07]' : 'bg-bg'}`}
                 >
                   {tier.featured && (
-                    <span className="mb-4 inline-block rounded-full bg-ember px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-widest text-white">
+                    <span className="inline-block border border-gold/40 px-3 py-1 font-label
+                                     text-[9px] tracking-[0.2em] uppercase text-gold mb-4">
                       Most Inquired
                     </span>
                   )}
-                  <div className="mb-1 font-serif text-xl font-bold text-cream">
+                  <span className={`font-corp-display text-2xl mb-5 block leading-none
+                    ${tier.featured ? 'text-ember' : 'text-gold/50'}`}
+                    aria-hidden="true">
+                    {tier.glyph}
+                  </span>
+                  <div className="font-corp-display text-2xl font-light text-cream mb-1">
                     {tier.name}
                   </div>
-                  <div className="mb-5 font-sans text-sm text-ember font-semibold">
+                  <div className="font-label text-[9px] tracking-[0.2em] uppercase text-gold mb-5">
                     {tier.range}
                   </div>
+                  <div className="h-px bg-cream/[0.07] mb-5" />
                   <ul className="space-y-2.5">
                     {tier.perks.map((perk) => (
-                      <li
-                        key={perk}
-                        className="flex items-start gap-2.5 font-sans text-sm text-cream/70"
-                      >
-                        <span className="mt-0.5 text-ember" aria-hidden="true">✓</span>
+                      <li key={perk} className="flex items-start gap-2.5 font-sans text-sm text-cream/60">
+                        <span className="mt-0.5 text-gold/60 shrink-0" aria-hidden="true">—</span>
                         {perk}
                       </li>
                     ))}
                   </ul>
-                </GlassCard>
+                </div>
               ))}
             </div>
           </div>
 
           {/* ── Disclosure note ──────────────────────────────────────────── */}
-          <GlassCard hover={false} className="p-6">
-            <p className="font-sans text-xs leading-relaxed text-cream/45">
-              <strong className="text-cream/70">Financial Model Disclosure (May 2026):</strong>{' '}
+          <div className="border border-cream/[0.08] bg-white/[0.02] p-6">
+            <p className="font-sans text-xs leading-relaxed text-cream/40">
+              <strong className="text-cream/60">Financial Model Disclosure (May 2026):</strong>{' '}
               The Appendix F Cashflow Tool is the governing financial model — Year 1 Revenue $822,000 /
               EOY Cash $60,100. Projected IRR of 17–20% is illustrative and based on Appendix F base-case
               assumptions. Forward-looking projections are for informational purposes only and do not
               constitute an offer of securities. Prospective investors should review the full business plan
               and consult qualified advisors. Full financial package available upon request.
             </p>
-          </GlassCard>
+          </div>
 
           {/* ── Inquiry form ─────────────────────────────────────────────── */}
           {success ? (
             <SuccessScreen />
           ) : (
             <div>
-              <h2 className="mb-2 text-center font-serif text-3xl font-bold text-cream">
-                Request the Investor Package
-              </h2>
-              <p className="mb-10 text-center font-sans text-base text-cream/55">
-                We respond to every inquiry within 48 hours.
-              </p>
+              <div className="text-center mb-10">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <span className="block h-px w-8 bg-gold/40 shrink-0" />
+                  <span className="font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">
+                    Investor Package
+                  </span>
+                  <span className="block h-px w-8 bg-gold/40 shrink-0" />
+                </div>
+                <h2 className="font-corp-display text-4xl font-light text-cream mb-2">
+                  Request the Investor Package
+                </h2>
+                <p className="font-sans text-sm text-cream/45">
+                  We respond to every inquiry within 48 hours.
+                </p>
+              </div>
 
-              <GlassCard hover={false} className="mx-auto max-w-xl p-8">
+              <div className="mx-auto max-w-xl border border-cream/[0.08] bg-white/[0.02] p-10">
                 <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
-                  {/* Name + Email */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FormField id="inv-name" label="Full Name" required>
-                      <input
-                        id="inv-name"
-                        name="name"
-                        type="text"
-                        autoComplete="name"
-                        required
-                        value={form.name}
-                        onChange={handleChange}
-                        disabled={submitting}
-                        placeholder="Jane Smith"
-                        className={darkInput}
-                      />
+                      <input id="inv-name" name="name" type="text" autoComplete="name" required
+                        value={form.name} onChange={handleChange} disabled={submitting}
+                        placeholder="Jane Smith" className={darkInput} />
                     </FormField>
-
                     <FormField id="inv-email" label="Email Address" required>
-                      <input
-                        id="inv-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        value={form.email}
-                        onChange={handleChange}
-                        disabled={submitting}
-                        placeholder="jane@example.com"
-                        className={darkInput}
-                      />
+                      <input id="inv-email" name="email" type="email" autoComplete="email" required
+                        value={form.email} onChange={handleChange} disabled={submitting}
+                        placeholder="jane@example.com" className={darkInput} />
                     </FormField>
                   </div>
 
-                  {/* Organization + Investment range */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FormField id="inv-org" label="Organization">
-                      <input
-                        id="inv-org"
-                        name="organization"
-                        type="text"
-                        autoComplete="organization"
-                        value={form.organization}
-                        onChange={handleChange}
-                        disabled={submitting}
-                        placeholder="Firm or institution"
-                        className={darkInput}
-                      />
+                      <input id="inv-org" name="organization" type="text" autoComplete="organization"
+                        value={form.organization} onChange={handleChange} disabled={submitting}
+                        placeholder="Firm or institution" className={darkInput} />
                     </FormField>
-
                     <FormField id="inv-range" label="Investment Range" required>
-                      <select
-                        id="inv-range"
-                        name="investment_range"
-                        required
-                        value={form.investment_range}
-                        onChange={handleChange}
-                        disabled={submitting}
-                        className={`${darkInput} cursor-pointer`}
-                      >
-                        {INVESTMENT_RANGES.map((opt) => (
-                          <option
-                            key={opt.value}
-                            value={opt.value}
-                            disabled={!!opt.disabled}
-                            className="bg-bg"
-                          >
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="relative">
+                        <select id="inv-range" name="investment_range" required
+                          value={form.investment_range} onChange={handleChange} disabled={submitting}
+                          className={`${darkInput} appearance-none cursor-pointer bg-bg`}>
+                          {INVESTMENT_RANGES.map((opt) => (
+                            <option key={opt.value} value={opt.value} disabled={!!opt.disabled} className="bg-bg">
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                        <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-3 w-3 text-gold/50"
+                          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
                     </FormField>
                   </div>
 
-                  {/* Message */}
-                  <FormField
-                    id="inv-message"
-                    label="Message"
-                    required
-                    hint="What would you like to know? We'll include the relevant sections of the investor package."
-                  >
-                    <textarea
-                      id="inv-message"
-                      name="message"
-                      required
-                      rows={4}
-                      value={form.message}
-                      onChange={handleChange}
-                      disabled={submitting}
+                  <FormField id="inv-message" label="Message" required
+                    hint="What would you like to know? We'll include the relevant sections of the investor package.">
+                    <textarea id="inv-message" name="message" required rows={4}
+                      value={form.message} onChange={handleChange} disabled={submitting}
                       placeholder="I'm interested in reviewing the full Appendix F model and capital stack…"
-                      className={`${darkInput} resize-y`}
-                    />
+                      className={`${darkInput} resize-y`} />
                   </FormField>
 
-                  {/* Error banner */}
                   {error && (
-                    <div
-                      role="alert"
-                      aria-live="assertive"
-                      className="flex items-start gap-3 rounded-xl border border-red-500/30
-                                 bg-red-500/10 px-4 py-3 text-sm text-red-400"
-                    >
+                    <div role="alert" aria-live="assertive"
+                      className="flex items-start gap-3 border border-red-500/30
+                                 bg-red-500/10 px-4 py-3 text-sm text-red-400">
                       <AlertCircle />
                       <span>
                         <strong className="font-semibold">Submission failed — </strong>
@@ -413,33 +417,18 @@ export default function InvestorsPage() {
                     </div>
                   )}
 
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="flex w-full items-center justify-center gap-2.5 rounded-xl
-                               bg-ember px-6 py-4 text-sm font-bold text-white
-                               transition-colors hover:bg-ember-hover
-                               disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {submitting ? (
-                      <>
-                        <Spinner />
-                        Sending…
-                      </>
-                    ) : (
-                      'Request Investor Package →'
-                    )}
+                  <button type="submit" disabled={submitting}
+                    className="flex w-full items-center justify-center gap-2.5 bg-ember hover:bg-ember-hover
+                               px-6 py-4 font-label text-[10px] tracking-[0.25em] uppercase text-white
+                               transition-colors disabled:cursor-not-allowed disabled:opacity-60">
+                    {submitting ? <><Spinner />Sending…</> : 'Request Investor Package →'}
                   </button>
 
-                  <p
-                    className="text-center font-sans text-xs text-cream/35"
-                  >
-                    Your information is kept strictly private and will only be used
-                    to respond to your inquiry.
+                  <p className="text-center font-sans text-xs text-cream/30">
+                    Your information is kept strictly private and will only be used to respond to your inquiry.
                   </p>
                 </form>
-              </GlassCard>
+              </div>
             </div>
           )}
         </div>
