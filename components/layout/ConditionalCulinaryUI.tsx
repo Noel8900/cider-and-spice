@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import ThemeToggle from './ThemeToggle';
 import ActiveSectionHighlight from './ActiveSectionHighlight';
+import PageTransition from './PageTransition';
 
 const HIDE_NAV_PREFIXES = ['/admin'];
 
@@ -16,11 +17,16 @@ export default function ConditionalCulinaryUI() {
 
   return (
     <>
+      {/* GSAP fade overlay fires on every route change */}
+      <PageTransition />
+
       <Navbar />
+
       {/* Theme toggle — fixed top-right, outside nav to avoid layout conflicts */}
       <div className="fixed top-4 right-20 z-[60] hidden md:flex items-center">
         <ThemeToggle />
       </div>
+
       {/* Active section sidebar dots — homepage only */}
       {isHome && <ActiveSectionHighlight />}
     </>
