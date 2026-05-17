@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import CorpNavbar from '@/components/corp/CorpNavbar';
+import CorpFooter from '@/components/corp/CorpFooter';
 
 export const metadata: Metadata = {
   title: 'Investor Overview | Las Cruces Culinary Innovation Hub',
@@ -12,5 +14,11 @@ export default function InvestorsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen" style={{ background: '#2c2416' }}>
+      <CorpNavbar />
+      <main>{children}</main>
+      <CorpFooter />
+    </div>
+  );
 }
