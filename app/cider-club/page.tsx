@@ -66,6 +66,23 @@ const TIERS: {
   },
 ];
 
+// ─── Comparison table rows ────────────────────────────────────────────────────
+
+type CellVal = string | boolean;
+
+const COMPARE_ROWS: { feature: string; taster: CellVal; enthusiast: CellVal; founding: CellVal }[] = [
+  { feature: 'Monthly tasting flights',       taster: '1 flight',    enthusiast: '2 flights',    founding: 'Unlimited'     },
+  { feature: 'Pour discount',                 taster: '10%',         enthusiast: '15%',          founding: '20%'           },
+  { feature: 'Early event access',            taster: true,          enthusiast: true,           founding: true            },
+  { feature: 'Reserved event seating',        taster: false,         enthusiast: true,           founding: true            },
+  { feature: 'Producer meet-and-greet',       taster: false,         enthusiast: true,           founding: true            },
+  { feature: 'Priority queue',                taster: false,         enthusiast: true,           founding: true            },
+  { feature: 'Private-label seasonal bottle', taster: false,         enthusiast: false,          founding: true            },
+  { feature: 'Quarterly pairing dinner',      taster: false,         enthusiast: false,          founding: true            },
+  { feature: 'Founding Member wall',          taster: false,         enthusiast: false,          founding: true            },
+  { feature: 'Founding-rate lock (12 mo)',    taster: true,          enthusiast: true,           founding: true            },
+];
+
 const EMPTY: CiderClubFormData = {
   name:  '',
   email: '',
@@ -90,6 +107,29 @@ function AlertCircle() {
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   );
+}
+
+function Check() {
+  return (
+    <svg className="h-4 w-4 text-gold/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+function Minus() {
+  return (
+    <svg className="h-4 w-4 text-cream/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+    </svg>
+  );
+}
+
+function Cell({ val }: { val: CellVal }) {
+  if (typeof val === 'boolean') {
+    return <div className="flex justify-center">{val ? <Check /> : <Minus />}</div>;
+  }
+  return <span className="font-sans text-sm text-cream/70">{val}</span>;
 }
 
 // ─── Success screen ───────────────────────────────────────────────────────────
@@ -134,7 +174,8 @@ function SuccessScreen({ tier }: { tier: CiderClubTier }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CiderClubPage() {
-  const tiersRef = useRef<HTMLDivElement>(null);
+  const tiersRef   = useRef<HTMLDivElement>(null);
+  const compareRef = useRef<HTMLDivElement>(null);
   const [form, setForm]           = useState<CiderClubFormData>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess]     = useState(false);
@@ -146,7 +187,11 @@ export default function CiderClubPage() {
         opacity: 0, y: 28, duration: 0.9, stagger: 0.1, ease: 'power3.out',
         scrollTrigger: { trigger: tiersRef.current, start: 'top 78%', once: true },
       });
-    }, tiersRef);
+      gsap.from('.cc-compare', {
+        opacity: 0, y: 20, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: compareRef.current, start: 'top 82%', once: true },
+      });
+    });
     return () => ctx.revert();
   }, []);
 
@@ -287,6 +332,52 @@ export default function CiderClubPage() {
             })}
           </div>
 
+          {/* ── Comparison table ─────────────────────────────────────────── */}
+          <div ref={compareRef} className="cc-compare overflow-x-auto">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="block h-px w-8 bg-gold/40 shrink-0" />
+              <span className="font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">
+                Full Comparison
+              </span>
+            </div>
+            <table className="w-full min-w-[540px] border-collapse">
+              <thead>
+                <tr className="border-b border-cream/[0.08]">
+                  <th className="py-3 pr-6 text-left font-label text-[9px] tracking-[0.2em] uppercase text-cream/30 w-1/2">
+                    Benefit
+                  </th>
+                  {TIERS.map((t) => (
+                    <th key={t.id}
+                      className={`py-3 px-4 text-center font-label text-[9px] tracking-[0.2em] uppercase
+                        ${t.id === form.tier ? 'text-gold' : 'text-cream/35'}`}>
+                      {t.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARE_ROWS.map(({ feature, taster, enthusiast, founding }, i) => (
+                  <tr
+                    key={feature}
+                    className={`border-b border-cream/[0.05] hover:bg-white/[0.02] transition-colors
+                      ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}
+                  >
+                    <td className="py-3 pr-6 font-sans text-sm text-cream/50">{feature}</td>
+                    <td className="py-3 px-4 text-center">
+                      <Cell val={taster} />
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <Cell val={enthusiast} />
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <Cell val={founding} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           {/* ── Signup form ──────────────────────────────────────────────── */}
           <div>
             <div className="text-center mb-10">
@@ -298,7 +389,7 @@ export default function CiderClubPage() {
                 <span className="block h-px w-8 bg-gold/40 shrink-0" />
               </div>
               <h2 className="font-corp-display text-4xl font-light text-cream mb-2">
-                Join the Waitlist
+                Reserve Your Spot
               </h2>
               <p className="font-sans text-sm text-cream/45">
                 Lock in your founding-member rate. No payment required until opening day.
@@ -355,11 +446,11 @@ export default function CiderClubPage() {
                   className="flex w-full items-center justify-center gap-2.5 bg-ember hover:bg-ember-hover
                              px-6 py-4 font-label text-[10px] tracking-[0.25em] uppercase text-white
                              transition-colors disabled:cursor-not-allowed disabled:opacity-60">
-                  {submitting ? <><Spinner />Signing up…</> : 'Join the Cider Club →'}
+                  {submitting ? <><Spinner />Signing up…</> : 'Reserve My Founding Rate →'}
                 </button>
 
                 <p className="text-center font-sans text-xs text-cream/30">
-                  No payment required until we open. Unsubscribe any time.
+                  No payment required until we open. Founding rate locked for 12 months. Unsubscribe any time.
                 </p>
               </form>
             </div>

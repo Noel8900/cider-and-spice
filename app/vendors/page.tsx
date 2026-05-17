@@ -7,6 +7,7 @@ import gsap from 'gsap'
 import { applyAsVendor } from './actions'
 import type { VendorFormData, VendorActionResult } from './actions'
 import SkeletonForm from '@/components/ui/SkeletonForm'
+import VendorSpotsBar from '@/components/sections/VendorSpotsBar'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
 
@@ -150,7 +151,7 @@ export default function VendorsPage() {
     <main className="min-h-screen bg-bg">
 
       {/* ── Hero header ─────────────────────────────────────────────────── */}
-      <div className="px-6 pb-20 pt-28">
+      <div className="px-6 pb-16 pt-28">
         <div className="mx-auto max-w-4xl">
           <Link
             href="/"
@@ -183,6 +184,13 @@ export default function VendorsPage() {
               we&apos;ll be in touch.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* ── Spots urgency bar ────────────────────────────────────────────── */}
+      <div className="px-6 pb-10">
+        <div className="mx-auto max-w-2xl">
+          <VendorSpotsBar />
         </div>
       </div>
 

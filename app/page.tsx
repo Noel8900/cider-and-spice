@@ -7,7 +7,7 @@
  * Section order (CLAUDE.md spec):
  *   HeroSection → TrustBar → GallerySection → FeaturesSection →
  *   HowItWorksSection → EntrepreneurSection → CommunityImpactSection →
- *   VendorCTA → GetInvolvedSection → FAQSection → SiteFooter
+ *   MilestoneTimeline → VendorCTA → GetInvolvedSection → FAQSection → SiteFooter
  *
  * Navbar is rendered globally in app/layout.tsx.
  * Hero image (bartender/craft cider) is the permanent visual foundation — do not change.
@@ -20,6 +20,7 @@ import FeaturesSection       from '@/components/sections/FeaturesSection';
 import HowItWorksSection     from '@/components/sections/HowItWorksSection';
 import EntrepreneurSection   from '@/components/sections/EntrepreneurSection';
 import CommunityImpactSection from '@/components/sections/CommunityImpactSection';
+import MilestoneTimeline     from '@/components/sections/MilestoneTimeline';
 import VendorCTA             from '@/components/sections/VendorCTA';
 import GetInvolvedSection    from '@/components/sections/GetInvolvedSection';
 import FAQSection            from '@/components/sections/FAQSection';
@@ -43,6 +44,9 @@ export default function HomePage() {
       <EntrepreneurSection />
 
       <CommunityImpactSection />
+
+      {/* Project roadmap — shows progress from site selection to grand opening */}
+      <MilestoneTimeline />
 
       <VendorCTA />
 

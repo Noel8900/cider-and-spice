@@ -20,6 +20,41 @@ const METRICS = [
   { id: 'irr',       raw: null,    formatted: '17–20%',      label: 'Illustrative 3-Year IRR',      prefix: '', suffix: '' },
 ] as const;
 
+// ─── Why Now proof points ─────────────────────────────────────────────────────
+
+const WHY_NOW = [
+  {
+    glyph: '◆',
+    title: 'Zero Direct Competitors',
+    body:  'There is no food hall within 200 miles of Las Cruces. Cider & Spice is a first-mover in a 215,000-person metro with a rapidly expanding food tourism scene.',
+  },
+  {
+    glyph: '◈',
+    title: '6 Grant Categories',
+    body:  'The Hub is structured to qualify for CDBG, NM MainStreet, USDA RBDG, EDA, SBA 7(a), and Opportunity Zone funding — reducing investor risk and extending runway.',
+  },
+  {
+    glyph: '◉',
+    title: 'Multiple Revenue Streams',
+    body:  'Stall rents, commissary kitchen fees, cider bar revenue, event rentals, and market vendor fees provide diversified cash flow — not single-tenant dependency.',
+  },
+  {
+    glyph: '◇',
+    title: 'Incubator Mission = Tax Advantages',
+    body:  'As a culinary incubator, the Hub aligns with NMEDA and federal programs that provide meaningful tax credit eligibility for qualifying investors.',
+  },
+  {
+    glyph: '✦',
+    title: 'City & State Alignment',
+    body:  "Endorsed by Elevate Las Cruces, Visit Las Cruces, and aligned with the city's East Lohman Development Plan and W. Picacho MRA redevelopment initiative.",
+  },
+  {
+    glyph: '◇',
+    title: 'Conservative Underwriting',
+    body:  'The Appendix F model uses conservative Year 1 projections. Breakeven at month 18–20. The 17–20% IRR is illustrative based on base-case assumptions.',
+  },
+];
+
 interface InvestorTier {
   name:      string;
   range:     string;
@@ -119,6 +154,8 @@ function SuccessScreen() {
         <p className="font-sans text-base leading-relaxed text-cream/60 mb-10">
           We will review your inquiry and follow up at the email you provided
           within <strong className="text-cream">48 hours</strong>.
+          You will receive the executive summary, capital stack overview, and
+          Appendix F financial snapshot.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link href="/"
@@ -143,6 +180,7 @@ function SuccessScreen() {
 export default function InvestorsPage() {
   const metricsRef = useRef<HTMLDivElement>(null);
   const tiersRef   = useRef<HTMLDivElement>(null);
+  const whyNowRef  = useRef<HTMLDivElement>(null);
   const [form, setForm]             = useState<InvestorInquiryData>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess]       = useState(false);
@@ -188,6 +226,10 @@ export default function InvestorsPage() {
       gsap.from('.inv-tier-card', {
         opacity: 0, y: 28, duration: 0.9, stagger: 0.1, ease: 'power3.out',
         scrollTrigger: { trigger: tiersRef.current, start: 'top 78%', once: true },
+      });
+      gsap.from('.why-now-card', {
+        opacity: 0, y: 24, duration: 0.8, stagger: 0.08, ease: 'power3.out',
+        scrollTrigger: { trigger: whyNowRef.current, start: 'top 78%', once: true },
       });
     }, tiersRef);
     return () => ctx.revert();
@@ -274,6 +316,38 @@ export default function InvestorsPage() {
       <div className="px-6 py-20">
         <div className="mx-auto max-w-5xl space-y-20">
 
+          {/* ── Why Now ──────────────────────────────────────────────────── */}
+          <div ref={whyNowRef}>
+            <div className="mb-10">
+              <div className="flex items-center gap-4 mb-3">
+                <span className="block h-px w-8 bg-gold shrink-0" />
+                <span className="font-label text-[10px] tracking-[0.3em] uppercase text-gold">
+                  Why This Opportunity
+                </span>
+              </div>
+              <h2 className="font-corp-display text-4xl font-light text-cream">
+                Six Reasons the Timing Is Right
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-cream/[0.06]">
+              {WHY_NOW.map(({ glyph, title, body }) => (
+                <div key={title}
+                  className="why-now-card group bg-bg p-8 hover:bg-white/[0.04] transition-colors duration-300">
+                  <span className="font-corp-display text-2xl text-gold/50 group-hover:text-gold
+                                   transition-colors duration-300 block mb-5" aria-hidden="true">
+                    {glyph}
+                  </span>
+                  <div className="font-corp-display text-xl font-light text-cream mb-3 leading-snug">
+                    {title}
+                  </div>
+                  <p className="font-sans text-sm leading-relaxed text-cream/50">
+                    {body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* ── Investment tiers ─────────────────────────────────────────── */}
           <div>
             <div className="text-center mb-12">
@@ -318,6 +392,31 @@ export default function InvestorsPage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── What You Receive ─────────────────────────────────────────── */}
+          <div className="border border-cream/[0.08] bg-white/[0.02] p-8 md:p-10">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="block h-px w-8 bg-gold shrink-0" />
+              <span className="font-label text-[10px] tracking-[0.3em] uppercase text-gold">
+                What You Receive After Inquiry
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                'Executive summary (2-page overview)',
+                'Capital stack & use of funds breakdown',
+                'Appendix F financial snapshot (Year 1–3)',
+                'Grant eligibility & funding pipeline summary',
+                'Milestone timeline & construction schedule',
+                '48-hour response from the founding team',
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-3">
+                  <span className="mt-0.5 text-gold/60 shrink-0 font-corp-display text-base" aria-hidden="true">—</span>
+                  <span className="font-sans text-sm text-cream/60">{item}</span>
                 </div>
               ))}
             </div>
