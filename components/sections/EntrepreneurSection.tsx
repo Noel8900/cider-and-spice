@@ -1,6 +1,6 @@
 'use client';
 // Direction 3 — Artisan Collective entrepreneur pathways.
-// Grammar pass: headline updated to D3 brand voice, CTA copy aligned to step language.
+// Callout CTA updated: primary → /vendors/onboarding, secondary → /incubator
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -26,7 +26,7 @@ const pillars = [
       'Flexible month-to-month licensing — no multi-year leases',
       'Shared overhead: utilities, Wi-Fi, and POS system included',
       '~60% lower startup cost compared to opening a standalone restaurant',
-      'License can pause during slow seasons with 30 days’ notice',
+      'License can pause during slow seasons with 30 days\u2019 notice',
     ],
   },
   {
@@ -155,11 +155,23 @@ export default function EntrepreneurSection() {
               The program is set to launch alongside our Q1&ndash;Q2 2027 opening.
             </p>
           </div>
-          <Link href="/vendors" style={{ flexShrink: 0, alignSelf: 'center', border: `1px solid rgba(247,243,236,0.2)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}bb`, whiteSpace: 'nowrap', textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = `rgba(192,98,42,0.5)`; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}
-          >Apply for a Stall →</Link>
+          {/* CTA button group */}
+          <div style={{ flexShrink: 0, alignSelf: 'center', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <Link href="/vendors/onboarding"
+              style={{ border: `1px solid rgba(192,98,42,0.5)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}cc`, whiteSpace: 'nowrap', textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s', textAlign: 'center' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = `rgba(192,98,42,0.9)`; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.5)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}cc`; }}>
+              View Onboarding Steps →
+            </Link>
+            <Link href="/incubator"
+              style={{ border: `1px solid rgba(247,243,236,0.15)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}70`, whiteSpace: 'nowrap', textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s', textAlign: 'center' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = `rgba(192,98,42,0.4)`; (e.currentTarget as HTMLAnchorElement).style.color = D3.wheat; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.15)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}70`; }}>
+              Incubator Program →
+            </Link>
+          </div>
         </div>
+
       </div>
     </section>
   );
