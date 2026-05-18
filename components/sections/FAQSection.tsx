@@ -1,9 +1,11 @@
 'use client';
 // Direction 3 — Artisan Collective: FAQ accordion.
-// Grammar pass: conversational voice, possessive fixes, chevron transition smoothed.
-// UX: open row gets subtle background highlight.
+// Luxury upgrades:
+//   • Answer panel height animates via GSAP (0 → auto) instead of conditional render.
+//   • Chevron gains terracotta box-shadow glow when open.
+//   • Open row gets a 3px terracotta left-border accent.
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -44,9 +46,92 @@ const faqs = [
   },
 ];
 
+function AccordionItem({ question, answer, isOpen, onToggle }: {
+  question: string;
+  answer: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const bodyRef  = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const body  = bodyRef.current;
+    const inner = innerRef.current;
+    if (!body || !inner) return;
+    if (isOpen) {
+      gsap.fromTo(body,
+        { height: 0, opacity: 0 },
+        { height: inner.offsetHeight, opacity: 1, duration: 0.45, ease: 'power2.out',
+          onComplete: () => { body.style.height = 'auto'; } }
+      );
+    } else {
+      gsap.to(body, { height: 0, opacity: 0, duration: 0.35, ease: 'power2.in' });
+    }
+  }, [isOpen]);
+
+  return (
+    <div style={{
+      borderBottom: '1px solid rgba(232,193,141,0.1)',
+      borderLeft: isOpen ? `3px solid ${D3.terracotta}` : '3px solid transparent',
+      transition: 'background 0.3s, border-left-color 0.3s',
+      background: isOpen ? 'rgba(92,74,48,0.18)' : 'transparent',
+    }}>
+      <button
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', gap: '1.5rem',
+          padding: '1.5rem 1rem', background: 'none', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+        }}
+      >
+        <span style={{
+          fontFamily: 'var(--font-cormorant), Georgia, serif',
+          fontSize: '1.2rem', fontWeight: 400,
+          color: isOpen ? D3.parchment : `${D3.parchment}cc`,
+          lineHeight: 1.3, transition: 'color 0.3s',
+        }}>{question}</span>
+        <span
+          aria-hidden="true"
+          style={{
+            flexShrink: 0, width: '20px', height: '20px',
+            border: `1px solid ${isOpen ? D3.terracotta : 'rgba(232,193,141,0.25)'}`,
+            color: isOpen ? D3.terracotta : `${D3.wheat}55`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'transform 0.35s ease, border-color 0.35s, color 0.35s, box-shadow 0.35s',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            boxShadow: isOpen ? '0 0 8px rgba(192,98,42,0.35)' : 'none',
+          }}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor"
+            strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 3l4 4 4-4" />
+          </svg>
+        </span>
+      </button>
+
+      {/* Always rendered — GSAP controls height */}
+      <div ref={bodyRef} style={{ height: 0, overflow: 'hidden', opacity: 0 }}>
+        <div ref={innerRef} style={{ padding: '0 1rem 1.75rem' }}>
+          <p style={{
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            fontSize: '0.875rem', lineHeight: 1.85, color: D3.wheat, opacity: 0.6,
+          }}>{answer}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const ref = useRef<HTMLElement>(null);
+
+  const toggle = useCallback((i: number) => {
+    setOpenIndex(prev => (prev === i ? null : i));
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -59,10 +144,10 @@ export default function FAQSection() {
   }, []);
 
   return (
-    <section id="faq" ref={ref} style={{ background: `linear-gradient(to bottom, #1e1710, ${D3.walnut})`, padding: '8rem 1.5rem' }}>
+    <section id="faq" ref={ref}
+      style={{ background: `linear-gradient(to bottom, #1e1710, ${D3.walnut})`, padding: '8rem 1.5rem' }}
+    >
       <div style={{ maxWidth: '52rem', margin: '0 auto' }}>
-
-        {/* Section header */}
         <div style={{ marginBottom: '3.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
@@ -72,56 +157,17 @@ export default function FAQSection() {
           <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '400px', lineHeight: 1.75 }}>Everything you need to know before opening day.</p>
         </div>
 
-        {/* Accordion */}
-        <div style={{ borderTop: `1px solid rgba(232,193,141,0.1)` }}>
-          {faqs.map(({ question, answer }, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div
-                key={question}
-                className="faq-item"
-                style={{ borderBottom: `1px solid rgba(232,193,141,0.1)`, transition: 'background 0.3s', background: isOpen ? 'rgba(92,74,48,0.18)' : 'transparent' }}
-              >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  style={{
-                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    gap: '1.5rem', padding: '1.5rem 1rem', background: 'none', border: 'none', cursor: 'pointer',
-                    textAlign: 'left',
-                  }}
-                >
-                  <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: isOpen ? D3.parchment : `${D3.parchment}cc`, lineHeight: 1.3, transition: 'color 0.3s' }}>
-                    {question}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      flexShrink: 0,
-                      display: 'block', width: '20px', height: '20px',
-                      border: `1px solid ${ isOpen ? D3.terracotta : 'rgba(232,193,141,0.25)' }`,
-                      color: isOpen ? D3.terracotta : `${D3.wheat}55`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      transition: 'transform 0.35s ease, border-color 0.35s, color 0.35s',
-                      transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    }}
-                  >
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M1 3l4 4 4-4" />
-                    </svg>
-                  </span>
-                </button>
-
-                {isOpen && (
-                  <div style={{ padding: '0 1rem 1.75rem' }}>
-                    <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', lineHeight: 1.85, color: D3.wheat, opacity: 0.6 }}>
-                      {answer}
-                    </p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <div style={{ borderTop: '1px solid rgba(232,193,141,0.1)' }}>
+          {faqs.map(({ question, answer }, i) => (
+            <div key={question} className="faq-item">
+              <AccordionItem
+                question={question}
+                answer={answer}
+                isOpen={openIndex === i}
+                onToggle={() => toggle(i)}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>
