@@ -1,6 +1,10 @@
 // SiteFooter — Direction 3: Artisan Collective
-// Walnut/chestnut bg, terracotta accents, Cormorant wordmark, Josefin labels.
-// All nav links, social links, and legal copy preserved + grammar-fixed.
+// Luxury upgrades:
+//   • Pre-footer editorial band — full-width terracotta radial glow, Cormorant
+//     display headline, two CTAs, opening date chip.
+//   • Brand column pull-quote wrapped in a decorative ❝ opener with terracotta tint.
+//   • Bottom-bar legal text refined to 3-col flex with centred copyright symbol.
+//   • Grain overlay on the pre-footer band via .grain utility class.
 
 import Link from 'next/link';
 
@@ -81,8 +85,114 @@ export default function SiteFooter() {
   return (
     <footer id="contact" style={{ background: D3.walnut, borderTop: `1px solid rgba(232,193,141,0.1)` }}>
 
+      {/* ── Pre-footer editorial band ──────────────────────────────────────── */}
+      <div
+        className="grain"
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          background: `linear-gradient(135deg, #1a1108 0%, #2c2416 45%, #1e1409 100%)`,
+          borderBottom: '1px solid rgba(232,193,141,0.08)',
+          padding: '6rem 1.5rem',
+          textAlign: 'center',
+        }}
+      >
+        {/* Terracotta radial glow */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 70% 100% at 50% 60%, rgba(192,98,42,0.13) 0%, transparent 70%)',
+        }} aria-hidden="true" />
+        {/* Top rule */}
+        <div style={{
+          position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+          width: '120px', height: '1px',
+          background: `linear-gradient(to right, transparent, ${D3.terracotta}, transparent)`,
+          opacity: 0.55,
+        }} aria-hidden="true" />
+
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '42rem', margin: '0 auto' }}>
+          {/* Eyebrow */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '2.25rem' }}>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, opacity: 0.7 }} />
+            <span style={{
+              fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+              fontSize: '0.58rem', letterSpacing: '0.32em', textTransform: 'uppercase',
+              color: D3.terracotta,
+            }}>Opening Q1–Q2 2027 · Downtown Las Cruces</span>
+            <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, opacity: 0.7 }} />
+          </div>
+
+          {/* Display headline */}
+          <h2 style={{
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: 'clamp(2.6rem, 6vw, 4.5rem)',
+            fontWeight: 300, lineHeight: 0.97, letterSpacing: '-0.01em',
+            color: D3.parchment, marginBottom: '1.5rem',
+          }}>
+            The Borderland&rsquo;s Table<br />
+            <em style={{ fontStyle: 'italic', color: D3.terracotta }}>Is Almost Set</em>
+          </h2>
+
+          {/* Wheat rule */}
+          <div style={{
+            width: '48px', height: '1px', margin: '0 auto 1.75rem',
+            background: `linear-gradient(to right, transparent, ${D3.wheat}, transparent)`,
+            opacity: 0.4,
+          }} />
+
+          <p style={{
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
+            fontSize: '0.925rem', color: D3.wheat, opacity: 0.55,
+            lineHeight: 1.85, marginBottom: '2.75rem',
+          }}>
+            Founding vendor spots, Cider Club memberships, and investor positions
+            are open now — before the doors ever open.
+          </p>
+
+          {/* CTAs */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '0.875rem' }}>
+            <Link href="/vendors"
+              style={{
+                background: D3.terracotta, color: D3.parchment,
+                padding: '13px 32px',
+                fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+                fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+                textDecoration: 'none', fontWeight: 600,
+                transition: 'opacity 0.25s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >Apply as a Vendor</Link>
+
+            <Link href="/investors"
+              style={{
+                border: '1px solid rgba(247,243,236,0.2)',
+                color: `${D3.wheat}bb`, padding: '12px 32px',
+                fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+                fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+                textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)'; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}
+            >Investor Overview</Link>
+
+            <Link href="/cider-club"
+              style={{
+                border: '1px solid rgba(247,243,236,0.2)',
+                color: `${D3.wheat}bb`, padding: '12px 32px',
+                fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+                fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+                textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)'; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}
+            >Join Cider Club</Link>
+          </div>
+        </div>
+      </div>
+
       {/* Terracotta top rule */}
-      <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${D3.terracotta}, transparent)`, opacity: 0.5 }} />
+      <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${D3.terracotta}, transparent)`, opacity: 0.45 }} />
 
       <div style={{ maxWidth: '75rem', margin: '0 auto', padding: '5rem 1.5rem' }}>
 
@@ -92,21 +202,45 @@ export default function SiteFooter() {
           {/* Brand column */}
           <div style={{ gridColumn: 'span 4' }}>
             <Link href="/" style={{ display: 'inline-block', marginBottom: '0.75rem', textDecoration: 'none' }}>
-              <p style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.85rem', fontWeight: 300, color: D3.parchment, transition: 'color 0.3s', lineHeight: 1.1 }}
+              <p
+                style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.85rem', fontWeight: 300, color: D3.parchment, transition: 'color 0.3s', lineHeight: 1.1 }}
                 onMouseEnter={e => (e.currentTarget.style.color = D3.terracotta)}
-                onMouseLeave={e => (e.currentTarget.style.color = D3.parchment)}>
+                onMouseLeave={e => (e.currentTarget.style.color = D3.parchment)}
+              >
                 Cider &amp; Spice
               </p>
             </Link>
             <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}40`, marginBottom: '0.25rem' }}>
               Las Cruces Culinary Innovation Hub
             </p>
-            <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: `${D3.terracotta}70`, marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: `${D3.terracotta}70`, marginBottom: '1.75rem' }}>
               Opening Q1&ndash;Q2 2027 &middot; Downtown Las Cruces, NM
             </p>
-            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.45, lineHeight: 1.8, maxWidth: '18rem', marginBottom: '2rem' }}>
-              &ldquo;Las Cruces has always had great food. Now it has everything else too.&rdquo;
-            </p>
+
+            {/* Pull-quote with decorative opener */}
+            <blockquote style={{
+              position: 'relative',
+              borderLeft: `2px solid rgba(192,98,42,0.3)`,
+              paddingLeft: '1.25rem',
+              marginBottom: '2rem',
+            }}>
+              <span
+                aria-hidden="true"
+                style={{
+                  position: 'absolute', top: '-0.5rem', left: '0.75rem',
+                  fontFamily: 'var(--font-cormorant), Georgia, serif',
+                  fontSize: '3rem', lineHeight: 1, color: D3.terracotta,
+                  opacity: 0.25, userSelect: 'none',
+                }}
+              >&ldquo;</span>
+              <p style={{
+                fontFamily: 'var(--font-inter), system-ui, sans-serif',
+                fontSize: '0.875rem', color: D3.wheat, opacity: 0.5,
+                lineHeight: 1.85, fontStyle: 'italic', paddingTop: '0.75rem',
+              }}>
+                Las Cruces has always had great food. Now it has everything else too.
+              </p>
+            </blockquote>
 
             {/* Social icons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
@@ -179,6 +313,11 @@ export default function SiteFooter() {
           <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.75rem', color: `${D3.wheat}28` }}>
             &copy; {new Date().getFullYear()} Cider &amp; Spice &middot; Downtown Las Cruces, NM
           </p>
+          <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.56rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}22`, textAlign: 'center' }}>
+            <span style={{ color: D3.terracotta, opacity: 0.4, marginRight: '0.6rem' }} aria-hidden="true">✦</span>
+            Opening Q1&ndash;Q2 2027
+            <span style={{ color: D3.terracotta, opacity: 0.4, marginLeft: '0.6rem' }} aria-hidden="true">✦</span>
+          </p>
           <a href="#top" aria-label="Return to top of page"
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}30`, textDecoration: 'none', transition: 'color 0.3s' }}
             onMouseEnter={e => (e.currentTarget.style.color = D3.terracotta)}
@@ -187,9 +326,6 @@ export default function SiteFooter() {
             <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1rem', color: 'inherit' }} aria-hidden="true">◈</span>
             Back to Top
           </a>
-          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.75rem', color: `${D3.wheat}28` }}>
-            Opening Q1&ndash;Q2 2027
-          </p>
         </div>
 
         {/* Legal */}
