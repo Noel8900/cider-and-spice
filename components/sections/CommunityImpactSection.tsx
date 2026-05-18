@@ -1,9 +1,10 @@
 'use client';
 // Direction 3 — Artisan Collective: community impact section.
-// Luxury upgrades:
-//   • Grant table rows: left-border terracotta accent slides in on hover via
-//     CSS transition (width 0 → 3px). Row background also lifts slightly.
-//   • All existing partner/event/metric animations preserved.
+// Animation upgrades:
+//   • Section header: opacity 0→1 + y 20→0 (power3.out, 0.85s) on scroll
+//   • Economic stats grid (.impact-stats): stagger entrance opacity 0→1 + y 28→0
+//     was missing entirely — now fires when grid enters viewport
+//   • All existing partner/event/metric/grant animations preserved.
 
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
@@ -31,7 +32,8 @@ function useCountUp(target: number, prefix: string, suffix: string, decimals = 0
       if (entry.isIntersecting && !started.current) {
         started.current = true;
         const obj = { val: 0 };
-        gsap.to(obj, { val: target, duration, ease: 'power2.out',
+        gsap.to(obj, {
+          val: target, duration, ease: 'power2.out',
           onUpdate() { setDisplay(prefix + obj.val.toFixed(decimals) + suffix); },
           onComplete() { setDisplay(prefix + target.toFixed(decimals) + suffix); },
         });
@@ -73,31 +75,31 @@ const impactMetrics = [
 ];
 
 const partners = [
-  { name: 'City of Las Cruces',       role: 'East Lohman Development Plan Endorsement'      },
-  { name: 'Elevate Las Cruces',       role: '2020 Community Economic Plan Alignment'         },
-  { name: 'Visit Las Cruces',         role: 'Tourism Co-Marketing Partnership'                },
-  { name: 'NMSU + DACC',             role: 'Workforce & Culinary Certificate Pipeline'        },
-  { name: 'WESST New Mexico',        role: 'Entrepreneur Coaching & Business Training'        },
-  { name: 'SCORE Southern NM',       role: 'Mentor Network & Financial Coaching'              },
-  { name: 'Las Cruces SBDC',         role: 'Small Business Development Resources'             },
-  { name: 'West Picacho MRA',        role: 'Stantec Consulting 2026 Redevelopment Plan'       },
+  { name: 'City of Las Cruces',  role: 'East Lohman Development Plan Endorsement'      },
+  { name: 'Elevate Las Cruces',  role: '2020 Community Economic Plan Alignment'         },
+  { name: 'Visit Las Cruces',    role: 'Tourism Co-Marketing Partnership'                },
+  { name: 'NMSU + DACC',        role: 'Workforce & Culinary Certificate Pipeline'        },
+  { name: 'WESST New Mexico',   role: 'Entrepreneur Coaching & Business Training'        },
+  { name: 'SCORE Southern NM',  role: 'Mentor Network & Financial Coaching'              },
+  { name: 'Las Cruces SBDC',    role: 'Small Business Development Resources'             },
+  { name: 'West Picacho MRA',   role: 'Stantec Consulting 2026 Redevelopment Plan'       },
 ];
 
 const events = [
-  { glyph: '◈', title: 'Chile Harvest Festival',      cadence: 'Annual · September',      body: "A celebration of New Mexico's iconic Hatch chile season — local vendors, roasting demos, live music, and family programming." },
-  { glyph: '◉', title: 'Live Music Fridays',          cadence: 'Weekly · Year-Round',     body: 'Every Friday evening, local Borderland artists take the stage — from flamenco and norteño to indie and jazz.' },
-  { glyph: '◆', title: 'International Food Nights',   cadence: 'Monthly · Rotating',     body: 'Deep dives into the cuisines our vendors grew up with — from Oaxacan mole to Korean barbecue and beyond.' },
-  { glyph: '◇', title: 'Farmers Market Crossover',    cadence: 'Biweekly · Spring–Fall', body: 'Partnering with local producers to bring fresh regional ingredients directly into the Hub.' },
-  { glyph: '✦', title: 'Pop-Up Cooking Classes',      cadence: 'Monthly · All Ages',      body: 'Hands-on cooking workshops led by our vendors — open to the public, affordable, and designed for all skill levels.' },
-  { glyph: '◉', title: 'Entrepreneurship Showcases',  cadence: 'Quarterly',               body: 'Pitch nights, vendor spotlights, and community investor meetups — showcasing the businesses incubating inside the Hub.' },
+  { glyph: '◈', title: 'Chile Harvest Festival',     cadence: 'Annual · September',      body: "A celebration of New Mexico's iconic Hatch chile season — local vendors, roasting demos, live music, and family programming." },
+  { glyph: '◉', title: 'Live Music Fridays',         cadence: 'Weekly · Year-Round',     body: 'Every Friday evening, local Borderland artists take the stage — from flamenco and norteño to indie and jazz.' },
+  { glyph: '◆', title: 'International Food Nights',  cadence: 'Monthly · Rotating',      body: 'Deep dives into the cuisines our vendors grew up with — from Oaxacan mole to Korean barbecue and beyond.' },
+  { glyph: '◇', title: 'Farmers Market Crossover',   cadence: 'Biweekly · Spring–Fall', body: 'Partnering with local producers to bring fresh regional ingredients directly into the Hub.' },
+  { glyph: '✦', title: 'Pop-Up Cooking Classes',     cadence: 'Monthly · All Ages',      body: 'Hands-on cooking workshops led by our vendors — open to the public, affordable, and designed for all skill levels.' },
+  { glyph: '◉', title: 'Entrepreneurship Showcases', cadence: 'Quarterly',               body: 'Pitch nights, vendor spotlights, and community investor meetups — showcasing the businesses incubating inside the Hub.' },
 ];
 
 const grantCategories = [
-  { label: 'Community Development Block Grant (CDBG)', status: 'Eligible'                },
-  { label: 'NM MainStreet Capital Improvement',        status: 'Eligible'                },
-  { label: 'USDA Rural Business Development Grant',    status: 'Exploring'               },
-  { label: 'EDA Economic Development Assistance',      status: 'Eligible'                },
-  { label: 'SBA 7(a) Loan',                            status: 'Application In Progress'  },
+  { label: 'Community Development Block Grant (CDBG)', status: 'Eligible'               },
+  { label: 'NM MainStreet Capital Improvement',        status: 'Eligible'               },
+  { label: 'USDA Rural Business Development Grant',    status: 'Exploring'              },
+  { label: 'EDA Economic Development Assistance',      status: 'Eligible'               },
+  { label: 'SBA 7(a) Loan',                            status: 'Application In Progress' },
 ];
 
 const SubHeading = ({ label }: { label: string }) => (
@@ -112,10 +114,25 @@ export default function CommunityImpactSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.impact-partner', { opacity: 0, y: 20, duration: 0.75, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: '.impact-partners', start: 'top 78%', once: true } });
-      gsap.from('.impact-event',   { opacity: 0, y: 28, duration: 0.8,  stagger: 0.1,  ease: 'power3.out', scrollTrigger: { trigger: '.impact-events',   start: 'top 78%', once: true } });
-      gsap.from('.impact-metric',  { opacity: 0, y: 24, duration: 0.8,  stagger: 0.08, ease: 'power3.out', scrollTrigger: { trigger: '.impact-metrics',  start: 'top 78%', once: true } });
-      gsap.from('.grant-row',      { opacity: 0, x: -16, duration: 0.6, stagger: 0.07, ease: 'power3.out', scrollTrigger: { trigger: '.grant-table',     start: 'top 80%', once: true } });
+
+      // Section header entrance
+      gsap.from('.impact-header', {
+        opacity: 0, y: 20, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: '.impact-header', start: 'top 82%', once: true },
+      });
+
+      // Economic stats grid entrance (was missing)
+      gsap.from('.impact-stat', {
+        opacity: 0, y: 28, duration: 0.8, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.impact-stats', start: 'top 80%', once: true },
+      });
+
+      // Existing animations
+      gsap.from('.impact-partner', { opacity: 0, y: 20,  duration: 0.75, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: '.impact-partners', start: 'top 78%', once: true } });
+      gsap.from('.impact-event',   { opacity: 0, y: 28,  duration: 0.8,  stagger: 0.1,  ease: 'power3.out', scrollTrigger: { trigger: '.impact-events',   start: 'top 78%', once: true } });
+      gsap.from('.impact-metric',  { opacity: 0, y: 24,  duration: 0.8,  stagger: 0.08, ease: 'power3.out', scrollTrigger: { trigger: '.impact-metrics',  start: 'top 78%', once: true } });
+      gsap.from('.grant-row',      { opacity: 0, x: -16, duration: 0.6,  stagger: 0.07, ease: 'power3.out', scrollTrigger: { trigger: '.grant-table',     start: 'top 80%', once: true } });
+
     }, ref);
     return () => ctx.revert();
   }, []);
@@ -135,18 +152,14 @@ export default function CommunityImpactSection() {
           background: ${D3.terracotta};
           transition: width 0.25s ease;
         }
-        .grant-row:hover::before {
-          width: 3px;
-        }
-        .grant-row:hover {
-          background: rgba(92,74,48,0.35) !important;
-        }
+        .grant-row:hover::before { width: 3px; }
+        .grant-row:hover { background: rgba(92,74,48,0.35) !important; }
       `}</style>
 
       <div style={{ maxWidth: '75rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '6rem' }}>
 
         {/* Section header */}
-        <div>
+        <div className="impact-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>Community Impact</span>
@@ -227,17 +240,13 @@ export default function CommunityImpactSection() {
           </p>
           <div className="grant-table" style={{ border: '1px solid rgba(232,193,141,0.1)', overflow: 'hidden' }}>
             {grantCategories.map(({ label, status }, i) => (
-              <div
-                key={label}
-                className="grant-row"
+              <div key={label} className="grant-row"
                 style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                   padding: '1.1rem 1.5rem',
                   borderBottom: i < grantCategories.length - 1 ? '1px solid rgba(232,193,141,0.07)' : 'none',
                   background: D3.walnut,
-                  paddingLeft: '1.5rem',
-                }}
-              >
+                }}>
                 <span style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.65 }}>{label}</span>
                 <span style={{
                   fontFamily: 'var(--font-josefin), system-ui, sans-serif',

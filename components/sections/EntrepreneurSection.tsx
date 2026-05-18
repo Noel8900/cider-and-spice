@@ -1,6 +1,12 @@
 'use client';
 // Direction 3 — Artisan Collective entrepreneur pathways.
-// Callout CTA updated: primary → /vendors/onboarding, secondary → /incubator
+// Animation upgrades:
+//   • Section header: opacity 0→1 + y 16→0 on scroll (power3.out, 0.8s)
+//   • Stat tiles: stagger entrance opacity 0→1 + y 24→0; $0 tile animates
+//     with a custom '$0' reveal (counts from $0 with a brief flash delay)
+//   • Pillar cards: left-border terracotta accent (same pattern as grant rows)
+//     slides in via ::before width 0→3px on hover
+//   • All existing counter tweens + callout animation preserved.
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -52,10 +58,10 @@ const pillars = [
 ];
 
 const stats = [
-  { value: 34,  display: '34',   suffix: '',   label: 'FTE Jobs, Year 1'        },
-  { value: 12,  display: '12+',  suffix: '+',  label: 'Vendor Stalls Available'  },
-  { value: 60,  display: '~60%', suffix: '%',  label: 'Cost Savings vs. Solo'    },
-  { value: 0,   display: '$0',   suffix: '',   label: 'Franchise Fees. Ever.'    },
+  { value: 34,  display: '34',   label: 'FTE Jobs, Year 1'        },
+  { value: 12,  display: '12+',  label: 'Vendor Stalls Available'  },
+  { value: 60,  display: '~60%', label: 'Cost Savings vs. Solo'    },
+  { value: 0,   display: '$0',   label: 'Franchise Fees. Ever.'    },
 ];
 
 export default function EntrepreneurSection() {
@@ -64,9 +70,23 @@ export default function EntrepreneurSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+
+      // Section header entrance
+      gsap.from('.ent-header', {
+        opacity: 0, y: 16, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: '.ent-header', start: 'top 82%', once: true },
+      });
+
+      // Stat tiles stagger entrance
+      gsap.from('.ent-stat', {
+        opacity: 0, y: 24, duration: 0.75, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: '.ent-stats', start: 'top 82%', once: true },
+      });
+
+      // Numeric counter tweens (indices 0–2)
       statRefs.current.forEach((el, i) => {
         if (!el || stats[i].value === 0) return;
-        const obj = { val: 0 };
+        const obj    = { val: 0 };
         const target = stats[i].value;
         gsap.to(obj, {
           val: target, duration: 2, ease: 'power2.out',
@@ -78,18 +98,62 @@ export default function EntrepreneurSection() {
           },
         });
       });
-      gsap.from('.ent-pillar',  { opacity: 0, y: 36, duration: 0.9, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: '.ent-pillars', start: 'top 78%', once: true } });
-      gsap.from('.ent-callout', { opacity: 0, y: 24, duration: 0.85, ease: 'power3.out', scrollTrigger: { trigger: '.ent-callout', start: 'top 82%', once: true } });
+
+      // $0 tile: flash reveal (opacity pulse then settle)
+      const zeroEl = statRefs.current[3];
+      if (zeroEl) {
+        gsap.fromTo(zeroEl,
+          { opacity: 0 },
+          {
+            opacity: 1, duration: 0.4, ease: 'power2.out',
+            scrollTrigger: { trigger: zeroEl, start: 'top 85%', once: true },
+            onComplete() {
+              gsap.to(zeroEl, { opacity: 0.4, duration: 0.18, yoyo: true, repeat: 1, ease: 'power1.inOut' });
+            },
+          },
+        );
+      }
+
+      // Pillar cards stagger
+      gsap.from('.ent-pillar', {
+        opacity: 0, y: 36, duration: 0.9, stagger: 0.14, ease: 'power3.out',
+        scrollTrigger: { trigger: '.ent-pillars', start: 'top 78%', once: true },
+      });
+
+      // Callout
+      gsap.from('.ent-callout', {
+        opacity: 0, y: 24, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: '.ent-callout', start: 'top 82%', once: true },
+      });
+
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
     <section id="incubator" ref={ref} style={{ background: `linear-gradient(to bottom, #1e1710, ${D3.walnut})`, padding: '8rem 1.5rem' }}>
+      <style>{`
+        .ent-pillar {
+          position: relative;
+        }
+        .ent-pillar::before {
+          content: '';
+          position: absolute;
+          left: 0; top: 0; bottom: 0;
+          width: 0;
+          background: ${D3.terracotta};
+          transition: width 0.25s ease;
+          z-index: 1;
+        }
+        .ent-pillar:hover::before {
+          width: 3px;
+        }
+      `}</style>
+
       <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
 
         {/* Section header */}
-        <div style={{ marginBottom: '3.5rem' }}>
+        <div className="ent-header" style={{ marginBottom: '3.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>For Food Entrepreneurs</span>
@@ -103,13 +167,17 @@ export default function EntrepreneurSection() {
         </div>
 
         {/* Stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1px', background: `rgba(232,193,141,0.07)`, marginBottom: '4rem' }}>
+        <div className="ent-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1px', background: `rgba(232,193,141,0.07)`, marginBottom: '4rem' }}>
           {stats.map(({ display, label }, i) => (
-            <div key={label} style={{ background: D3.walnut, padding: '2rem 2.5rem', textAlign: 'center', transition: 'background 0.4s' }}
+            <div key={label} className="ent-stat"
+              style={{ background: D3.walnut, padding: '2rem 2.5rem', textAlign: 'center', transition: 'background 0.4s' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
               onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}>
-              <div ref={(el) => { statRefs.current[i] = el; }}
-                style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 300, color: i % 2 === 0 ? D3.terracotta : D3.sage, lineHeight: 1, marginBottom: '0.6rem' }}>
+              <div
+                ref={el => { statRefs.current[i] = el; }}
+                style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 300, color: i % 2 === 0 ? D3.terracotta : D3.sage, lineHeight: 1, marginBottom: '0.6rem' }}
+                aria-live="polite"
+              >
                 {display}
               </div>
               <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}60` }}>{label}</div>
@@ -120,7 +188,8 @@ export default function EntrepreneurSection() {
         {/* Pillar cards */}
         <div className="ent-pillars" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1px', background: `rgba(232,193,141,0.07)`, marginBottom: '4rem' }}>
           {pillars.map((p) => (
-            <div key={p.title} className="ent-pillar" style={{ position: 'relative', background: D3.walnut, padding: '2.5rem', overflow: 'hidden', transition: 'background 0.4s' }}
+            <div key={p.title} className="ent-pillar"
+              style={{ background: D3.walnut, padding: '2.5rem', overflow: 'hidden', transition: 'background 0.4s' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
               onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}>
               <span aria-hidden="true" style={{ position: 'absolute', top: '1.25rem', right: '1.75rem', fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '5rem', fontWeight: 300, color: `${D3.wheat}06`, lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>{p.numeral}</span>
@@ -142,7 +211,8 @@ export default function EntrepreneurSection() {
         </div>
 
         {/* Workforce callout */}
-        <div className="ent-callout" style={{ border: `1px solid rgba(232,193,141,0.1)`, background: 'rgba(92,74,48,0.18)', padding: '3rem 3.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: '2rem', transition: 'border-color 0.4s' }}
+        <div className="ent-callout"
+          style={{ border: `1px solid rgba(232,193,141,0.1)`, background: 'rgba(92,74,48,0.18)', padding: '3rem 3.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: '2rem', transition: 'border-color 0.4s' }}
           onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.22)')}
           onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.1)')}>
           <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '2.5rem', color: D3.terracotta, flexShrink: 0, lineHeight: 1 }}>◆</span>
@@ -155,7 +225,6 @@ export default function EntrepreneurSection() {
               The program is set to launch alongside our Q1&ndash;Q2 2027 opening.
             </p>
           </div>
-          {/* CTA button group */}
           <div style={{ flexShrink: 0, alignSelf: 'center', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <Link href="/vendors/onboarding"
               style={{ border: `1px solid rgba(192,98,42,0.5)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}cc`, whiteSpace: 'nowrap', textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s', textAlign: 'center' }}
