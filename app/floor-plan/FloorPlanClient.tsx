@@ -362,6 +362,8 @@ function ZoomControls({
 export default function FloorPlanClient() {
   const svgRef        = useRef<SVGSVGElement>(null);
   const containerRef  = useRef<HTMLDivElement>(null);
+  // Shell ref for the StallDrawer — used to scroll it into view from the tooltip
+  const drawerShellRef = useRef<HTMLDivElement>(null);
   const glowRef       = useRef<gsap.core.Tween | null>(null);
   const activeGlowRef = useRef<SVGRectElement | null>(null);
   const entranceDone  = useRef(false);
@@ -429,9 +431,6 @@ export default function FloorPlanClient() {
   [activeZone]);
 
   // ─── focusOnStall — cinematic camera tween ────────────────────────────────
-  // Computes the pan offset required to center the stall in the SVG container
-  // at the zone-appropriate zoom, then tweens scale + x + y via a proxy object
-  // so GSAP drives smooth values into React state without stale-closure issues.
   const focusOnStall = useCallback((stall: Stall) => {
     const container = containerRef.current;
     if (!container) return;
@@ -439,7 +438,7 @@ export default function FloorPlanClient() {
     const targetScale = FOCUS_ZOOM[stall.zone];
     const cW = container.offsetWidth;
     const cH = container.offsetHeight;
-    const svgScale = cW / 900; // viewBox width = 900
+    const svgScale = cW / 900;
     const stallCX  = stall.x + stall.w / 2;
     const stallCY  = stall.y + stall.h / 2;
     const targetX  = cW / 2 - stallCX * svgScale * targetScale;
@@ -523,12 +522,22 @@ export default function FloorPlanClient() {
     }
   }
 
-  // ─── Directory handler — activates stall AND fires cinematic camera move ──
   function handleDirectoryClick(stall: Stall) {
     setActiveZone('all');
     setActiveStall(stall);
     setTooltipPos({ x: 300, y: 200 });
     focusOnStall(stall);
+  }
+
+  // ─── Scroll the fixed drawer into the viewport and close the tooltip ───────
+  // The drawer is position:fixed so scrollIntoView won’t move it — instead
+  // we scroll the page to the bottom so the drawer is fully visible, then
+  // close the floating tooltip so the story has full focus.
+  function openFullStory() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    // Give the scroll a 300ms head-start before closing the tooltip so the
+    // user doesn’t lose their stall selection visually before the drawer appears.
+    setTimeout(() => setActiveStall(s => s), 0); // keep stall active
   }
 
   const vendorCount    = STALLS.filter(s => s.zone === 'vendor').length;
@@ -825,10 +834,13 @@ export default function FloorPlanClient() {
                       style={{ border: '1px solid rgba(79,152,163,0.20)', background: 'rgba(79,152,163,0.05)', color: 'rgba(79,152,163,0.55)' }}
                     >Hub Anchor Space</div>
                   )}
+                  {/* ── Read full stall story button — scrolls to bottom drawer ── */}
                   <button
-                    onClick={() => {}}
+                    onClick={openFullStory}
                     className="mt-3 w-full font-label text-[8px] tracking-[0.2em] uppercase transition-colors duration-300 py-2"
                     style={{ color: 'rgba(212,168,75,0.45)', borderTop: '1px solid rgba(232,211,165,0.07)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#D4A84B'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(212,168,75,0.45)'; }}
                   >Read full stall story ↓</button>
                 </div>
               </div>
@@ -911,8 +923,10 @@ export default function FloorPlanClient() {
         </div>
       </div>
 
-      {/* ── Story Drawer ─────────────────────────────────────────────────── */}
-      <StallDrawer stall={activeStall} onClose={() => setActiveStall(null)} />
+      {/* ── Story Drawer — shell div holds the ref for scroll targeting ─────── */}
+      <div ref={drawerShellRef}>
+        <StallDrawer stall={activeStall} onClose={() => setActiveStall(null)} />
+      </div>
     </main>
   );
 }
