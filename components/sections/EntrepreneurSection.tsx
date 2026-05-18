@@ -1,6 +1,6 @@
 'use client';
 // Direction 3 — Artisan Collective entrepreneur pathways.
-// Terracotta numerals, sage accents, D3 count-up stats.
+// Grammar pass: headline updated to D3 brand voice, CTA copy aligned to step language.
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -24,9 +24,9 @@ const pillars = [
     title: 'Low-Risk Model',
     bullets: [
       'Flexible month-to-month licensing — no multi-year leases',
-      'Shared overhead: utilities, WiFi, POS system included',
-      '~60% lower startup cost vs. opening a standalone restaurant',
-      'License can pause during slow seasons with 30-day notice',
+      'Shared overhead: utilities, Wi-Fi, and POS system included',
+      '~60% lower startup cost compared to opening a standalone restaurant',
+      'License can pause during slow seasons with 30 days’ notice',
     ],
   },
   {
@@ -44,9 +44,9 @@ const pillars = [
     title: 'Mentorship & Resources',
     bullets: [
       'Weekly WESST New Mexico business coaching sessions',
-      'SCORE mentor match — marketing, finance, and operations',
-      'Las Cruces SBDC access for licensing and loan prep',
-      'Elevate Las Cruces entrepreneur network and peer cohort',
+      'SCORE mentor match — covering marketing, finance, and operations',
+      'Las Cruces SBDC access for licensing and loan preparation',
+      'Elevate Las Cruces entrepreneur network',
     ],
   },
 ];
@@ -55,7 +55,7 @@ const stats = [
   { value: 34,  display: '34',   suffix: '',   label: 'FTE Jobs, Year 1'        },
   { value: 12,  display: '12+',  suffix: '+',  label: 'Vendor Stalls Available'  },
   { value: 60,  display: '~60%', suffix: '%',  label: 'Cost Savings vs. Solo'    },
-  { value: 0,   display: '$0',   suffix: '',   label: 'Franchise Fees Ever'       },
+  { value: 0,   display: '$0',   suffix: '',   label: 'Franchise Fees. Ever.'    },
 ];
 
 export default function EntrepreneurSection() {
@@ -78,7 +78,7 @@ export default function EntrepreneurSection() {
           },
         });
       });
-      gsap.from('.ent-pillar', { opacity: 0, y: 36, duration: 0.9, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: '.ent-pillars', start: 'top 78%', once: true } });
+      gsap.from('.ent-pillar',  { opacity: 0, y: 36, duration: 0.9, stagger: 0.14, ease: 'power3.out', scrollTrigger: { trigger: '.ent-pillars', start: 'top 78%', once: true } });
       gsap.from('.ent-callout', { opacity: 0, y: 24, duration: 0.85, ease: 'power3.out', scrollTrigger: { trigger: '.ent-callout', start: 'top 82%', once: true } });
     }, ref);
     return () => ctx.revert();
@@ -92,10 +92,14 @@ export default function EntrepreneurSection() {
         <div style={{ marginBottom: '3.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
-            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>Entrepreneur Pathways</span>
+            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>For Food Entrepreneurs</span>
           </div>
-          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>Built for Borderland Food Makers</h2>
-          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '560px', lineHeight: 1.75 }}>Southern New Mexico’s first culinary incubator — lowering barriers so local food entrepreneurs can build real, lasting businesses.</p>
+          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>
+            Every Chef Here Has a Story Worth Tasting
+          </h2>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '560px', lineHeight: 1.75 }}>
+            Southern New Mexico’s first culinary incubator — lowering barriers so local food entrepreneurs can build real, lasting businesses.
+          </p>
         </div>
 
         {/* Stats row */}
@@ -119,7 +123,6 @@ export default function EntrepreneurSection() {
             <div key={p.title} className="ent-pillar" style={{ position: 'relative', background: D3.walnut, padding: '2.5rem', overflow: 'hidden', transition: 'background 0.4s' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
               onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}>
-              {/* Ghost numeral */}
               <span aria-hidden="true" style={{ position: 'absolute', top: '1.25rem', right: '1.75rem', fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '5rem', fontWeight: 300, color: `${D3.wheat}06`, lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>{p.numeral}</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
                 <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 300, color: D3.terracotta }}>{p.numeral}</span>
@@ -146,12 +149,16 @@ export default function EntrepreneurSection() {
           <div style={{ flex: 1 }}>
             <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: D3.sage, marginBottom: '0.5rem' }}>Academic Partnership</p>
             <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.6rem', lineHeight: 1.25 }}>NMSU &amp; DACC Workforce Partnership</h3>
-            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, maxWidth: '48rem' }}>Cider &amp; Spice is partnering with New Mexico State University and Doña Ana Community College to create a formal culinary certificate pipeline. Students gain real-world experience inside the hub; vendors gain trained staff. The program launches in coordination with our Q1–Q2 2027 opening.</p>
+            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, maxWidth: '48rem' }}>
+              Cider &amp; Spice is partnering with New Mexico State University and Doña Ana Community College to create a formal culinary certificate pipeline.
+              Students gain real-world experience inside the Hub; vendors gain trained staff.
+              The program is set to launch alongside our Q1&ndash;Q2 2027 opening.
+            </p>
           </div>
           <Link href="/vendors" style={{ flexShrink: 0, alignSelf: 'center', border: `1px solid rgba(247,243,236,0.2)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}bb`, whiteSpace: 'nowrap', textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = `rgba(192,98,42,0.5)`; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(247,243,236,0.2)'; (e.currentTarget as HTMLAnchorElement).style.color = `${D3.wheat}bb`; }}
-          >Apply as a Vendor →</Link>
+          >Apply for a Stall →</Link>
         </div>
       </div>
     </section>

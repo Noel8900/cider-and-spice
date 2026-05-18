@@ -1,6 +1,7 @@
 'use client';
 // Direction 3 — Artisan Collective feature cards.
 // Ghost index numbers, terracotta glyph accents, GSAP scroll reveal.
+// Grammar pass: headline updated to brand kit copy, hover rule wired.
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -23,19 +24,19 @@ const features = [
     glyph: '◈',
     index: '01',
     title: 'Vendor Opportunities',
-    body: 'Affordable stalls and shared commercial kitchen space designed for food entrepreneurs ready to scale — without the risk of a standalone restaurant.',
+    body: 'Affordable stalls and shared commercial kitchen space designed for food entrepreneurs ready to grow — without the risk of opening a standalone restaurant.',
   },
   {
     glyph: '◉',
     index: '02',
     title: 'Community Dining',
-    body: 'A gathering place where Las Cruces comes together over authentic, locally-made food — crafted by makers from our own backyard.',
+    body: 'A gathering place where Las Cruces comes together over authentic, locally made food — crafted by makers from our own backyard.',
   },
   {
     glyph: '◆',
     index: '03',
     title: 'The Craft Cider Bar',
-    body: 'A curated craft cider and artisan beverage experience anchoring the heart of the hub — social, approachable, and unlike anything in Southern New Mexico.',
+    body: 'A curated craft cider and artisan beverage experience anchoring the heart of the Hub — social, approachable, and unlike anything else in Southern New Mexico.',
   },
 ];
 
@@ -66,8 +67,12 @@ export default function FeaturesSection() {
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>The Opportunity</span>
           </div>
-          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>Built for Food Makers</h2>
-          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>Designed for makers, growers, and culinary innovators across the Borderland.</p>
+          <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>
+            A Table Set for Every Palate
+          </h2>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>
+            Three pillars designed for makers, diners, and craft beverage lovers across the Borderland.
+          </p>
         </div>
 
         {/* Feature cards */}
@@ -77,8 +82,16 @@ export default function FeaturesSection() {
               key={f.title}
               className="feat-card"
               style={{ position: 'relative', background: D3.walnut, padding: '2.5rem', overflow: 'hidden', transition: 'background 0.4s' }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
-              onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}
+              onMouseEnter={e => {
+                (e.currentTarget.style.background = '#352b1b');
+                const rule = e.currentTarget.querySelector<HTMLDivElement>('.feat-rule');
+                if (rule) rule.style.width = '3rem';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget.style.background = D3.walnut);
+                const rule = e.currentTarget.querySelector<HTMLDivElement>('.feat-rule');
+                if (rule) rule.style.width = '0';
+              }}
             >
               {/* Ghost index */}
               <span aria-hidden="true" style={{
@@ -88,13 +101,11 @@ export default function FeaturesSection() {
               }}>{f.index}</span>
 
               <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem', color: D3.terracotta, display: 'block', marginBottom: '1.5rem', lineHeight: 1 }}>{f.glyph}</span>
-
               <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.75rem', lineHeight: 1.25 }}>{f.title}</h3>
               <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, marginBottom: '2rem' }}>{f.body}</p>
 
-              {/* Hover terracotta rule */}
-              <div style={{ height: '1px', width: '0', background: D3.terracotta, transition: 'width 0.5s ease' }}
-                className="feat-rule" />
+              {/* Animated terracotta rule on hover */}
+              <div className="feat-rule" style={{ height: '1px', width: '0', background: D3.terracotta, transition: 'width 0.45s ease' }} />
             </div>
           ))}
         </div>
@@ -110,8 +121,8 @@ export default function FeaturesSection() {
             <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '3.5rem', color: `${D3.terracotta}66`, flexShrink: 0, transition: 'color 0.3s' }}>◇</span>
             <div style={{ flex: 1 }}>
               <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '0.4rem' }}>Venue Layout</p>
-              <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.4rem' }}>22,400 sq ft Across Two Levels</h3>
-              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.55, lineHeight: 1.75 }}>Explore every vendor stall, dining zone, private event room, and BOH space interactively.</p>
+              <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.4rem' }}>8,000 sq ft &mdash; Two Levels of Dining &amp; Vendor Space</h3>
+              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.55, lineHeight: 1.75 }}>Explore every vendor stall, dining zone, private event room, and back-of-house space interactively.</p>
             </div>
             <div style={{ flexShrink: 0, border: `1px solid rgba(247,243,236,0.18)`, padding: '0.875rem 1.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}bb`, display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', transition: 'border-color 0.3s, color 0.3s' }}
               onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = `rgba(192,98,42,0.6)`; (e.currentTarget as HTMLDivElement).style.color = D3.parchment; }}
