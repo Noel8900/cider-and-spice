@@ -26,10 +26,12 @@ const footerColumns = [
   {
     heading: 'Join Us',
     links: [
-      { label: 'Apply as a Vendor', href: '/vendors'      },
-      { label: 'Cider Club',        href: '/cider-club'   },
-      { label: 'Community Impact',  href: '/#impact'      },
-      { label: 'Get Involved',      href: '/#newsletter'  },
+      { label: 'Apply as a Vendor',  href: '/vendors'              },
+      { label: 'Vendor Onboarding',  href: '/vendors/onboarding'   },
+      { label: 'Kitchen Policies',   href: '/kitchen-policies'     },
+      { label: 'Incubator Program',  href: '/incubator'            },
+      { label: 'Cider Club',         href: '/cider-club'           },
+      { label: 'Get Involved',       href: '/#newsletter'          },
     ],
   },
   {
