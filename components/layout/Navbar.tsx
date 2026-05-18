@@ -1,18 +1,17 @@
 'use client';
 // Public-facing sticky navbar for Cider & Spice.
-// Top-level: Home · The Space ▾ · Vendors ▾ · Incubator · Cider Club · Invest · Get Involved
-// "The Space" dropdown: The Hub · How It Works · Community · Cider Bar · Floor Plan
-// "Vendors" dropdown: Apply as a Vendor · Vendor Onboarding · Kitchen Policies
-// Active styling: usePathname — page routes get a terracotta underline;
-//   hash anchors never get active state (they all resolve to pathname "/").
-// Scroll: transparent → dark glass after 80 px.
-// Mobile: max-height drawer with inline sub-items, closes on link click and resize ≥ 768 px.
+// Luxury upgrades:
+//   • Mobile drawer: GSAP-driven height tween (0 → auto) + item stagger on open;
+//     reverse stagger + collapse on close.
+//   • Hamburger ↔ Close: SVG paths morph via CSS transform.
+//   • Desktop CTA "Apply Now": hover fills terracotta background via ::before scaleX.
+//   • Logo: subtle opacity 0 → 1 + translateX(-6) → 0 on first mount.
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import gsap from 'gsap';
 
-// ── Top-level nav links ───────────────────────────────────────────────────────
 const navLinks = [
   { label: 'Home',         href: '/'            },
   { label: 'Incubator',    href: '/incubator'   },
@@ -21,7 +20,6 @@ const navLinks = [
   { label: 'Get Involved', href: '/#newsletter' },
 ] as const;
 
-// ── "The Space" dropdown items ────────────────────────────────────────────────
 const spaceLinks = [
   { label: 'The Hub',      href: '/#opportunity', icon: '◈' },
   { label: 'How It Works', href: '/#concept',     icon: '◉' },
@@ -30,47 +28,19 @@ const spaceLinks = [
   { label: 'Floor Plan',   href: '/floor-plan/',  icon: '✦' },
 ] as const;
 
-// ── "Vendors" dropdown items ──────────────────────────────────────────────────
 const vendorLinks = [
-  { label: 'Apply as a Vendor',  href: '/vendors',              icon: '◈' },
-  { label: 'Vendor Onboarding',  href: '/vendors/onboarding',   icon: '◉' },
-  { label: 'Kitchen Policies',   href: '/kitchen-policies',     icon: '◆' },
+  { label: 'Apply as a Vendor',  href: '/vendors',            icon: '◈' },
+  { label: 'Vendor Onboarding',  href: '/vendors/onboarding', icon: '◉' },
+  { label: 'Kitchen Policies',   href: '/kitchen-policies',   icon: '◆' },
 ] as const;
 
-/**
- * Returns true when the link should receive active styling.
- * Anchor-only hrefs (starting with "/#") are excluded.
- */
 function isActive(href: string, pathname: string): boolean {
   if (href.startsWith('/#')) return false;
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(href + '/');
 }
-
-function isSpaceActive(pathname: string): boolean {
-  return pathname === '/floor-plan' || pathname.startsWith('/floor-plan/');
-}
-
-function isVendorActive(pathname: string): boolean {
-  return pathname === '/vendors' || pathname.startsWith('/vendors/') || pathname === '/kitchen-policies';
-}
-
-// ── Icon components ───────────────────────────────────────────────────────────
-function MenuIcon() {
-  return (
-    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  );
-}
+function isSpaceActive(p: string)  { return p === '/floor-plan' || p.startsWith('/floor-plan/'); }
+function isVendorActive(p: string) { return p === '/vendors' || p.startsWith('/vendors/') || p === '/kitchen-policies'; }
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -82,27 +52,66 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-// ── Navbar ────────────────────────────────────────────────────────────────────
+function HamburgerIcon({ open }: { open: boolean }) {
+  return (
+    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth={2} strokeLinecap="round" aria-hidden="true">
+      <line
+        x1="4" y1="6" x2="20" y2="6"
+        style={{
+          transformOrigin: '12px 6px',
+          transform: open ? 'translateY(6px) rotate(45deg)' : 'none',
+          transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+        }}
+      />
+      <line
+        x1="4" y1="12" x2="20" y2="12"
+        style={{ opacity: open ? 0 : 1, transition: 'opacity 0.2s' }}
+      />
+      <line
+        x1="4" y1="18" x2="20" y2="18"
+        style={{
+          transformOrigin: '12px 18px',
+          transform: open ? 'translateY(-6px) rotate(-45deg)' : 'none',
+          transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+        }}
+      />
+    </svg>
+  );
+}
+
 export default function Navbar() {
   const pathname      = usePathname();
-  const [scrolled,    setScrolled]    = useState(false);
-  const [menuOpen,    setMenuOpen]    = useState(false);
-  const [spaceOpen,   setSpaceOpen]   = useState(false);
-  const [vendorOpen,  setVendorOpen]  = useState(false);
-  const spaceRef  = useRef<HTMLLIElement>(null);
-  const vendorRef = useRef<HTMLLIElement>(null);
+  const [scrolled,    setScrolled]   = useState(false);
+  const [menuOpen,    setMenuOpen]   = useState(false);
+  const [spaceOpen,   setSpaceOpen]  = useState(false);
+  const [vendorOpen,  setVendorOpen] = useState(false);
+  const spaceRef   = useRef<HTMLLIElement>(null);
+  const vendorRef  = useRef<HTMLLIElement>(null);
+  const drawerRef  = useRef<HTMLDivElement>(null);
+  const logoRef    = useRef<HTMLAnchorElement>(null);
+  const openingRef = useRef(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 80);
-    window.addEventListener('scroll', handler, { passive: true });
-    handler();
-    return () => window.removeEventListener('scroll', handler);
+    if (logoRef.current) {
+      gsap.fromTo(logoRef.current,
+        { opacity: 0, x: -6 },
+        { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out', delay: 0.1 }
+      );
+    }
   }, []);
 
   useEffect(() => {
-    const handler = () => { if (window.innerWidth >= 768) setMenuOpen(false); };
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
+    const h = () => setScrolled(window.scrollY > 80);
+    window.addEventListener('scroll', h, { passive: true });
+    h();
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+
+  useEffect(() => {
+    const h = () => { if (window.innerWidth >= 768) setMenuOpen(false); };
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
   }, []);
 
   useEffect(() => {
@@ -112,18 +121,42 @@ export default function Navbar() {
   }, [pathname]);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
+    const h = (e: MouseEvent) => {
       if (spaceRef.current  && !spaceRef.current.contains(e.target as Node))  setSpaceOpen(false);
       if (vendorRef.current && !vendorRef.current.contains(e.target as Node)) setVendorOpen(false);
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
   }, []);
+
+  useEffect(() => {
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+    const items = drawer.querySelectorAll<HTMLElement>('.mob-item');
+
+    if (menuOpen) {
+      openingRef.current = true;
+      gsap.fromTo(drawer,
+        { height: 0, opacity: 0 },
+        { height: 'auto', opacity: 1, duration: 0.42, ease: 'power3.out',
+          onComplete: () => { openingRef.current = false; } }
+      );
+      gsap.fromTo(items,
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out', delay: 0.1 }
+      );
+    } else {
+      if (openingRef.current) return;
+      gsap.to(items,  { opacity: 0, y: -8, duration: 0.2, stagger: 0.02, ease: 'power2.in' });
+      gsap.to(drawer, { height: 0, opacity: 0, duration: 0.3, ease: 'power2.in', delay: 0.1 });
+    }
+  }, [menuOpen]);
+
+  const toggleMenu = useCallback(() => setMenuOpen(o => !o), []);
 
   const spaceActive  = isSpaceActive(pathname ?? '');
   const vendorActive = isVendorActive(pathname ?? '');
 
-  // shared dropdown panel styles
   const dropdownPanel = (open: boolean) =>
     `absolute left-1/2 top-full mt-3 w-52 -translate-x-1/2
      border border-cream/10 bg-bg/[0.98]
@@ -144,40 +177,47 @@ export default function Navbar() {
       }`}
       aria-label="Site navigation"
     >
+      <style>{`
+        .nav-cta { position: relative; overflow: hidden; transition: color 0.25s, border-color 0.25s; }
+        .nav-cta::before {
+          content: '';
+          position: absolute; inset: 0;
+          background: #c0622a;
+          transform: scaleX(0); transform-origin: left;
+          transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .nav-cta:hover::before { transform: scaleX(1); }
+        .nav-cta:hover { color: #f7f3ec; border-color: #c0622a; }
+        .nav-cta span { position: relative; z-index: 1; }
+      `}</style>
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
-        {/* ── Logo ─────────────────────────────────────────────────────── */}
-        <Link href="/"
+        <Link ref={logoRef} href="/"
           className="font-corp-display text-2xl font-light text-cream hover:text-gold
-                     transition-colors duration-300 tracking-tight leading-none">
+                     transition-colors duration-300 tracking-tight leading-none"
+          style={{ opacity: 0 }}>
           Cider &amp; Spice
         </Link>
 
-        {/* ── Desktop nav ──────────────────────────────────────────────── */}
         <ul className="hidden items-center gap-7 md:flex" role="list">
-
-          {/* Home */}
           <li>
             <Link href="/"
               className={`relative font-label text-[10px] tracking-[0.15em] uppercase transition-colors
                           hover:text-gold ${isActive('/', pathname ?? '') ? 'text-gold' : 'text-cream/60'}`}
               aria-current={isActive('/', pathname ?? '') ? 'page' : undefined}>
               Home
-              {isActive('/', pathname ?? '') && (
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />
-              )}
+              {isActive('/', pathname ?? '') && <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />}
             </Link>
           </li>
 
-          {/* The Space dropdown */}
           <li ref={spaceRef} className="relative">
             <button type="button" onClick={() => { setSpaceOpen(o => !o); setVendorOpen(false); }}
               aria-expanded={spaceOpen} aria-haspopup="menu"
               className={`flex items-center gap-1 font-label text-[10px] tracking-[0.15em]
                           uppercase transition-colors hover:text-gold
                           ${spaceActive ? 'text-gold' : 'text-cream/60'}`}>
-              The Space
-              <ChevronIcon open={spaceOpen} />
+              The Space <ChevronIcon open={spaceOpen} />
               {spaceActive && <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />}
             </button>
             <div role="menu" className={dropdownPanel(spaceOpen)}>
@@ -197,15 +237,13 @@ export default function Navbar() {
             </div>
           </li>
 
-          {/* Vendors dropdown */}
           <li ref={vendorRef} className="relative">
             <button type="button" onClick={() => { setVendorOpen(o => !o); setSpaceOpen(false); }}
               aria-expanded={vendorOpen} aria-haspopup="menu"
               className={`flex items-center gap-1 font-label text-[10px] tracking-[0.15em]
                           uppercase transition-colors hover:text-gold
                           ${vendorActive ? 'text-gold' : 'text-cream/60'}`}>
-              Vendors
-              <ChevronIcon open={vendorOpen} />
+              Vendors <ChevronIcon open={vendorOpen} />
               {vendorActive && <span className="absolute -bottom-1 left-0 right-0 h-px bg-gold" aria-hidden="true" />}
             </button>
             <div role="menu" className={dropdownPanel(vendorOpen)}>
@@ -222,7 +260,6 @@ export default function Navbar() {
             </div>
           </li>
 
-          {/* Remaining top-level links (Incubator, Cider Club, Invest, Get Involved) */}
           {navLinks.filter(l => l.href !== '/').map(({ label, href }) => {
             const active = isActive(href, pathname ?? '');
             return (
@@ -239,44 +276,41 @@ export default function Navbar() {
           })}
         </ul>
 
-        {/* ── Desktop CTA + mobile hamburger ───────────────────────────── */}
         <div className="flex items-center gap-3">
           <Link href="/vendors"
-            className="hidden border border-cream/20 hover:border-gold/60 px-6 py-2.5
+            className="nav-cta hidden border border-cream/20 px-6 py-2.5
                        font-label text-[9px] tracking-[0.2em] uppercase text-cream/70
-                       hover:text-gold transition-all duration-300 md:inline-block">
-            Apply Now →
+                       md:inline-block">
+            <span>Apply Now →</span>
           </Link>
           <button type="button"
             className="p-2 text-cream transition-colors hover:bg-white/10 md:hidden focus-visible:ring-2 focus-visible:ring-ember/50"
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen} aria-controls="mobile-menu"
-            onClick={() => setMenuOpen(o => !o)}>
-            {menuOpen ? <CloseIcon /> : <MenuIcon />}
+            onClick={toggleMenu}>
+            <HamburgerIcon open={menuOpen} />
           </button>
         </div>
       </div>
 
-      {/* ── Mobile drawer ────────────────────────────────────────────────── */}
-      <div id="mobile-menu" role="dialog" aria-label="Mobile navigation"
-        className={`overflow-hidden border-t border-cream/10 transition-all duration-300 md:hidden ${
-          menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-        }`}>
+      <div
+        ref={drawerRef}
+        id="mobile-menu"
+        role="dialog"
+        aria-label="Mobile navigation"
+        className="overflow-hidden border-t border-cream/10 md:hidden"
+        style={{ height: 0, opacity: 0 }}
+      >
         <ul className="space-y-1 px-6 py-6" role="list">
-
-          {/* Home */}
-          <li>
+          <li className="mob-item" style={{ opacity: 0 }}>
             <Link href="/"
               className={`block px-3 py-3 font-label text-[10px] tracking-[0.2em] uppercase
                           transition-colors hover:text-gold
                           ${isActive('/', pathname ?? '') ? 'text-gold' : 'text-cream/60'}`}
-              onClick={() => setMenuOpen(false)}>
-              Home
-            </Link>
+              onClick={() => setMenuOpen(false)}>Home</Link>
           </li>
 
-          {/* The Space inline */}
-          <li>
+          <li className="mob-item" style={{ opacity: 0 }}>
             <p className="px-3 pt-4 pb-2 font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">The Space</p>
             <ul className="space-y-0 border-l border-gold/20 ml-3 pl-4">
               {spaceLinks.map(({ label, href, icon }) => {
@@ -301,8 +335,7 @@ export default function Navbar() {
             </ul>
           </li>
 
-          {/* Vendors inline */}
-          <li>
+          <li className="mob-item" style={{ opacity: 0 }}>
             <p className="px-3 pt-4 pb-2 font-label text-[9px] tracking-[0.3em] uppercase text-gold/60">Vendors</p>
             <ul className="space-y-0 border-l border-gold/20 ml-3 pl-4">
               {vendorLinks.map(({ label, href, icon }) => {
@@ -324,32 +357,26 @@ export default function Navbar() {
             </ul>
           </li>
 
-          {/* Incubator, Cider Club, Invest, Get Involved */}
           {navLinks.filter(l => l.href !== '/').map(({ label, href }) => {
             const active = isActive(href, pathname ?? '');
             return (
-              <li key={label}>
+              <li key={label} className="mob-item" style={{ opacity: 0 }}>
                 <Link href={href}
                   className={`block px-3 py-3 font-label text-[10px] tracking-[0.2em] uppercase
                               transition-colors hover:text-gold
                               ${active ? 'text-gold' : 'text-cream/60'}`}
                   aria-current={active ? 'page' : undefined}
-                  onClick={() => setMenuOpen(false)}>
-                  {label}
-                </Link>
+                  onClick={() => setMenuOpen(false)}>{label}</Link>
               </li>
             );
           })}
 
-          {/* Mobile CTA */}
-          <li className="pt-4 pb-2">
+          <li className="mob-item pt-4 pb-2" style={{ opacity: 0 }}>
             <Link href="/vendors"
               className="block border border-cream/20 hover:border-gold/50 px-5 py-3.5
                          text-center font-label text-[10px] tracking-[0.25em] uppercase
                          text-cream/70 hover:text-gold transition-all duration-300"
-              onClick={() => setMenuOpen(false)}>
-              Apply Now →
-            </Link>
+              onClick={() => setMenuOpen(false)}>Apply Now →</Link>
           </li>
         </ul>
       </div>
