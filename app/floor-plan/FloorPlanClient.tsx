@@ -18,28 +18,133 @@ interface Stall {
   zone:        Exclude<Zone, 'all'>;
   x: number;  y: number;  w: number;  h: number;
   description: string;
+  // Story drawer copy — pulled from business plan concept mix
+  conceptType: string;
+  story:       string;
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const STALLS: Stall[] = [
-  { id:'S01', label:'Stall 01', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:60,  y:60,  w:100, h:80,  description:'8×12 ft · North row · ideal for counter-service concepts.' },
-  { id:'S02', label:'Stall 02', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',  x:168, y:60,  w:100, h:80,  description:'8×12 ft · North row · reserved — under letter of intent.' },
-  { id:'S03', label:'Stall 03', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:276, y:60,  w:100, h:80,  description:'8×12 ft · North row · high-visibility corner approach.' },
-  { id:'S04', label:'Stall 04', sqft:120, rent:'~$1,100/mo', status:'available', zone:'vendor',  x:384, y:60,  w:120, h:80,  description:'8×15 ft · Centre-north · expanded prep line available.' },
-  { id:'S05', label:'Stall 05', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',  x:512, y:60,  w:100, h:80,  description:'8×12 ft · North row · reserved — under letter of intent.' },
-  { id:'S06', label:'Stall 06', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:620, y:60,  w:100, h:80,  description:'8×12 ft · North row · adjacent to Cider Bar pass-through.' },
-  { id:'S07', label:'Stall 07', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:60,  y:450, w:100, h:80,  description:'8×12 ft · South row · near main entry — maximum foot traffic.' },
-  { id:'S08', label:'Stall 08', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:168, y:450, w:100, h:80,  description:'8×12 ft · South row · open.' },
-  { id:'S09', label:'Stall 09', sqft:120, rent:'~$1,100/mo', status:'available', zone:'vendor',  x:276, y:450, w:120, h:80,  description:'8×15 ft · Centre-south · expanded space with extra storage.' },
-  { id:'S10', label:'Stall 10', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',  x:404, y:450, w:100, h:80,  description:'8×12 ft · South row · reserved — under letter of intent.' },
-  { id:'S11', label:'Stall 11', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',  x:512, y:450, w:100, h:80,  description:'8×12 ft · South row · open.' },
-  { id:'CB',  label:'Cider Bar', sqft:480, rent:'Anchor',    status:'anchor',    zone:'cider',   x:728, y:60,  w:152, h:280, description:'Cider & Spice Bar · 20–25 rotating taps · 480 sq ft · bar-top seating for 14.' },
-  { id:'CK',  label:'Kitchen',   sqft:320, rent:'Shared',    status:'anchor',    zone:'kitchen', x:60,  y:180, w:152, h:200, description:'Shared commissary kitchen · 320 sq ft · licensed · available for vendor prep and private bookings.' },
-  { id:'EV',  label:'Stage',     sqft:200, rent:'Rentable',  status:'available', zone:'seating', x:728, y:360, w:152, h:170, description:'Flexible event stage · 200 sq ft · retractable seating for 40 · available for private hire.' },
-  { id:'AT',  label:'Atrium',    sqft:1800,rent:'Common',    status:'anchor',    zone:'seating', x:240, y:180, w:460, h:240, description:'Central seating atrium · 1,800 sq ft · communal tables, bar-height counters, and lounge zones.' },
-  { id:'EN',  label:'Entry',     sqft:120, rent:'—',         status:'anchor',    zone:'support', x:60,  y:390, w:152, h:50,  description:'Main entry vestibule · accessible entry · bike parking adjacent.' },
-  { id:'RR',  label:'Restrooms', sqft:120, rent:'—',         status:'anchor',    zone:'support', x:728, y:540, w:152, h:50,  description:'ADA-compliant restrooms · gender-neutral single-occupancy.' },
+  {
+    id:'S01', label:'Stall 01', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',
+    x:60,  y:60,  w:100, h:80,
+    description:'8×12 ft · North row · ideal for counter-service concepts.',
+    conceptType:'Open — Any Cuisine',
+    story:'A prime north-row position with natural flow from the main atrium. Ideal for a fast-casual counter concept — tacos, Vietnamese bowls, wraps, or anything with a tight ticket time and wide appeal. 8×12 ft with shared commissary access included.',
+  },
+  {
+    id:'S02', label:'Stall 02', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',
+    x:168, y:60,  w:100, h:80,
+    description:'8×12 ft · North row · reserved — under letter of intent.',
+    conceptType:'Reserved',
+    story:'This stall is currently under letter of intent. A founding vendor has expressed strong interest and is in the final review stage. Check back or join the waitlist via the vendor application.',
+  },
+  {
+    id:'S03', label:'Stall 03', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',
+    x:276, y:60,  w:100, h:80,
+    description:'8×12 ft · North row · high-visibility corner approach.',
+    conceptType:'Open — Any Cuisine',
+    story:'High-visibility corner approach with sightlines from both the entry corridor and the central atrium. Perfect for a concept with strong visual branding — desserts, specialty drinks, or a showstopper open-flame station.',
+  },
+  {
+    id:'S04', label:'Stall 04', sqft:120, rent:'~$1,100/mo', status:'available', zone:'vendor',
+    x:384, y:60,  w:120, h:80,
+    description:'8×15 ft · Centre-north · expanded prep line available.',
+    conceptType:'Open — Expanded Format',
+    story:'The largest north-row stall at 8×15 ft. Extra depth supports a longer prep line or a double-station setup — great for a Mediterranean spread, a Southern BBQ concept with a smoker connection, or a ramen bar with visible broth work.',
+  },
+  {
+    id:'S05', label:'Stall 05', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',
+    x:512, y:60,  w:100, h:80,
+    description:'8×12 ft · North row · reserved — under letter of intent.',
+    conceptType:'Reserved',
+    story:'This stall is currently under letter of intent. A founding vendor has expressed strong interest and is in the final review stage. Check back or join the waitlist via the vendor application.',
+  },
+  {
+    id:'S06', label:'Stall 06', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',
+    x:620, y:60,  w:100, h:80,
+    description:'8×12 ft · North row · adjacent to Cider Bar pass-through.',
+    conceptType:'Open — Cider Pairing Preferred',
+    story:'Positioned directly adjacent to the Cider Bar pass-through corridor — the highest foot-traffic lane in the building. A food pairing-friendly concept (charcuterie, elevated snacks, small plates) would have a built-in audience here every evening.',
+  },
+  {
+    id:'S07', label:'Stall 07', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',
+    x:60,  y:450, w:100, h:80,
+    description:'8×12 ft · South row · near main entry — maximum foot traffic.',
+    conceptType:'Open — High Velocity',
+    story:'First stall visible from the main entry — the highest foot-traffic position in the south row. Suited for a concept with instant recognizability and quick service. Mexican street food, elotes, or a loaded fries concept would thrive here.',
+  },
+  {
+    id:'S08', label:'Stall 08', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',
+    x:168, y:450, w:100, h:80,
+    description:'8×12 ft · South row · open.',
+    conceptType:'Open — Any Cuisine',
+    story:'Open south-row stall with direct atrium visibility. A New Mexican, Asian fusion, or plant-forward concept would complement the existing mix and draw repeat weekday lunch traffic from the downtown corridor.',
+  },
+  {
+    id:'S09', label:'Stall 09', sqft:120, rent:'~$1,100/mo', status:'available', zone:'vendor',
+    x:276, y:450, w:120, h:80,
+    description:'8×15 ft · Centre-south · expanded space with extra storage.',
+    conceptType:'Open — Expanded Format',
+    story:'The largest south-row stall at 8×15 ft with extra cold storage access. Ideal for a concept with higher ingredient volume — sushi, a full BBQ operation, or a multicultural tasting menu format. The extra depth also supports a small chef's counter for visibility.',
+  },
+  {
+    id:'S10', label:'Stall 10', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',
+    x:404, y:450, w:100, h:80,
+    description:'8×12 ft · South row · reserved — under letter of intent.',
+    conceptType:'Reserved',
+    story:'This stall is currently under letter of intent. A founding vendor has expressed strong interest and is in the final review stage. Check back or join the waitlist via the vendor application.',
+  },
+  {
+    id:'S11', label:'Stall 11', sqft:96,  rent:'~$800/mo',   status:'available', zone:'vendor',
+    x:512, y:450, w:100, h:80,
+    description:'8×12 ft · South row · open.',
+    conceptType:'Open — Any Cuisine',
+    story:'Open south-row position near the event stage — stalls near live programming benefit from elevated evening dwell time and impulse orders. Any cuisine welcome; a dessert or late-night concept would have a natural competitive advantage here.',
+  },
+  {
+    id:'CB',  label:'Cider Bar', sqft:480, rent:'Anchor',    status:'anchor',    zone:'cider',
+    x:728, y:60,  w:152, h:280,
+    description:'Cider & Spice Bar · 20–25 rotating taps · 480 sq ft · bar-top seating for 14.',
+    conceptType:'Hub Anchor — Craft Cider',
+    story:'The 480 sq ft Cider & Spice Bar is the anchor experience of the Hub — Southern New Mexico's only dedicated craft cider bar. 20–25 rotating taps featuring 8–10 NM cideries. Bar-top seating for 14. Cider Club membership tiers from $25/mo. Food pairing menus rotate monthly with vendor concepts.',
+  },
+  {
+    id:'CK',  label:'Kitchen',   sqft:320, rent:'Shared',    status:'anchor',    zone:'kitchen',
+    x:60,  y:180, w:152, h:200,
+    description:'Shared commissary kitchen · 320 sq ft · licensed · available for vendor prep and private bookings.',
+    conceptType:'Hub Anchor — Commissary',
+    story:'The 320 sq ft shared commissary kitchen is licensed and available to all vendors for prep work outside peak service hours. Also available for external food entrepreneurs, catering operators, and NMSU/DACC culinary students at $25–35/hr. A core piece of the Hub's incubator mission.',
+  },
+  {
+    id:'EV',  label:'Stage',     sqft:200, rent:'Rentable',  status:'available', zone:'seating',
+    x:728, y:360, w:152, h:170,
+    description:'Flexible event stage · 200 sq ft · retractable seating for 40 · available for private hire.',
+    conceptType:'Event & Live Programming',
+    story:'A 200 sq ft flexible event stage with retractable seating for 40. Live Music Fridays, Chile Harvest Festival sets, cooking classes, and entrepreneur pitch nights all anchor here. Available for private hire — weddings, corporate events, cultural programming. Connects directly to the Cider Bar for seamless service.',
+  },
+  {
+    id:'AT',  label:'Atrium',    sqft:1800,rent:'Common',    status:'anchor',    zone:'seating',
+    x:240, y:180, w:460, h:240,
+    description:'Central seating atrium · 1,800 sq ft · communal tables, bar-height counters, and lounge zones.',
+    conceptType:'Common Area — Communal Seating',
+    story:'The 1,800 sq ft central atrium is the heart of the Hub — climate-controlled, flexible, and designed for lingering. Communal tables seat 60–80 guests. Bar-height counters ring the perimeter. Lounge zones with low seating anchor the corners. Reconfigures for events, markets, and night programming.',
+  },
+  {
+    id:'EN',  label:'Entry',     sqft:120, rent:'—',         status:'anchor',    zone:'support',
+    x:60,  y:390, w:152, h:50,
+    description:'Main entry vestibule · accessible entry · bike parking adjacent.',
+    conceptType:'Entry & Arrival',
+    story:'The main entry vestibule creates a moment of arrival — a brief transition from the street into the atmosphere of the Hub. ADA-accessible. Bike parking adjacent. Digital event board at entry announces daily programming and specials.',
+  },
+  {
+    id:'RR',  label:'Restrooms', sqft:120, rent:'—',         status:'anchor',    zone:'support',
+    x:728, y:540, w:152, h:50,
+    description:'ADA-compliant restrooms · gender-neutral single-occupancy.',
+    conceptType:'Facilities',
+    story:'ADA-compliant, gender-neutral single-occupancy restrooms serving the full hall. Positioned at the far corner to minimize traffic disruption through vendor and bar zones. Designed to hospitality standard with tile, lighting, and materials consistent with the overall design language.',
+  },
 ];
 
 const ZONES: { id: Zone; label: string }[] = [
@@ -50,10 +155,6 @@ const ZONES: { id: Zone; label: string }[] = [
   { id: 'seating', label: 'Seating'     },
   { id: 'support', label: 'Support'     },
 ];
-
-// ─── Palette — rich copper-gold, deep ebony ───────────────────────────────────
-// Gold:     #D4A84B   Copper:  #C97A3E   Champagne: #E8D3A5
-// Teal:     #4F98A3   Ebony:   #100E0A   Canvas:    #13110D
 
 const ZONE_FILL: Record<Exclude<Zone,'all'>, string> = {
   vendor:  'rgba(201,122,62,0.06)',
@@ -83,6 +184,195 @@ const STATUS_LABEL: Record<Status, string> = {
   anchor:    'Anchor',
 };
 
+// ─── Story Drawer ─────────────────────────────────────────────────────────────
+
+function StallDrawer({
+  stall,
+  onClose,
+}: {
+  stall: Stall | null;
+  onClose: () => void;
+}) {
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const prevStall = useRef<Stall | null>(null);
+
+  // Slide up on open, slide down on close
+  useEffect(() => {
+    const el = drawerRef.current;
+    if (!el) return;
+    if (stall) {
+      // Opening or switching stall
+      gsap.fromTo(el,
+        { y: '100%', opacity: 0 },
+        { y: '0%',   opacity: 1, duration: 0.45, ease: 'power3.out' }
+      );
+    } else if (prevStall.current) {
+      // Closing
+      gsap.to(el, { y: '100%', opacity: 0, duration: 0.35, ease: 'power3.in' });
+    }
+    prevStall.current = stall;
+  }, [stall]);
+
+  // Keyboard dismiss
+  useEffect(() => {
+    if (!stall) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [stall, onClose]);
+
+  // Always render so GSAP can animate out
+  const s = stall ?? prevStall.current;
+  if (!s) return null;
+
+  return (
+    <div
+      ref={drawerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Stall story: ${s.label}`}
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 80,
+        background: 'linear-gradient(160deg, #1A1510 0%, #100E0A 100%)',
+        borderTop: `1px solid ${STATUS_COLOR[s.status]}44`,
+        boxShadow: `0 -24px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(232,211,165,0.04) inset`,
+        transform: 'translateY(100%)',
+        opacity: 0,
+        willChange: 'transform, opacity',
+      }}
+    >
+      {/* Top accent rule */}
+      <div style={{ height: 2, background: `linear-gradient(90deg, ${STATUS_COLOR[s.status]}, transparent)` }} />
+
+      {/* Drag handle visual */}
+      <div className="flex justify-center pt-3 pb-1">
+        <div style={{ width: 36, height: 3, borderRadius: 2, background: 'rgba(232,211,165,0.12)' }} />
+      </div>
+
+      <div className="max-w-5xl mx-auto px-6 pb-8 pt-2">
+        {/* Header row */}
+        <div className="flex items-start justify-between gap-4 mb-6">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-3 mb-1">
+              <h2
+                className="font-corp-display text-2xl sm:text-3xl font-light leading-tight"
+                style={{ color: '#E8D3A5' }}
+              >
+                {s.label}
+              </h2>
+              <span
+                className="font-label text-[8px] tracking-[0.25em] uppercase px-2.5 py-1 shrink-0"
+                style={{
+                  color:      STATUS_COLOR[s.status],
+                  border:     `1px solid ${STATUS_COLOR[s.status]}44`,
+                  background: `${STATUS_COLOR[s.status]}11`,
+                }}
+              >
+                {STATUS_LABEL[s.status]}
+              </span>
+            </div>
+            <p
+              className="font-label text-[9px] tracking-[0.22em] uppercase"
+              style={{ color: 'rgba(201,122,62,0.65)' }}
+            >
+              {s.conceptType}
+            </p>
+          </div>
+
+          <button
+            onClick={onClose}
+            aria-label="Close stall story"
+            className="shrink-0 w-9 h-9 flex items-center justify-center transition-colors duration-300"
+            style={{
+              border: '1px solid rgba(232,211,165,0.12)',
+              color:  'rgba(232,211,165,0.35)',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#D4A84B'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,168,75,0.4)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(232,211,165,0.35)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(232,211,165,0.12)'; }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        {/* Main layout: story left, stats right */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+
+          {/* Story */}
+          <div className="md:col-span-2">
+            <p
+              className="font-sans text-sm leading-relaxed mb-5"
+              style={{ color: 'rgba(232,211,165,0.55)' }}
+            >
+              {s.story}
+            </p>
+            {s.status === 'available' && (
+              <Link
+                href={`/vendors?stall=${s.id}`}
+                className="inline-flex items-center gap-2.5 font-label text-[9px] tracking-[0.28em] uppercase
+                           transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, #C97A3E 0%, #D4A84B 100%)',
+                  padding: '13px 28px',
+                  color: '#100E0A',
+                  fontWeight: 600,
+                  boxShadow: '0 8px 32px rgba(212,168,75,0.20)',
+                }}
+              >
+                Apply for This Stall
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+            )}
+            {s.status === 'reserved' && (
+              <Link
+                href="/vendors"
+                className="inline-flex items-center gap-2.5 font-label text-[9px] tracking-[0.28em] uppercase
+                           transition-all duration-300"
+                style={{
+                  border: '1px solid rgba(196,93,42,0.30)',
+                  background: 'rgba(196,93,42,0.06)',
+                  padding: '13px 28px',
+                  color: 'rgba(196,93,42,0.75)',
+                }}
+              >
+                Join the Waitlist →
+              </Link>
+            )}
+          </div>
+
+          {/* Stats tiles */}
+          <div
+            className="grid grid-cols-2 md:grid-cols-1 gap-px self-start"
+            style={{ background: 'rgba(232,211,165,0.06)' }}
+          >
+            <div style={{ background: '#13110D', padding: '16px 18px' }}>
+              <div className="font-corp-display text-2xl font-light" style={{ color: '#D4A84B' }}>
+                {s.sqft.toLocaleString()}
+              </div>
+              <div className="font-label text-[7.5px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.28)' }}>Square Feet</div>
+            </div>
+            <div style={{ background: '#13110D', padding: '16px 18px' }}>
+              <div className="font-corp-display text-2xl font-light" style={{ color: '#D4A84B' }}>
+                {s.rent}
+              </div>
+              <div className="font-label text-[7.5px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.28)' }}>Est. Rent</div>
+            </div>
+            {s.zone === 'vendor' && (
+              <div style={{ background: '#13110D', padding: '16px 18px' }} className="col-span-2 md:col-span-1">
+                <div className="font-corp-display text-2xl font-light" style={{ color: '#C97A3E' }}>2 yr</div>
+                <div className="font-label text-[7.5px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.28)' }}>License Term</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function FloorPlanClient() {
@@ -90,72 +380,104 @@ export default function FloorPlanClient() {
   const containerRef     = useRef<HTMLDivElement>(null);
   const glowRef          = useRef<gsap.core.Tween | null>(null);
   const activeGlowRef    = useRef<SVGRectElement | null>(null);
-  const [activeZone, setActiveZone]   = useState<Zone>('all');
-  const [activeStall, setActiveStall] = useState<Stall | null>(null);
-  const [tooltipPos, setTooltipPos]   = useState({ x: 0, y: 0 });
-  const [hoverStall, setHoverStall]   = useState<string | null>(null);
+  const [activeZone, setActiveZone]     = useState<Zone>('all');
+  const [activeStall, setActiveStall]   = useState<Stall | null>(null);
+  const [tooltipPos, setTooltipPos]     = useState({ x: 0, y: 0 });
+  const [hoverStall, setHoverStall]     = useState<string | null>(null);
+  const [legendOpen, setLegendOpen]     = useState(false);
+  // Pan + zoom state
+  const [transform, setTransform]       = useState({ scale: 1, x: 0, y: 0 });
+  const isPanning   = useRef(false);
+  const panStart    = useRef({ x: 0, y: 0, tx: 0, ty: 0 });
+  const pinchDist   = useRef<number | null>(null);
+  const pinchScale  = useRef(1);
 
-  // ── Cinematic entrance: perimeter → grid → zones staggered by type
+  // ── Cinematic entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.15 });
-
-      // 1. Perimeter wall fades in
       tl.from('#fp-perimeter', { opacity: 0, duration: 1.2, ease: 'power2.out' });
-
-      // 2. Zone section labels ghost in
-      tl.from('.fp-zone-label', {
-        opacity: 0, duration: 1.0, stagger: 0.12, ease: 'power1.out',
-      }, '-=0.6');
-
-      // 3. Anchor spaces first
-      tl.from('.fp-stall-anchor', {
-        opacity: 0, scale: 0.96, transformOrigin: 'center center',
-        duration: 0.8, stagger: 0.1, ease: 'power3.out',
-      }, '-=0.4');
-
-      // 4. Vendor stalls stagger in rows
-      tl.from('.fp-stall-vendor', {
-        opacity: 0, y: 6,
-        duration: 0.55, stagger: 0.045, ease: 'power2.out',
-      }, '-=0.3');
-
-      // 5. Support stalls
-      tl.from('.fp-stall-support', {
-        opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power1.out',
-      }, '-=0.2');
-
-      // 6. Cartouche + instruments
-      tl.from('#fp-instruments', {
-        opacity: 0, duration: 0.8, ease: 'power1.out',
-      }, '-=0.1');
+      tl.from('.fp-zone-label', { opacity: 0, duration: 1.0, stagger: 0.12, ease: 'power1.out' }, '-=0.6');
+      tl.from('.fp-stall-anchor', { opacity: 0, scale: 0.96, transformOrigin: 'center center', duration: 0.8, stagger: 0.1, ease: 'power3.out' }, '-=0.4');
+      tl.from('.fp-stall-vendor', { opacity: 0, y: 6, duration: 0.55, stagger: 0.045, ease: 'power2.out' }, '-=0.3');
+      tl.from('.fp-stall-support', { opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power1.out' }, '-=0.2');
+      tl.from('#fp-instruments', { opacity: 0, duration: 0.8, ease: 'power1.out' }, '-=0.1');
     }, svgRef);
     return () => ctx.revert();
   }, []);
 
   // ── Breathing glow on active stall
   useEffect(() => {
-    if (glowRef.current) {
-      glowRef.current.kill();
-      glowRef.current = null;
-    }
+    glowRef.current?.kill();
+    glowRef.current = null;
     if (activeGlowRef.current) {
       glowRef.current = gsap.to(activeGlowRef.current, {
-        opacity: 0.15,
-        duration: 1.4,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
+        opacity: 0.15, duration: 1.4, repeat: -1, yoyo: true, ease: 'sine.inOut',
       });
     }
     return () => { glowRef.current?.kill(); };
   }, [activeStall]);
 
+  // ── Mobile: set zoom 1.15 initially on small screens so plan is readable
+  useEffect(() => {
+    if (window.innerWidth < 640) {
+      setTransform({ scale: 1.15, x: -30, y: 0 });
+    }
+  }, []);
+
   const isVisible = useCallback((stall: Stall) =>
     activeZone === 'all' || stall.zone === activeZone,
   [activeZone]);
 
+  // ── Pan: mouse
+  function onMouseDown(e: React.MouseEvent) {
+    isPanning.current = true;
+    panStart.current = { x: e.clientX, y: e.clientY, tx: transform.x, ty: transform.y };
+  }
+  function onMouseMove(e: React.MouseEvent) {
+    if (!isPanning.current) return;
+    const dx = e.clientX - panStart.current.x;
+    const dy = e.clientY - panStart.current.y;
+    setTransform(t => ({ ...t, x: panStart.current.tx + dx, y: panStart.current.ty + dy }));
+  }
+  function onMouseUp() { isPanning.current = false; }
+
+  // ── Pan + pinch zoom: touch
+  function getTouchDist(touches: React.TouchList) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  function onTouchStart(e: React.TouchEvent) {
+    if (e.touches.length === 1) {
+      isPanning.current = true;
+      panStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: transform.x, ty: transform.y };
+    } else if (e.touches.length === 2) {
+      isPanning.current = false;
+      pinchDist.current = getTouchDist(e.touches);
+      pinchScale.current = transform.scale;
+    }
+  }
+  function onTouchMove(e: React.TouchEvent) {
+    e.preventDefault();
+    if (e.touches.length === 1 && isPanning.current) {
+      const dx = e.touches[0].clientX - panStart.current.x;
+      const dy = e.touches[0].clientY - panStart.current.y;
+      setTransform(t => ({ ...t, x: panStart.current.tx + dx, y: panStart.current.ty + dy }));
+    } else if (e.touches.length === 2 && pinchDist.current !== null) {
+      const newDist = getTouchDist(e.touches);
+      const ratio   = newDist / pinchDist.current;
+      const newScale = Math.min(Math.max(pinchScale.current * ratio, 0.75), 3);
+      setTransform(t => ({ ...t, scale: newScale }));
+    }
+  }
+  function onTouchEnd() {
+    isPanning.current = false;
+    pinchDist.current = null;
+  }
+
   function handleStallClick(stall: Stall, e: React.MouseEvent) {
+    e.stopPropagation();
     if (activeStall?.id === stall.id) { setActiveStall(null); return; }
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
@@ -175,14 +497,11 @@ export default function FloorPlanClient() {
   return (
     <main className="min-h-screen text-cream" style={{ background: '#100E0A' }}>
 
-      {/* ── Page header ─────────────────────────────────────────────────── */}
+      {/* ── Page header ──────────────────────────────────────────────────── */}
       <div className="relative px-6 pb-12 pt-28 overflow-hidden">
-        {/* Radial gold spotlight behind header */}
         <div
           className="pointer-events-none absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212,168,75,0.07) 0%, transparent 70%)',
-          }}
+          style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212,168,75,0.07) 0%, transparent 70%)' }}
           aria-hidden="true"
         />
         <div className="mx-auto max-w-5xl relative">
@@ -200,17 +519,13 @@ export default function FloorPlanClient() {
 
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
-              {/* Eyebrow */}
               <div className="flex items-center gap-4 mb-5">
                 <span className="block h-px w-12 shrink-0" style={{ background: 'linear-gradient(90deg, #C97A3E, #D4A84B)' }} />
                 <span className="font-label text-[9px] tracking-[0.35em] uppercase" style={{ color: '#C97A3E' }}>
                   Las Cruces Culinary Hub · Plan A-1
                 </span>
               </div>
-              <h1
-                className="font-corp-display text-5xl sm:text-6xl font-light leading-[0.92]"
-                style={{ color: '#E8D3A5' }}
-              >
+              <h1 className="font-corp-display text-5xl sm:text-6xl font-light leading-[0.92]" style={{ color: '#E8D3A5' }}>
                 8,000 Sq Ft
               </h1>
               <p className="mt-4 font-sans text-sm leading-relaxed max-w-md" style={{ color: 'rgba(232,211,165,0.40)' }}>
@@ -222,7 +537,6 @@ export default function FloorPlanClient() {
               </p>
             </div>
 
-            {/* Availability tile */}
             <div
               className="px-8 py-5 text-center"
               style={{
@@ -243,7 +557,7 @@ export default function FloorPlanClient() {
         </div>
       </div>
 
-      {/* ── Zone filter bar ───────────────────────────────────────────────── */}
+      {/* ── Zone filter bar ──────────────────────────────────────────────── */}
       <div
         className="px-6 py-5"
         style={{ borderTop: '1px solid rgba(232,211,165,0.07)', borderBottom: '1px solid rgba(232,211,165,0.07)' }}
@@ -260,12 +574,8 @@ export default function FloorPlanClient() {
                 aria-pressed={activeZone === id}
                 className="px-4 py-2 font-label text-[8px] tracking-[0.2em] uppercase transition-all duration-300"
                 style={{
-                  border: activeZone === id
-                    ? '1px solid rgba(212,168,75,0.45)'
-                    : '1px solid rgba(232,211,165,0.09)',
-                  background: activeZone === id
-                    ? 'linear-gradient(135deg, rgba(212,168,75,0.10), rgba(201,122,62,0.07))'
-                    : 'transparent',
+                  border: activeZone === id ? '1px solid rgba(212,168,75,0.45)' : '1px solid rgba(232,211,165,0.09)',
+                  background: activeZone === id ? 'linear-gradient(135deg, rgba(212,168,75,0.10), rgba(201,122,62,0.07))' : 'transparent',
                   color: activeZone === id ? '#D4A84B' : 'rgba(232,211,165,0.30)',
                   boxShadow: activeZone === id ? '0 0 16px rgba(212,168,75,0.08) inset' : 'none',
                 }}
@@ -275,6 +585,23 @@ export default function FloorPlanClient() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* ── Mobile pan/zoom hint ─────────────────────────────────────────── */}
+      <div className="sm:hidden px-6 py-3 flex items-center justify-between">
+        <span className="font-label text-[8px] tracking-[0.22em] uppercase" style={{ color: 'rgba(232,211,165,0.25)' }}>
+          Pinch to zoom · drag to explore
+        </span>
+        {/* Reset zoom */}
+        <button
+          onClick={() => setTransform({ scale: 1.15, x: -30, y: 0 })}
+          className="font-label text-[8px] tracking-[0.18em] uppercase transition-colors duration-300"
+          style={{ color: 'rgba(201,122,62,0.50)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#D4A84B'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(201,122,62,0.50)'; }}
+        >
+          Reset view
+        </button>
       </div>
 
       {/* ── SVG canvas ───────────────────────────────────────────────────── */}
@@ -287,7 +614,17 @@ export default function FloorPlanClient() {
               background: 'radial-gradient(ellipse 70% 60% at 50% 45%, #1A1510 0%, #100E0A 65%, #0C0A07 100%)',
               border: '1px solid rgba(212,168,75,0.12)',
               boxShadow: '0 0 120px rgba(212,168,75,0.05) inset, 0 0 1px rgba(232,211,165,0.08) inset, 0 32px 80px rgba(0,0,0,0.7)',
+              cursor: isPanning.current ? 'grabbing' : 'grab',
+              touchAction: 'none',
             }}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onClick={() => setActiveStall(null)}
           >
             {/* Fine grain texture */}
             <div
@@ -299,12 +636,9 @@ export default function FloorPlanClient() {
               }}
               aria-hidden="true"
             />
-            {/* Vignette edges */}
             <div
               className="pointer-events-none absolute inset-0 z-10"
-              style={{
-                background: 'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, rgba(10,8,5,0.6) 100%)',
-              }}
+              style={{ background: 'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, rgba(10,8,5,0.6) 100%)' }}
               aria-hidden="true"
             />
 
@@ -314,93 +648,66 @@ export default function FloorPlanClient() {
               className="w-full h-auto select-none"
               role="img"
               aria-label="Interactive floor plan of the Las Cruces Culinary Innovation Hub"
+              style={{
+                transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
+                transformOrigin: 'center center',
+                transition: isPanning.current ? 'none' : 'transform 0.1s ease-out',
+              }}
             >
               <defs>
-                {/* Fine grid */}
                 <pattern id="grid-fine" width="20" height="20" patternUnits="userSpaceOnUse">
                   <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(212,168,75,0.03)" strokeWidth="0.4" />
                 </pattern>
-                {/* Major grid */}
                 <pattern id="grid-major" width="100" height="100" patternUnits="userSpaceOnUse">
                   <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(212,168,75,0.055)" strokeWidth="0.5" />
                 </pattern>
-                {/* Spotlight centre gradient */}
                 <radialGradient id="canvas-light" cx="50%" cy="50%" r="55%">
                   <stop offset="0%"   stopColor="rgba(212,168,75,0.04)" />
                   <stop offset="100%" stopColor="rgba(0,0,0,0)" />
                 </radialGradient>
-                {/* Active glow filter */}
                 <filter id="glow-gold" x="-25%" y="-25%" width="150%" height="150%">
                   <feGaussianBlur stdDeviation="5" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
-                {/* Soft outer aura */}
                 <filter id="aura" x="-40%" y="-40%" width="180%" height="180%">
                   <feGaussianBlur stdDeviation="10" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
-                {/* Inner bevel shadow */}
                 <filter id="bevel" x="-5%" y="-5%" width="110%" height="110%">
                   <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="rgba(0,0,0,0.6)" floodOpacity="1" />
                 </filter>
-                {/* Copper gradient fill for active stalls */}
                 <linearGradient id="copper-fill" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%"   stopColor="rgba(212,168,75,0.14)" />
                   <stop offset="100%" stopColor="rgba(201,122,62,0.09)" />
                 </linearGradient>
               </defs>
 
-              {/* ── Canvas base layers ── */}
               <rect width="900" height="620" fill="url(#grid-fine)" />
               <rect width="900" height="620" fill="url(#grid-major)" />
               <rect width="900" height="620" fill="url(#canvas-light)" />
 
-              {/* ── Double perimeter — outer thin, inner thicker ── */}
               <g id="fp-perimeter">
-                <rect x="30" y="30" width="840" height="560" fill="none"
-                  stroke="rgba(232,211,165,0.06)" strokeWidth="1" />
-                <rect x="40" y="40" width="820" height="540" fill="none"
-                  stroke="rgba(212,168,75,0.22)" strokeWidth="1.5" />
-                {/* Corner ornament marks */}
-                {[[40,40],[860,40],[40,580],[860,580]].map(([cx,cy], i) => (
+                <rect x="30" y="30" width="840" height="560" fill="none" stroke="rgba(232,211,165,0.06)" strokeWidth="1" />
+                <rect x="40" y="40" width="820" height="540" fill="none" stroke="rgba(212,168,75,0.22)" strokeWidth="1.5" />
+                {([[40,40],[860,40],[40,580],[860,580]] as [number,number][]).map(([cx,cy], i) => (
                   <g key={i} transform={`translate(${cx},${cy})`}>
-                    <line x1={i % 2 === 0 ? 0 : -10} y1="0" x2={i % 2 === 0 ? 10 : 0} y2="0"
-                      stroke="rgba(201,122,62,0.50)" strokeWidth="1.5" />
-                    <line x1="0" y1={i < 2 ? 0 : -10} x2="0" y2={i < 2 ? 10 : 0}
-                      stroke="rgba(201,122,62,0.50)" strokeWidth="1.5" />
+                    <line x1={i % 2 === 0 ? 0 : -10} y1="0" x2={i % 2 === 0 ? 10 : 0} y2="0" stroke="rgba(201,122,62,0.50)" strokeWidth="1.5" />
+                    <line x1="0" y1={i < 2 ? 0 : -10} x2="0" y2={i < 2 ? 10 : 0} stroke="rgba(201,122,62,0.50)" strokeWidth="1.5" />
                   </g>
                 ))}
-                {/* Corridor dash lines */}
-                <line x1="40" y1="150" x2="860" y2="150"
-                  stroke="rgba(212,168,75,0.06)" strokeWidth="0.5" strokeDasharray="3 7" />
-                <line x1="40" y1="440" x2="860" y2="440"
-                  stroke="rgba(212,168,75,0.06)" strokeWidth="0.5" strokeDasharray="3 7" />
-                <line x1="220" y1="40" x2="220" y2="580"
-                  stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" strokeDasharray="3 9" />
-                <line x1="720" y1="40" x2="720" y2="580"
-                  stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" strokeDasharray="3 9" />
+                <line x1="40" y1="150" x2="860" y2="150" stroke="rgba(212,168,75,0.06)" strokeWidth="0.5" strokeDasharray="3 7" />
+                <line x1="40" y1="440" x2="860" y2="440" stroke="rgba(212,168,75,0.06)" strokeWidth="0.5" strokeDasharray="3 7" />
+                <line x1="220" y1="40" x2="220" y2="580" stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" strokeDasharray="3 9" />
+                <line x1="720" y1="40" x2="720" y2="580" stroke="rgba(212,168,75,0.04)" strokeWidth="0.5" strokeDasharray="3 9" />
               </g>
 
-              {/* ── Ghost zone section labels (architectural watermark) ── */}
               <g className="fp-zone-label" aria-hidden="true">
-                <text x="340" y="40" textAnchor="middle" fill="rgba(212,168,75,0.06)"
-                  fontSize="22" fontFamily="var(--font-cormorant, Georgia, serif)"
-                  fontWeight="300" letterSpacing="0.18em">
-                  NORTH VENDOR ROW
-                </text>
-                <text x="340" y="612" textAnchor="middle" fill="rgba(212,168,75,0.06)"
-                  fontSize="22" fontFamily="var(--font-cormorant, Georgia, serif)"
-                  fontWeight="300" letterSpacing="0.18em">
-                  SOUTH VENDOR ROW
-                </text>
-                <text x="470" y="308" textAnchor="middle" fill="rgba(232,211,165,0.03)"
-                  fontSize="42" fontFamily="var(--font-cormorant, Georgia, serif)"
-                  fontWeight="200" letterSpacing="0.22em">
-                  ATRIUM
-                </text>
+                <text x="340" y="40" textAnchor="middle" fill="rgba(212,168,75,0.06)" fontSize="22" fontFamily="var(--font-cormorant, Georgia, serif)" fontWeight="300" letterSpacing="0.18em">NORTH VENDOR ROW</text>
+                <text x="340" y="612" textAnchor="middle" fill="rgba(212,168,75,0.06)" fontSize="22" fontFamily="var(--font-cormorant, Georgia, serif)" fontWeight="300" letterSpacing="0.18em">SOUTH VENDOR ROW</text>
+                <text x="470" y="308" textAnchor="middle" fill="rgba(232,211,165,0.03)" fontSize="42" fontFamily="var(--font-cormorant, Georgia, serif)" fontWeight="200" letterSpacing="0.22em">ATRIUM</text>
               </g>
 
-              {/* ── Stalls ── */}
+              {/* ── Stalls — enlarged hit rects on mobile for easier tapping ── */}
               {STALLS.map((stall) => {
                 const visible  = isVisible(stall);
                 const isActive = activeStall?.id === stall.id;
@@ -408,6 +715,8 @@ export default function FloorPlanClient() {
                 const cx = stall.x + stall.w / 2;
                 const cy = stall.y + stall.h / 2;
                 const zoneClass = `fp-stall-${stall.zone}`;
+                // Expand hit area on small stalls for mobile
+                const hitPad = 6;
 
                 return (
                   <g
@@ -421,134 +730,86 @@ export default function FloorPlanClient() {
                     onKeyDown={(e) => visible && handleKeyDown(stall, e)}
                     onMouseEnter={() => visible && setHoverStall(stall.id)}
                     onMouseLeave={() => setHoverStall(null)}
-                    style={{
-                      cursor: visible ? 'pointer' : 'default',
-                      opacity: visible ? 1 : 0.12,
-                      transition: 'opacity 0.4s ease',
-                    }}
+                    style={{ cursor: visible ? 'pointer' : 'default', opacity: visible ? 1 : 0.12, transition: 'opacity 0.4s ease' }}
                   >
-                    {/* Breathing aura (active only — GSAP targets this ref via activeGlowRef) */}
+                    {/* Invisible expanded hit target — aids mobile tapping */}
+                    <rect
+                      x={stall.x - hitPad} y={stall.y - hitPad}
+                      width={stall.w + hitPad * 2} height={stall.h + hitPad * 2}
+                      fill="transparent" stroke="none"
+                      style={{ pointerEvents: 'all' }}
+                    />
+
                     {isActive && (
                       <rect
                         ref={activeGlowRef}
                         x={stall.x - 8} y={stall.y - 8}
                         width={stall.w + 16} height={stall.h + 16}
-                        fill={STATUS_COLOR[stall.status]}
-                        opacity={0.25}
-                        filter="url(#aura)"
-                        rx="2"
+                        fill={STATUS_COLOR[stall.status]} opacity={0.25} filter="url(#aura)" rx="2"
                         style={{ pointerEvents: 'none' }}
                       />
                     )}
-
-                    {/* Outer glow ring (active) */}
                     {isActive && (
                       <rect
-                        x={stall.x - 3} y={stall.y - 3}
-                        width={stall.w + 6} height={stall.h + 6}
-                        fill="none"
-                        stroke={STATUS_COLOR[stall.status]}
-                        strokeWidth="0.8"
-                        opacity={0.6}
-                        filter="url(#glow-gold)"
-                        rx="1"
+                        x={stall.x - 3} y={stall.y - 3} width={stall.w + 6} height={stall.h + 6}
+                        fill="none" stroke={STATUS_COLOR[stall.status]} strokeWidth="0.8" opacity={0.6} filter="url(#glow-gold)" rx="1"
                         style={{ pointerEvents: 'none' }}
                       />
                     )}
-
-                    {/* Hover highlight ring */}
                     {isHover && !isActive && (
                       <rect
-                        x={stall.x - 2} y={stall.y - 2}
-                        width={stall.w + 4} height={stall.h + 4}
-                        fill="none"
-                        stroke="rgba(232,211,165,0.25)"
-                        strokeWidth="0.75"
-                        rx="1"
+                        x={stall.x - 2} y={stall.y - 2} width={stall.w + 4} height={stall.h + 4}
+                        fill="none" stroke="rgba(232,211,165,0.25)" strokeWidth="0.75" rx="1"
                         style={{ pointerEvents: 'none' }}
                       />
                     )}
-
-                    {/* Main rect */}
                     <rect
-                      x={stall.x} y={stall.y}
-                      width={stall.w} height={stall.h}
+                      x={stall.x} y={stall.y} width={stall.w} height={stall.h}
                       fill={isActive ? 'url(#copper-fill)' : ZONE_FILL[stall.zone]}
                       stroke={isActive ? STATUS_COLOR[stall.status] : ZONE_STROKE[stall.zone]}
-                      strokeWidth={isActive ? 1.2 : 0.65}
-                      rx="1"
+                      strokeWidth={isActive ? 1.2 : 0.65} rx="1"
                       filter={isActive ? 'url(#bevel)' : undefined}
                       style={{ transition: 'fill 0.25s, stroke 0.25s' }}
                     />
-
-                    {/* Inner micro-border (inlaid panel effect) */}
                     <rect
-                      x={stall.x + 3} y={stall.y + 3}
-                      width={stall.w - 6} height={stall.h - 6}
+                      x={stall.x + 3} y={stall.y + 3} width={stall.w - 6} height={stall.h - 6}
                       fill="none"
-                      stroke={isActive
-                        ? `${STATUS_COLOR[stall.status]}33`
-                        : 'rgba(232,211,165,0.04)'}
-                      strokeWidth="0.5"
-                      rx="0.5"
+                      stroke={isActive ? `${STATUS_COLOR[stall.status]}33` : 'rgba(232,211,165,0.04)'}
+                      strokeWidth="0.5" rx="0.5"
                       style={{ pointerEvents: 'none', transition: 'stroke 0.25s' }}
                     />
-
-                    {/* Status dot — upper right */}
                     <circle
-                      cx={stall.x + stall.w - 10}
-                      cy={stall.y + 10}
-                      r="3"
-                      fill={STATUS_COLOR[stall.status]}
-                      opacity={isActive ? 1 : 0.75}
+                      cx={stall.x + stall.w - 10} cy={stall.y + 10} r="3"
+                      fill={STATUS_COLOR[stall.status]} opacity={isActive ? 1 : 0.75}
                     />
-
-                    {/* Stall name label */}
                     <text
-                      x={cx}
-                      y={stall.h > 100 ? cy - 12 : stall.h > 60 ? cy - 8 : cy}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fill={isActive
-                        ? STATUS_COLOR[stall.status]
-                        : isHover ? '#E8D3A5' : 'rgba(232,211,165,0.50)'}
+                      x={cx} y={stall.h > 100 ? cy - 12 : stall.h > 60 ? cy - 8 : cy}
+                      textAnchor="middle" dominantBaseline="middle"
+                      fill={isActive ? STATUS_COLOR[stall.status] : isHover ? '#E8D3A5' : 'rgba(232,211,165,0.50)'}
                       fontSize={stall.zone === 'seating' ? '12' : stall.w > 140 ? '11' : '9'}
                       fontFamily="var(--font-cormorant, Georgia, serif)"
-                      fontWeight="300"
-                      letterSpacing="0.10em"
+                      fontWeight="300" letterSpacing="0.10em"
                       style={{ transition: 'fill 0.2s', pointerEvents: 'none', userSelect: 'none' }}
                     >
                       {stall.label.toUpperCase()}
                     </text>
-
-                    {/* Sq ft sub-label */}
                     {stall.h > 80 && (
                       <text
-                        x={cx}
-                        y={stall.h > 100 ? cy + 8 : cy + 14}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
+                        x={cx} y={stall.h > 100 ? cy + 8 : cy + 14}
+                        textAnchor="middle" dominantBaseline="middle"
                         fill={isActive ? 'rgba(201,122,62,0.75)' : 'rgba(201,122,62,0.35)'}
-                        fontSize="7.5"
-                        fontFamily="var(--font-josefin, sans-serif)"
-                        letterSpacing="0.14em"
+                        fontSize="7.5" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.14em"
                         style={{ transition: 'fill 0.2s', pointerEvents: 'none', userSelect: 'none' }}
                       >
                         {stall.sqft.toLocaleString()} SQ FT
                       </text>
                     )}
-
-                    {/* Zone identity chip for anchors */}
                     {(stall.zone === 'cider' || stall.zone === 'kitchen') && stall.h > 180 && (
                       <text
-                        x={cx}
-                        y={cy + 26}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        fill="rgba(79,152,163,0.45)"
-                        fontSize="6.5"
-                        fontFamily="var(--font-josefin, sans-serif)"
-                        letterSpacing="0.18em"
+                        x={cx} y={cy + 26}
+                        textAnchor="middle" dominantBaseline="middle"
+                        fill="rgba(79,152,163,0.45)" fontSize="6.5"
+                        fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.18em"
                         style={{ pointerEvents: 'none', userSelect: 'none' }}
                       >
                         ANCHOR TENANT
@@ -558,60 +819,42 @@ export default function FloorPlanClient() {
                 );
               })}
 
-              {/* ── Instruments: compass + scale + cartouche ── */}
               <g id="fp-instruments" opacity="1">
-
-                {/* Compass rose — refined */}
                 <g transform="translate(845,562)" opacity="0.45">
-                  {/* Outer ring */}
                   <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(212,168,75,0.25)" strokeWidth="0.5" />
-                  {/* Cardinal arms */}
-                  <line x1="0" y1="-14" x2="0" y2="14"  stroke="#D4A84B" strokeWidth="0.75" />
-                  <line x1="-14" y1="0" x2="14" y2="0"  stroke="#D4A84B" strokeWidth="0.75" />
-                  {/* Diagonal ticks */}
+                  <line x1="0" y1="-14" x2="0" y2="14" stroke="#D4A84B" strokeWidth="0.75" />
+                  <line x1="-14" y1="0" x2="14" y2="0" stroke="#D4A84B" strokeWidth="0.75" />
                   {[45,135,225,315].map(deg => (
-                    <line
-                      key={deg}
-                      x1={Math.cos(deg*Math.PI/180)*6}
-                      y1={Math.sin(deg*Math.PI/180)*6}
-                      x2={Math.cos(deg*Math.PI/180)*10}
-                      y2={Math.sin(deg*Math.PI/180)*10}
+                    <line key={deg}
+                      x1={Math.cos(deg*Math.PI/180)*6} y1={Math.sin(deg*Math.PI/180)*6}
+                      x2={Math.cos(deg*Math.PI/180)*10} y2={Math.sin(deg*Math.PI/180)*10}
                       stroke="rgba(212,168,75,0.30)" strokeWidth="0.5"
                     />
                   ))}
-                  {/* North diamond */}
                   <polygon points="0,-14 3,-6 0,-2 -3,-6" fill="#D4A84B" opacity="0.9" />
-                  <polygon points="0,14 3,6 0,2 -3,6"   fill="rgba(212,168,75,0.35)" />
-                  <text x="0" y="-18" textAnchor="middle" fill="#D4A84B" fontSize="6"
-                    fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">N</text>
+                  <polygon points="0,14 3,6 0,2 -3,6" fill="rgba(212,168,75,0.35)" />
+                  <text x="0" y="-18" textAnchor="middle" fill="#D4A84B" fontSize="6" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">N</text>
                 </g>
-
-                {/* Scale bar */}
                 <g transform="translate(60,604)" opacity="0.38">
                   <line x1="0" y1="0" x2="100" y2="0" stroke="#C97A3E" strokeWidth="0.75" />
                   {[0,25,50,75,100].map(x => (
                     <line key={x} x1={x} y1="-3.5" x2={x} y2="3.5" stroke="#C97A3E" strokeWidth="0.75" />
                   ))}
-                  <text x="50" y="-7" textAnchor="middle" fill="#C97A3E" fontSize="6.5"
-                    fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.12em">~75 FT</text>
+                  <text x="50" y="-7" textAnchor="middle" fill="#C97A3E" fontSize="6.5" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.12em">~75 FT</text>
                 </g>
-
-                {/* Cartouche / title block — bottom right */}
                 <g transform="translate(640,594)" opacity="0.30">
-                  <rect x="0" y="-14" width="180" height="20" fill="none"
-                    stroke="rgba(212,168,75,0.20)" strokeWidth="0.5" />
-                  <text x="90" y="0" textAnchor="middle" fill="#E8D3A5" fontSize="6.5"
-                    fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.18em">
+                  <rect x="0" y="-14" width="180" height="20" fill="none" stroke="rgba(212,168,75,0.20)" strokeWidth="0.5" />
+                  <text x="90" y="0" textAnchor="middle" fill="#E8D3A5" fontSize="6.5" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.18em">
                     LC CULINARY HUB · PLAN A-1 · 2027
                   </text>
                 </g>
               </g>
             </svg>
 
-            {/* ── Stall tooltip / detail panel ────────────────────────── */}
+            {/* Desktop tooltip (non-mobile) */}
             {activeStall && (
               <div
-                className="absolute z-20 w-[288px] pointer-events-auto"
+                className="absolute z-20 w-[288px] pointer-events-auto hidden sm:block"
                 style={{
                   left: Math.min(tooltipPos.x + 14, (containerRef.current?.offsetWidth ?? 600) - 304),
                   top:  Math.max(tooltipPos.y - 170, 8),
@@ -620,170 +863,122 @@ export default function FloorPlanClient() {
                   boxShadow: `0 0 40px ${STATUS_COLOR[activeStall.status]}18, 0 24px 48px rgba(0,0,0,0.7)`,
                   backdropFilter: 'blur(16px)',
                 }}
-                role="dialog"
-                aria-label={`Details for ${activeStall.label}`}
+                role="tooltip"
+                aria-label={`Quick stats for ${activeStall.label}`}
+                onClick={e => e.stopPropagation()}
               >
-                {/* Top status band */}
-                <div
-                  className="h-[2px] w-full"
-                  style={{ background: `linear-gradient(90deg, ${STATUS_COLOR[activeStall.status]}, transparent)` }}
-                />
-
+                <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${STATUS_COLOR[activeStall.status]}, transparent)` }} />
                 <div className="p-5">
-                  {/* Header row */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div>
-                      <div
-                        className="font-corp-display text-xl font-light leading-tight"
-                        style={{ color: '#E8D3A5' }}
-                      >
-                        {activeStall.label}
-                      </div>
-                      <div
-                        className="font-label text-[7.5px] tracking-[0.28em] uppercase mt-1.5"
-                        style={{ color: STATUS_COLOR[activeStall.status] }}
-                      >
-                        {STATUS_LABEL[activeStall.status]}
-                      </div>
+                      <div className="font-corp-display text-xl font-light leading-tight" style={{ color: '#E8D3A5' }}>{activeStall.label}</div>
+                      <div className="font-label text-[7.5px] tracking-[0.28em] uppercase mt-1.5" style={{ color: STATUS_COLOR[activeStall.status] }}>{STATUS_LABEL[activeStall.status]}</div>
                     </div>
                     <button
                       onClick={() => setActiveStall(null)}
-                      className="transition-colors duration-300 mt-0.5"
                       style={{ color: 'rgba(232,211,165,0.25)' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'rgba(232,211,165,0.70)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'rgba(232,211,165,0.25)')}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(232,211,165,0.70)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(232,211,165,0.25)'; }}
                       aria-label="Close stall details"
                     >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
-
-                  {/* Stats tiles */}
-                  <div
-                    className="grid grid-cols-2 mb-4"
-                    style={{ gap: '1px', background: 'rgba(232,211,165,0.06)' }}
-                  >
+                  <div className="grid grid-cols-2 mb-4" style={{ gap: '1px', background: 'rgba(232,211,165,0.06)' }}>
                     <div style={{ background: 'rgba(26,21,16,1)', padding: '10px 12px' }}>
-                      <div className="font-corp-display text-xl font-light" style={{ color: '#D4A84B' }}>
-                        {activeStall.sqft.toLocaleString()}
-                      </div>
+                      <div className="font-corp-display text-xl font-light" style={{ color: '#D4A84B' }}>{activeStall.sqft.toLocaleString()}</div>
                       <div className="font-label text-[7px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.30)' }}>Sq Ft</div>
                     </div>
                     <div style={{ background: 'rgba(26,21,16,1)', padding: '10px 12px' }}>
-                      <div className="font-corp-display text-xl font-light" style={{ color: '#D4A84B' }}>
-                        {activeStall.rent}
-                      </div>
+                      <div className="font-corp-display text-xl font-light" style={{ color: '#D4A84B' }}>{activeStall.rent}</div>
                       <div className="font-label text-[7px] tracking-[0.22em] uppercase mt-0.5" style={{ color: 'rgba(232,211,165,0.30)' }}>Est. Rent</div>
                     </div>
                   </div>
-
-                  {/* Description */}
-                  <p
-                    className="font-sans text-xs leading-relaxed mb-5"
-                    style={{ color: 'rgba(232,211,165,0.40)' }}
-                  >
-                    {activeStall.description}
-                  </p>
-
-                  {/* CTA */}
+                  <p className="font-sans text-xs leading-relaxed mb-4" style={{ color: 'rgba(232,211,165,0.40)' }}>{activeStall.description}</p>
+                  <p className="font-label text-[7.5px] tracking-[0.18em] uppercase mb-5" style={{ color: 'rgba(201,122,62,0.55)' }}>{activeStall.conceptType}</p>
                   {activeStall.status === 'available' && (
-                    <Link
-                      href="/vendors"
-                      className="flex w-full items-center justify-center gap-2
-                                 font-label text-[8.5px] tracking-[0.24em] uppercase
-                                 transition-all duration-300"
-                      style={{
-                        background: 'linear-gradient(135deg, #C97A3E, #D4A84B)',
-                        padding: '12px 16px',
-                        color: '#100E0A',
-                        fontWeight: 500,
-                      }}
+                    <Link href={`/vendors?stall=${activeStall.id}`}
+                      className="flex w-full items-center justify-center gap-2 font-label text-[8.5px] tracking-[0.24em] uppercase transition-all duration-300"
+                      style={{ background: 'linear-gradient(135deg, #C97A3E, #D4A84B)', padding: '12px 16px', color: '#100E0A', fontWeight: 500 }}
                     >
                       Apply for This Stall →
                     </Link>
                   )}
                   {activeStall.status === 'reserved' && (
-                    <div
-                      className="px-4 py-3 text-center font-label text-[8px] tracking-[0.22em] uppercase"
-                      style={{
-                        border: '1px solid rgba(196,93,42,0.25)',
-                        background: 'rgba(196,93,42,0.06)',
-                        color: 'rgba(196,93,42,0.65)',
-                      }}
-                    >
-                      Under Letter of Intent
-                    </div>
+                    <div className="px-4 py-3 text-center font-label text-[8px] tracking-[0.22em] uppercase"
+                      style={{ border: '1px solid rgba(196,93,42,0.25)', background: 'rgba(196,93,42,0.06)', color: 'rgba(196,93,42,0.65)' }}
+                    >Under Letter of Intent</div>
                   )}
                   {activeStall.status === 'anchor' && (
-                    <div
-                      className="px-4 py-3 text-center font-label text-[8px] tracking-[0.22em] uppercase"
-                      style={{
-                        border: '1px solid rgba(79,152,163,0.20)',
-                        background: 'rgba(79,152,163,0.05)',
-                        color: 'rgba(79,152,163,0.55)',
-                      }}
-                    >
-                      Hub Anchor Space
-                    </div>
+                    <div className="px-4 py-3 text-center font-label text-[8px] tracking-[0.22em] uppercase"
+                      style={{ border: '1px solid rgba(79,152,163,0.20)', background: 'rgba(79,152,163,0.05)', color: 'rgba(79,152,163,0.55)' }}
+                    >Hub Anchor Space</div>
                   )}
+                  {/* Story drawer trigger */}
+                  <button
+                    onClick={() => { /* drawer stays open — just close tooltip */ }}
+                    className="mt-3 w-full font-label text-[8px] tracking-[0.2em] uppercase transition-colors duration-300 py-2"
+                    style={{ color: 'rgba(212,168,75,0.45)', borderTop: '1px solid rgba(232,211,165,0.07)' }}
+                  >
+                    Read full stall story ↓
+                  </button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* ── Legend ─────────────────────────────────────────────────── */}
-          <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 px-1">
-            {(Object.entries(STATUS_COLOR) as [Status, string][]).map(([status, color]) => (
-              <div key={status} className="flex items-center gap-2.5">
-                <span
-                  className="block h-2 w-2 rounded-full"
-                  style={{ background: color, boxShadow: `0 0 6px ${color}55` }}
-                />
-                <span
-                  className="font-label text-[8px] tracking-[0.20em] uppercase"
-                  style={{ color: 'rgba(232,211,165,0.35)' }}
-                >
-                  {STATUS_LABEL[status]}
-                </span>
-              </div>
-            ))}
-            <div
-              className="ml-auto font-label text-[8px] tracking-[0.18em] uppercase"
-              style={{ color: 'rgba(232,211,165,0.18)' }}
+          {/* ── Collapsible legend (mobile: toggle, desktop: always visible) ── */}
+          <div className="mt-5 px-1">
+            {/* Mobile toggle */}
+            <button
+              className="sm:hidden w-full flex items-center justify-between py-3"
+              style={{ borderBottom: legendOpen ? 'none' : '1px solid rgba(232,211,165,0.08)' }}
+              onClick={() => setLegendOpen(o => !o)}
+              aria-expanded={legendOpen}
             >
-              Click any stall for details
+              <span className="font-label text-[8px] tracking-[0.25em] uppercase" style={{ color: 'rgba(232,211,165,0.35)' }}>Status Legend</span>
+              <svg
+                width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(232,211,165,0.35)" strokeWidth="2"
+                style={{ transform: legendOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            {/* Legend items */}
+            <div
+              className={`flex flex-wrap items-center gap-x-8 gap-y-3
+                ${ legendOpen ? 'block' : 'hidden' } sm:flex`}
+              style={{ paddingTop: legendOpen ? 12 : 0, borderBottom: '1px solid rgba(232,211,165,0.06)', paddingBottom: 12 }}
+            >
+              {(Object.entries(STATUS_COLOR) as [Status, string][]).map(([status, color]) => (
+                <div key={status} className="flex items-center gap-2.5">
+                  <span className="block h-2 w-2 rounded-full" style={{ background: color, boxShadow: `0 0 6px ${color}55` }} />
+                  <span className="font-label text-[8px] tracking-[0.20em] uppercase" style={{ color: 'rgba(232,211,165,0.35)' }}>
+                    {STATUS_LABEL[status]}
+                  </span>
+                </div>
+              ))}
+              <div className="ml-auto font-label text-[8px] tracking-[0.18em] uppercase hidden sm:block" style={{ color: 'rgba(232,211,165,0.18)' }}>
+                Click any stall for details
+              </div>
+              <div className="font-label text-[8px] tracking-[0.18em] uppercase sm:hidden" style={{ color: 'rgba(232,211,165,0.18)' }}>
+                Tap any stall for details
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Stall directory ───────────────────────────────────────────── */}
+      {/* ── Stall directory ───────────────────────────────────────────────── */}
       <div className="px-6 pb-28">
         <div className="mx-auto max-w-5xl">
-          {/* Section rule */}
           <div className="flex items-center gap-5 mb-8">
-            <span
-              className="block h-px flex-1"
-              style={{ background: 'linear-gradient(90deg, rgba(201,122,62,0.30), transparent)' }}
-            />
-            <span
-              className="font-label text-[8.5px] tracking-[0.35em] uppercase shrink-0"
-              style={{ color: 'rgba(201,122,62,0.55)' }}
-            >
-              Stall Directory
-            </span>
-            <span
-              className="block h-px flex-1"
-              style={{ background: 'linear-gradient(270deg, rgba(201,122,62,0.30), transparent)' }}
-            />
+            <span className="block h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(201,122,62,0.30), transparent)' }} />
+            <span className="font-label text-[8.5px] tracking-[0.35em] uppercase shrink-0" style={{ color: 'rgba(201,122,62,0.55)' }}>Stall Directory</span>
+            <span className="block h-px flex-1" style={{ background: 'linear-gradient(270deg, rgba(201,122,62,0.30), transparent)' }} />
           </div>
 
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-            style={{ gap: '1px', background: 'rgba(232,211,165,0.05)' }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: '1px', background: 'rgba(232,211,165,0.05)' }}>
             {STALLS.filter(s => s.zone === 'vendor').map((stall) => (
               <button
                 key={stall.id}
@@ -797,24 +992,19 @@ export default function FloorPlanClient() {
                   outline: activeStall?.id === stall.id ? `1px solid rgba(212,168,75,0.25)` : 'none',
                 }}
               >
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <span
-                    className="font-corp-display text-base font-light transition-colors duration-300"
-                    style={{ color: activeStall?.id === stall.id ? '#D4A84B' : '#E8D3A5' }}
-                  >
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <span className="font-corp-display text-base font-light transition-colors duration-300" style={{ color: activeStall?.id === stall.id ? '#D4A84B' : '#E8D3A5' }}>
                     {stall.label}
                   </span>
-                  <span
-                    className="font-label text-[7.5px] tracking-[0.16em] uppercase px-2 py-0.5"
-                    style={{
-                      color:       STATUS_COLOR[stall.status],
-                      border:      `1px solid ${STATUS_COLOR[stall.status]}44`,
-                      background:  `${STATUS_COLOR[stall.status]}11`,
-                    }}
+                  <span className="font-label text-[7.5px] tracking-[0.16em] uppercase px-2 py-0.5"
+                    style={{ color: STATUS_COLOR[stall.status], border: `1px solid ${STATUS_COLOR[stall.status]}44`, background: `${STATUS_COLOR[stall.status]}11` }}
                   >
                     {STATUS_LABEL[stall.status]}
                   </span>
                 </div>
+                <p className="font-label text-[7.5px] tracking-[0.15em] uppercase mb-2" style={{ color: 'rgba(201,122,62,0.50)' }}>
+                  {stall.conceptType}
+                </p>
                 <div className="flex items-center gap-4">
                   <span className="font-sans text-xs" style={{ color: 'rgba(232,211,165,0.32)' }}>{stall.sqft} sq ft</span>
                   <span className="font-sans text-xs" style={{ color: 'rgba(232,211,165,0.32)' }}>{stall.rent}</span>
@@ -823,10 +1013,8 @@ export default function FloorPlanClient() {
             ))}
           </div>
 
-          {/* CTA strip */}
           <div
-            className="mt-10 p-8 flex flex-col items-center gap-6 text-center
-                       sm:flex-row sm:justify-between sm:text-left"
+            className="mt-10 p-8 flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left"
             style={{
               borderTop: '1px solid rgba(212,168,75,0.20)',
               borderBottom: '1px solid rgba(212,168,75,0.08)',
@@ -835,33 +1023,22 @@ export default function FloorPlanClient() {
             }}
           >
             <div>
-              <div
-                className="font-corp-display text-2xl font-light mb-1.5"
-                style={{ color: '#E8D3A5' }}
-              >
-                Ready to claim your stall?
-              </div>
-              <p className="font-sans text-sm" style={{ color: 'rgba(232,211,165,0.38)' }}>
-                {availableCount} vendor spots remain in the founding cohort.
-              </p>
+              <div className="font-corp-display text-2xl font-light mb-1.5" style={{ color: '#E8D3A5' }}>Ready to claim your stall?</div>
+              <p className="font-sans text-sm" style={{ color: 'rgba(232,211,165,0.38)' }}>{availableCount} vendor spots remain in the founding cohort.</p>
             </div>
             <Link
               href="/vendors"
-              className="shrink-0 font-label text-[9px] tracking-[0.28em] uppercase
-                         transition-all duration-300 whitespace-nowrap"
-              style={{
-                background: 'linear-gradient(135deg, #C97A3E 0%, #D4A84B 100%)',
-                padding: '16px 36px',
-                color: '#100E0A',
-                fontWeight: 500,
-                boxShadow: '0 8px 32px rgba(212,168,75,0.18)',
-              }}
+              className="shrink-0 font-label text-[9px] tracking-[0.28em] uppercase transition-all duration-300 whitespace-nowrap"
+              style={{ background: 'linear-gradient(135deg, #C97A3E 0%, #D4A84B 100%)', padding: '16px 36px', color: '#100E0A', fontWeight: 500, boxShadow: '0 8px 32px rgba(212,168,75,0.18)' }}
             >
               Apply as a Vendor →
             </Link>
           </div>
         </div>
       </div>
+
+      {/* ── Story Drawer (mobile-first, also works on desktop) ─────────── */}
+      <StallDrawer stall={activeStall} onClose={() => setActiveStall(null)} />
     </main>
   );
 }
