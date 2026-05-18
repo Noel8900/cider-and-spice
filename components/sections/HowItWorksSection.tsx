@@ -1,7 +1,8 @@
 'use client';
 // Direction 3 — Artisan Collective: six-step incubator pathway.
-// Grammar pass: step titles and body copy tightened.
-// hiw-arrow now reveals on row hover via inline handler.
+// Luxury upgrades:
+//   • Step dots enlarged to 14px, glow terracotta on row hover via CSS class.
+//   • hiw-arrow reveals on row hover as before.
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
@@ -47,7 +48,7 @@ const steps = [
   {
     number: '06',
     title: 'Graduate to Your Own Space',
-    body: 'Our alumni network, Las Cruces SBDC connections, and SBA lending partnerships help you secure financing when you’re ready for a permanent location.',
+    body: 'Our alumni network, Las Cruces SBDC connections, and SBA lending partnerships help you secure financing when you're ready for a permanent location.',
   },
 ];
 
@@ -56,17 +57,33 @@ export default function HowItWorksSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.hiw-spine', { scaleY: 0, transformOrigin: 'top', duration: 1.4, ease: 'power2.inOut', scrollTrigger: { trigger: ref.current, start: 'top 72%', once: true } });
-      gsap.from('.hiw-step',  { opacity: 0, x: -24, duration: 0.85, stagger: 0.1, ease: 'power3.out', scrollTrigger: { trigger: ref.current, start: 'top 70%', once: true } });
+      gsap.from('.hiw-spine', {
+        scaleY: 0, transformOrigin: 'top', duration: 1.4, ease: 'power2.inOut',
+        scrollTrigger: { trigger: ref.current, start: 'top 72%', once: true },
+      });
+      gsap.from('.hiw-step', {
+        opacity: 0, x: -24, duration: 0.85, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: ref.current, start: 'top 70%', once: true },
+      });
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
     <section id="concept" ref={ref} style={{ background: `linear-gradient(to bottom, ${D3.walnut}, #1e1710)`, padding: '8rem 1.5rem' }}>
-      <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
+      <style>{`
+        .hiw-step:hover .hiw-dot {
+          border-color: ${D3.terracotta} !important;
+          background:   ${D3.terracotta} !important;
+          box-shadow:   0 0 0 4px rgba(192,98,42,0.18), 0 0 14px rgba(192,98,42,0.45) !important;
+          transform:    scale(1.2);
+        }
+        .hiw-dot {
+          transition: border-color 0.3s, background 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+      `}</style>
 
-        {/* Section header */}
+      <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
         <div style={{ marginBottom: '3.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem' }}>
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
@@ -81,7 +98,6 @@ export default function HowItWorksSection() {
         </div>
 
         <div style={{ position: 'relative' }}>
-          {/* Animated sage spine */}
           <div className="hiw-spine" style={{ position: 'absolute', left: '1.6rem', top: '1rem', bottom: '1rem', width: '1px', background: `linear-gradient(to bottom, ${D3.sage}, rgba(107,140,107,0.12))` }} aria-hidden="true" />
           <div style={{ position: 'absolute', left: '1.6rem', top: '1rem', bottom: '1rem', width: '1px', background: 'rgba(247,243,236,0.05)' }} aria-hidden="true" />
 
@@ -107,26 +123,30 @@ export default function HowItWorksSection() {
                   if (arrow) arrow.style.opacity = '0';
                 }}
               >
-                {/* Step dot + number */}
                 <div style={{ position: 'relative', flexShrink: 0, width: '2.5rem', textAlign: 'right', paddingTop: '0.2rem' }}>
-                  <div style={{
-                    position: 'absolute', right: '-1.65rem', top: '0.5rem',
-                    width: '12px', height: '12px', borderRadius: '50%',
-                    border: `2px solid rgba(192,98,42,0.5)`, background: D3.walnut,
-                    transition: 'border-color 0.3s, background 0.3s',
-                  }} aria-hidden="true" />
+                  <div
+                    className="hiw-dot"
+                    style={{
+                      position: 'absolute',
+                      right: '-1.7rem', top: '0.45rem',
+                      width: '14px', height: '14px',
+                      borderRadius: '50%',
+                      border: `2px solid rgba(192,98,42,0.45)`,
+                      background: D3.walnut,
+                      boxShadow: '0 0 0 0 transparent',
+                    }}
+                    aria-hidden="true"
+                  />
                   <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem', fontWeight: 300, color: `${D3.terracotta}60`, lineHeight: 1 }}>
                     {step.number}
                   </span>
                 </div>
 
-                {/* Content */}
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.5rem', lineHeight: 1.25 }}>{step.title}</h3>
                   <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: D3.wheat, opacity: 0.55, maxWidth: '42rem' }}>{step.body}</p>
                 </div>
 
-                {/* Arrow reveals on hover */}
                 <div className="hiw-arrow" style={{ flexShrink: 0, display: 'flex', alignItems: 'center', opacity: 0, transition: 'opacity 0.3s', paddingTop: '0.4rem' }} aria-hidden="true">
                   <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', color: D3.terracotta, fontSize: '1.25rem' }}>→</span>
                 </div>

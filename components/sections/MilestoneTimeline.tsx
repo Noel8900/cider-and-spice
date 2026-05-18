@@ -1,8 +1,11 @@
 'use client';
 // Direction 3 — Artisan Collective: project roadmap.
-// Grammar pass: milestone detail copy tightened, badge spacing improved.
+// Luxury upgrades:
+//   • Progress bar animates from width:0 → target% via GSAP on scroll enter.
+//   • Fill bar has a moving gold shimmer highlight (CSS @keyframes shimmer).
+//   • Progress % counter animates with GSAP countUp.
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -59,7 +62,7 @@ const MILESTONES: { label: string; date: string; detail: string; status: Milesto
   {
     label: 'Grand Opening',
     date: 'Q2 2027',
-    detail: "Public grand opening of Cider & Spice — Southern New Mexico’s first food hall and craft cider bar.",
+    detail: "Public grand opening of Cider & Spice — Southern New Mexico's first food hall and craft cider bar.",
     status: 'upcoming',
   },
 ];
@@ -67,27 +70,74 @@ const MILESTONES: { label: string; date: string; detail: string; status: Milesto
 export default function MilestoneTimeline() {
   const ref      = useRef<HTMLElement>(null);
   const spineRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (spineRef.current) {
-        gsap.fromTo(spineRef.current,
-          { scaleY: 0, transformOrigin: 'top center' },
-          { scaleY: 1, duration: 1.6, ease: 'power2.inOut', scrollTrigger: { trigger: ref.current, start: 'top 75%', once: true } }
-        );
-      }
-      gsap.from('.timeline-item', { opacity: 0, x: -20, duration: 0.75, stagger: 0.13, ease: 'power3.out', delay: 0.3, scrollTrigger: { trigger: '.timeline-track', start: 'top 76%', once: true } });
-      gsap.to('.dot-active', { scale: 1.25, duration: 0.9, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
+  const fillRef  = useRef<HTMLDivElement>(null);
+  const [pct, setPct] = useState(0);
 
   const doneCount   = MILESTONES.filter(m => m.status === 'done').length;
   const totalCount  = MILESTONES.length;
   const progressPct = Math.round((doneCount / totalCount) * 100);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Spine draw
+      if (spineRef.current) {
+        gsap.fromTo(spineRef.current,
+          { scaleY: 0, transformOrigin: 'top center' },
+          { scaleY: 1, duration: 1.6, ease: 'power2.inOut',
+            scrollTrigger: { trigger: ref.current, start: 'top 75%', once: true } }
+        );
+      }
+      // Progress bar fill + % counter
+      if (fillRef.current) {
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: progressPct,
+          duration: 1.4,
+          ease: 'power2.out',
+          onUpdate() {
+            setPct(Math.round(obj.val));
+            if (fillRef.current) fillRef.current.style.width = obj.val + '%';
+          },
+          scrollTrigger: { trigger: ref.current, start: 'top 72%', once: true },
+        });
+      }
+      // Timeline items stagger
+      gsap.from('.timeline-item', {
+        opacity: 0, x: -20, duration: 0.75, stagger: 0.13, ease: 'power3.out', delay: 0.3,
+        scrollTrigger: { trigger: '.timeline-track', start: 'top 76%', once: true },
+      });
+      // Active dot pulse
+      gsap.to('.dot-active', {
+        scale: 1.25, duration: 0.9, repeat: -1, yoyo: true, ease: 'sine.inOut',
+      });
+    }, ref);
+    return () => ctx.revert();
+  }, [progressPct]);
+
   return (
     <section id="timeline" ref={ref} style={{ background: `linear-gradient(to bottom, ${D3.walnut}, #1e1710)`, padding: '8rem 1.5rem' }}>
+      <style>{`
+        @keyframes shimmer {
+          0%   { background-position: -200% center; }
+          100% { background-position:  200% center; }
+        }
+        .progress-fill {
+          height: 2px;
+          background: linear-gradient(
+            90deg,
+            ${D3.terracotta} 0%,
+            ${D3.wheat}      40%,
+            #fff9           60%,
+            ${D3.wheat}      70%,
+            ${D3.terracotta} 100%
+          );
+          background-size: 200% auto;
+          animation: shimmer 2.8s linear infinite;
+          border-radius: 1px;
+          box-shadow: 0 0 8px rgba(232,193,141,0.35), 0 0 2px rgba(192,98,42,0.6);
+        }
+      `}</style>
+
       <div style={{ maxWidth: '52rem', margin: '0 auto' }}>
 
         {/* Section header */}
@@ -97,26 +147,29 @@ export default function MilestoneTimeline() {
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>Project Roadmap</span>
           </div>
           <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>The Path to Opening</h2>
-          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>From site selection to grand opening — here’s where we are and what comes next.</p>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>From site selection to grand opening — here's where we are and what comes next.</p>
         </div>
 
-        {/* Progress bar */}
+        {/* Animated progress bar */}
         <div style={{ marginBottom: '3.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}50` }}>
               {doneCount} of {totalCount} milestones complete
             </span>
-            <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 300, color: D3.terracotta }}>{progressPct}%</span>
+            <span
+              aria-live="polite"
+              style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.6rem', fontWeight: 300, color: D3.terracotta, lineHeight: 1, minWidth: '3.5rem', textAlign: 'right' }}
+            >
+              {pct}%
+            </span>
           </div>
-          <div style={{ height: '1px', width: '100%', background: 'rgba(247,243,236,0.07)' }}>
-            <div style={{ height: '1px', width: `${progressPct}%`, background: `linear-gradient(90deg, ${D3.terracotta}, ${D3.wheat})` }} />
+          <div style={{ height: '2px', width: '100%', background: 'rgba(247,243,236,0.07)', borderRadius: '1px', overflow: 'hidden' }}>
+            <div ref={fillRef} className="progress-fill" style={{ width: '0%' }} />
           </div>
         </div>
 
         <div className="timeline-track" style={{ position: 'relative', marginTop: '1.5rem' }}>
-          {/* Animated spine */}
           <div ref={spineRef} style={{ position: 'absolute', left: '8px', top: '0.75rem', bottom: '0.75rem', width: '1px', background: `linear-gradient(to bottom, ${D3.terracotta} 0%, rgba(192,98,42,0.15) 100%)` }} aria-hidden="true" />
-          {/* Ghost spine */}
           <div style={{ position: 'absolute', left: '8px', top: '0.75rem', bottom: '0.75rem', width: '1px', background: 'rgba(247,243,236,0.05)' }} aria-hidden="true" />
 
           <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
@@ -126,7 +179,6 @@ export default function MilestoneTimeline() {
               const isUpcoming = status === 'upcoming';
               return (
                 <li key={label} className="timeline-item" style={{ position: 'relative', display: 'flex', gap: '2rem', paddingBottom: i < MILESTONES.length - 1 ? '2.5rem' : 0 }}>
-                  {/* Dot */}
                   <div style={{ position: 'relative', zIndex: 10, flexShrink: 0, paddingTop: '2px' }}>
                     <span
                       className={isActive ? 'dot-active' : ''}
@@ -139,8 +191,6 @@ export default function MilestoneTimeline() {
                       aria-hidden="true"
                     />
                   </div>
-
-                  {/* Card */}
                   <div style={{
                     flex: 1,
                     border: `1px solid ${ isDone ? 'rgba(232,193,141,0.2)' : isActive ? 'rgba(192,98,42,0.3)' : 'rgba(247,243,236,0.07)' }`,
@@ -148,7 +198,8 @@ export default function MilestoneTimeline() {
                     transition: 'border-color 0.3s',
                   }}
                     onMouseEnter={e => (e.currentTarget.style.borderColor = isDone ? 'rgba(232,193,141,0.4)' : isActive ? 'rgba(192,98,42,0.55)' : 'rgba(247,243,236,0.18)')}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = isDone ? 'rgba(232,193,141,0.2)' : isActive ? 'rgba(192,98,42,0.3)' : 'rgba(247,243,236,0.07)')}>
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = isDone ? 'rgba(232,193,141,0.2)' : isActive ? 'rgba(192,98,42,0.3)' : 'rgba(247,243,236,0.07)')}
+                  >
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
                       <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: isUpcoming ? `${D3.parchment}80` : D3.parchment, lineHeight: 1.25 }}>{label}</span>
                       <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: isDone ? `${D3.wheat}90` : isActive ? D3.terracotta : `${D3.wheat}50` }}>{date}</span>
