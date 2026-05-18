@@ -1,7 +1,6 @@
 'use client';
 // Direction 3 — Artisan Collective: project roadmap.
-// Terracotta active dot, sage spine, wheat progress bar.
-// All GSAP animations preserved.
+// Grammar pass: milestone detail copy tightened, badge spacing improved.
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
@@ -21,13 +20,48 @@ const D3 = {
 type MilestoneStatus = 'done' | 'active' | 'upcoming';
 
 const MILESTONES: { label: string; date: string; detail: string; status: MilestoneStatus }[] = [
-  { label: 'Site Identified',              date: 'Q3 2024',           detail: 'East Lohman Ave corridor selected — 8,000 sq ft anchor space confirmed within the W. Picacho MRA redevelopment zone.',                                                             status: 'done'     },
-  { label: 'Business Plan Complete',       date: 'Q1 2025',           detail: 'Full financial model (Appendix F), market analysis, grant eligibility assessment, and capital stack structured.',                                                                    status: 'done'     },
-  { label: 'Community & Partner Outreach', date: 'Q2–Q3 2025',        detail: 'Endorsed by Elevate Las Cruces, Visit Las Cruces, WESST NM, SCORE Southern NM, NMSU/DACC, and the Las Cruces SBDC.',                                                               status: 'done'     },
-  { label: 'Capital Raise & Vendor Selection', date: 'Q3–Q4 2026',    detail: 'Investor inquiries open. Founding cohort of 10–13 vendors selected from applications. Grant applications submitted.',                                                              status: 'active'   },
-  { label: 'Permitting & Build-Out',       date: 'Q4 2026 – Q1 2027', detail: 'City permits, contractor selection, stall build-out, kitchen equipment installation, and pre-opening inspections.',                                                                  status: 'upcoming' },
-  { label: 'Soft Open',                    date: 'Q1 2027',           detail: 'Founding vendors, Cider Club members, and media preview — limited-capacity soft launch before public grand opening.',                                                                  status: 'upcoming' },
-  { label: 'Grand Opening',               date: 'Q2 2027',           detail: "Public grand opening of Las Cruces Culinary Innovation Hub — Southern New Mexico's first food hall and craft cider bar.",                                                              status: 'upcoming' },
+  {
+    label: 'Site Identified',
+    date: 'Q3 2024',
+    detail: 'East Lohman Ave corridor selected — 8,000 sq ft anchor space confirmed within the West Picacho MRA redevelopment zone.',
+    status: 'done',
+  },
+  {
+    label: 'Business Plan Complete',
+    date: 'Q1 2025',
+    detail: 'Full financial model (Appendix F), market analysis, grant eligibility assessment, and capital stack structured.',
+    status: 'done',
+  },
+  {
+    label: 'Community & Partner Outreach',
+    date: 'Q2–Q3 2025',
+    detail: 'Endorsed by Elevate Las Cruces, Visit Las Cruces, WESST NM, SCORE Southern NM, NMSU/DACC, and the Las Cruces SBDC.',
+    status: 'done',
+  },
+  {
+    label: 'Capital Raise & Vendor Selection',
+    date: 'Q3–Q4 2026',
+    detail: 'Investor inquiries are now open. Founding cohort of 10–13 vendors selected from applications. Grant applications submitted.',
+    status: 'active',
+  },
+  {
+    label: 'Permitting & Build-Out',
+    date: 'Q4 2026 – Q1 2027',
+    detail: 'City permits, contractor selection, stall build-out, kitchen equipment installation, and pre-opening inspections.',
+    status: 'upcoming',
+  },
+  {
+    label: 'Soft Open',
+    date: 'Q1 2027',
+    detail: 'Founding vendors, Cider Club members, and press & media preview — limited-capacity soft launch before the public grand opening.',
+    status: 'upcoming',
+  },
+  {
+    label: 'Grand Opening',
+    date: 'Q2 2027',
+    detail: "Public grand opening of Cider & Spice — Southern New Mexico’s first food hall and craft cider bar.",
+    status: 'upcoming',
+  },
 ];
 
 export default function MilestoneTimeline() {
@@ -37,7 +71,10 @@ export default function MilestoneTimeline() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (spineRef.current) {
-        gsap.fromTo(spineRef.current, { scaleY: 0, transformOrigin: 'top center' }, { scaleY: 1, duration: 1.6, ease: 'power2.inOut', scrollTrigger: { trigger: ref.current, start: 'top 75%', once: true } });
+        gsap.fromTo(spineRef.current,
+          { scaleY: 0, transformOrigin: 'top center' },
+          { scaleY: 1, duration: 1.6, ease: 'power2.inOut', scrollTrigger: { trigger: ref.current, start: 'top 75%', once: true } }
+        );
       }
       gsap.from('.timeline-item', { opacity: 0, x: -20, duration: 0.75, stagger: 0.13, ease: 'power3.out', delay: 0.3, scrollTrigger: { trigger: '.timeline-track', start: 'top 76%', once: true } });
       gsap.to('.dot-active', { scale: 1.25, duration: 0.9, repeat: -1, yoyo: true, ease: 'sine.inOut' });
@@ -66,7 +103,9 @@ export default function MilestoneTimeline() {
         {/* Progress bar */}
         <div style={{ marginBottom: '3.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}50` }}>{doneCount} of {totalCount} milestones complete</span>
+            <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: `${D3.wheat}50` }}>
+              {doneCount} of {totalCount} milestones complete
+            </span>
             <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 300, color: D3.terracotta }}>{progressPct}%</span>
           </div>
           <div style={{ height: '1px', width: '100%', background: 'rgba(247,243,236,0.07)' }}>
@@ -96,7 +135,6 @@ export default function MilestoneTimeline() {
                         border: `2px solid ${ isDone ? D3.wheat : isActive ? D3.terracotta : 'rgba(247,243,236,0.2)' }`,
                         background: isDone ? D3.wheat : isActive ? D3.terracotta : 'transparent',
                         boxShadow: isDone ? `0 0 8px rgba(232,193,141,0.35)` : isActive ? `0 0 12px rgba(192,98,42,0.5)` : 'none',
-                        flexShrink: 0,
                       }}
                       aria-hidden="true"
                     />
@@ -104,7 +142,8 @@ export default function MilestoneTimeline() {
 
                   {/* Card */}
                   <div style={{
-                    flex: 1, border: `1px solid ${ isDone ? 'rgba(232,193,141,0.2)' : isActive ? 'rgba(192,98,42,0.3)' : 'rgba(247,243,236,0.07)' }`,
+                    flex: 1,
+                    border: `1px solid ${ isDone ? 'rgba(232,193,141,0.2)' : isActive ? 'rgba(192,98,42,0.3)' : 'rgba(247,243,236,0.07)' }`,
                     background: 'rgba(44,36,22,0.55)', padding: '1.25rem 1.5rem', marginBottom: '1rem',
                     transition: 'border-color 0.3s',
                   }}
@@ -113,8 +152,12 @@ export default function MilestoneTimeline() {
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
                       <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: isUpcoming ? `${D3.parchment}80` : D3.parchment, lineHeight: 1.25 }}>{label}</span>
                       <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: isDone ? `${D3.wheat}90` : isActive ? D3.terracotta : `${D3.wheat}50` }}>{date}</span>
-                      {isActive && <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.55rem', letterSpacing: '0.2em', textTransform: 'uppercase', background: D3.terracotta, color: D3.parchment, padding: '2px 8px' }}>In Progress</span>}
-                      {isDone && <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '0.9rem', color: D3.wheat }} aria-label="Completed">✓</span>}
+                      {isActive && (
+                        <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase', background: D3.terracotta, color: D3.parchment, padding: '2px 10px' }}>In Progress</span>
+                      )}
+                      {isDone && (
+                        <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '0.9rem', color: D3.wheat }} aria-label="Completed">✓</span>
+                      )}
                     </div>
                     <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.82rem', lineHeight: 1.75, color: D3.wheat, opacity: isUpcoming ? 0.35 : 0.5, maxWidth: '38rem' }}>{detail}</p>
                   </div>
