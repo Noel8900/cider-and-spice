@@ -1,6 +1,9 @@
 'use client';
 // Direction 3 — Artisan Collective: community impact section.
-// Grammar pass: subhead voice, partner names, AP style, tightened grant intro.
+// Luxury upgrades:
+//   • Grant table rows: left-border terracotta accent slides in on hover via
+//     CSS transition (width 0 → 3px). Row background also lifts slightly.
+//   • All existing partner/event/metric animations preserved.
 
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
@@ -81,7 +84,7 @@ const partners = [
 ];
 
 const events = [
-  { glyph: '◈', title: 'Chile Harvest Festival',      cadence: 'Annual · September',      body: "A celebration of New Mexico’s iconic Hatch chile season — local vendors, roasting demos, live music, and family programming." },
+  { glyph: '◈', title: 'Chile Harvest Festival',      cadence: 'Annual · September',      body: "A celebration of New Mexico's iconic Hatch chile season — local vendors, roasting demos, live music, and family programming." },
   { glyph: '◉', title: 'Live Music Fridays',          cadence: 'Weekly · Year-Round',     body: 'Every Friday evening, local Borderland artists take the stage — from flamenco and norteño to indie and jazz.' },
   { glyph: '◆', title: 'International Food Nights',   cadence: 'Monthly · Rotating',     body: 'Deep dives into the cuisines our vendors grew up with — from Oaxacan mole to Korean barbecue and beyond.' },
   { glyph: '◇', title: 'Farmers Market Crossover',    cadence: 'Biweekly · Spring–Fall', body: 'Partnering with local producers to bring fresh regional ingredients directly into the Hub.' },
@@ -112,12 +115,34 @@ export default function CommunityImpactSection() {
       gsap.from('.impact-partner', { opacity: 0, y: 20, duration: 0.75, stagger: 0.06, ease: 'power3.out', scrollTrigger: { trigger: '.impact-partners', start: 'top 78%', once: true } });
       gsap.from('.impact-event',   { opacity: 0, y: 28, duration: 0.8,  stagger: 0.1,  ease: 'power3.out', scrollTrigger: { trigger: '.impact-events',   start: 'top 78%', once: true } });
       gsap.from('.impact-metric',  { opacity: 0, y: 24, duration: 0.8,  stagger: 0.08, ease: 'power3.out', scrollTrigger: { trigger: '.impact-metrics',  start: 'top 78%', once: true } });
+      gsap.from('.grant-row',      { opacity: 0, x: -16, duration: 0.6, stagger: 0.07, ease: 'power3.out', scrollTrigger: { trigger: '.grant-table',     start: 'top 80%', once: true } });
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
     <section id="impact" ref={ref} style={{ background: D3.walnut, padding: '8rem 1.5rem' }}>
+      <style>{`
+        .grant-row {
+          position: relative;
+          transition: background 0.3s;
+        }
+        .grant-row::before {
+          content: '';
+          position: absolute;
+          left: 0; top: 0; bottom: 0;
+          width: 0;
+          background: ${D3.terracotta};
+          transition: width 0.25s ease;
+        }
+        .grant-row:hover::before {
+          width: 3px;
+        }
+        .grant-row:hover {
+          background: rgba(92,74,48,0.35) !important;
+        }
+      `}</style>
+
       <div style={{ maxWidth: '75rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '6rem' }}>
 
         {/* Section header */}
@@ -182,38 +207,47 @@ export default function CommunityImpactSection() {
           <div className="impact-events" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.06)' }}>
             {events.map(({ glyph, title, cadence, body }) => (
               <div key={title} className="impact-event"
-                style={{ background: D3.walnut, padding: '2rem 2.25rem', transition: 'background 0.35s' }}
+                style={{ background: D3.walnut, padding: '2rem', transition: 'background 0.35s' }}
                 onMouseEnter={e => (e.currentTarget.style.background = '#352b1b')}
                 onMouseLeave={e => (e.currentTarget.style.background = D3.walnut)}>
-                <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', color: `${D3.terracotta}66`, display: 'block', marginBottom: '1rem' }}>{glyph}</span>
-                <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.25rem', lineHeight: 1.25 }}>{title}</div>
-                <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.sage, marginBottom: '0.75rem' }}>{cadence}</div>
-                <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.82rem', lineHeight: 1.75, color: D3.wheat, opacity: 0.5 }}>{body}</p>
+                <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.1rem', color: D3.terracotta, marginBottom: '0.75rem', lineHeight: 1 }} aria-hidden="true">{glyph}</div>
+                <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.15rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.3rem' }}>{title}</div>
+                <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '0.75rem' }}>{cadence}</div>
+                <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.8rem', color: D3.wheat, opacity: 0.45, lineHeight: 1.75 }}>{body}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Grant eligibility */}
-        <div style={{ border: '1px solid rgba(232,193,141,0.1)', padding: '3rem 3.5rem', transition: 'border-color 0.4s' }}
-          onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.22)')}
-          onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.1)')}>
-          <SubHeading label="Public Funding & Grant Eligibility" />
-          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.55, marginBottom: '2rem', maxWidth: '48rem', lineHeight: 1.8 }}>
-            Cider &amp; Spice is structured to qualify for multiple public and federal funding streams
-            that prioritize community economic development, workforce training, and small business incubation.
+        {/* Funding & grants */}
+        <div>
+          <SubHeading label="Funding & Grant Eligibility" />
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.5, marginBottom: '2rem', maxWidth: '44rem', lineHeight: 1.8 }}>
+            Cider &amp; Spice is actively pursuing a diversified capital stack including public grants, SBA-backed lending, and private investment. Below are the primary funding channels under evaluation.
           </p>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, borderTop: '1px solid rgba(232,193,141,0.07)' }}>
-            {grantCategories.map(({ label, status }) => (
-              <li key={label}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', padding: '1rem 0.5rem', borderBottom: '1px solid rgba(232,193,141,0.07)', transition: 'background 0.2s' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(92,74,48,0.18)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                <span style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.7 }}>{label}</span>
-                <span style={{ flexShrink: 0, border: `1px solid rgba(192,98,42,0.35)`, padding: '0.25rem 0.875rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: D3.terracotta }}>{status}</span>
-              </li>
+          <div className="grant-table" style={{ border: '1px solid rgba(232,193,141,0.1)', overflow: 'hidden' }}>
+            {grantCategories.map(({ label, status }, i) => (
+              <div
+                key={label}
+                className="grant-row"
+                style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '1.1rem 1.5rem',
+                  borderBottom: i < grantCategories.length - 1 ? '1px solid rgba(232,193,141,0.07)' : 'none',
+                  background: D3.walnut,
+                  paddingLeft: '1.5rem',
+                }}
+              >
+                <span style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.65 }}>{label}</span>
+                <span style={{
+                  fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+                  fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+                  color: status === 'Application In Progress' ? D3.terracotta : status === 'Eligible' ? D3.sage : `${D3.wheat}60`,
+                  flexShrink: 0, marginLeft: '1rem',
+                }}>{status}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
       </div>
