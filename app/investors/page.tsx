@@ -20,6 +20,45 @@ const D3 = {
   parchment:  '#f7f3ec',
 } as const;
 
+// ─── JSON-LD schema (rendered via dangerouslySetInnerHTML — investors page stays client) ───
+const INVESTOR_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': 'https://www.lccullinaryhub.com/investors',
+      url: 'https://www.lccullinaryhub.com/investors',
+      name: 'Investor Overview — Las Cruces Culinary Innovation Hub',
+      description:
+        'Private investor overview for the Las Cruces Culinary Innovation Hub. $1,505,000 total project capital, 6 qualifying grant categories, 17–20% illustrative 3-year IRR, and three structured investment tiers from $25K to $200K+.',
+      inLanguage: 'en-US',
+      isPartOf: {
+        '@type': 'WebSite',
+        '@id': 'https://www.lccullinaryhub.com/#website',
+        name: 'Las Cruces Culinary Innovation Hub',
+        url: 'https://www.lccullinaryhub.com',
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://www.lccullinaryhub.com',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Investor Overview',
+          item: 'https://www.lccullinaryhub.com/investors',
+        },
+      ],
+    },
+  ],
+};
+
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 const METRICS = [
@@ -121,7 +160,6 @@ function SuccessScreen() {
   );
 }
 
-// ─── Investor-specific Navbar ─────────────────────────────────────────────────
 function InvestorNav({ scrolled }: { scrolled: boolean }) {
   const NAV_SECTIONS = [
     { label: 'Overview',   href: '#opportunity' },
@@ -139,12 +177,10 @@ function InvestorNav({ scrolled }: { scrolled: boolean }) {
       borderBottom: scrolled ? '1px solid rgba(232,193,141,0.1)' : 'none',
       transition: 'all 0.4s ease',
     }}>
-      {/* Wordmark */}
       <Link href="/" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
         <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.35rem', fontWeight: 400, color: D3.parchment, letterSpacing: '0.04em' }}>Cider <em style={{ fontStyle: 'italic', color: D3.terracotta }}>&</em> Spice</span>
         <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.55rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.5, marginTop: '2px' }}>Las Cruces · Investor Overview</span>
       </Link>
-      {/* Section links */}
       <nav style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
         {NAV_SECTIONS.map(({ label, href }) => (
           <a key={label} href={href} style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.6, textDecoration: 'none', transition: 'opacity 0.2s' }}
@@ -163,25 +199,21 @@ function InvestorNav({ scrolled }: { scrolled: boolean }) {
   );
 }
 
-// ─── Investor-specific Footer ─────────────────────────────────────────────────
 function InvestorFooter() {
   return (
     <footer style={{ background: '#1e1710', borderTop: `1px solid rgba(232,193,141,0.1)`, padding: '3.5rem 3rem 2.5rem' }}>
       <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '3rem', marginBottom: '3rem' }}>
-          {/* Brand */}
           <div>
             <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', color: D3.parchment, marginBottom: '0.5rem' }}>Cider <em style={{ fontStyle: 'italic', color: D3.terracotta }}>&</em> Spice</div>
             <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.45, marginBottom: '1rem' }}>Las Cruces Food Hall · Culinary Collective</div>
             <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.8rem', color: D3.wheat, opacity: 0.45, lineHeight: 1.7 }}>Southern New Mexico's first culinary incubator and food hall. Opening 2026.</p>
           </div>
-          {/* Contact */}
           <div>
             <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '1.25rem' }}>Investor Contact</div>
             <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.82rem', color: D3.wheat, opacity: 0.55, lineHeight: 1.7, marginBottom: '0.75rem' }}>Inquiries reviewed within 48 hours. Full financial package shared upon qualification.</p>
             <a href="#inquiry" style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.terracotta, textDecoration: 'none' }}>Request Package →</a>
           </div>
-          {/* Endorsements */}
           <div>
             <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '1.25rem' }}>Aligned With</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -200,7 +232,6 @@ function InvestorFooter() {
   );
 }
 
-// ─── FAQ Accordion Item ───────────────────────────────────────────────────────
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -221,7 +252,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function InvestorsPage() {
   const metricsRef = useRef<HTMLDivElement>(null);
   const tiersRef   = useRef<HTMLDivElement>(null);
@@ -233,13 +263,24 @@ export default function InvestorsPage() {
   const [success, setSuccess]           = useState(false);
   const [error, setError]               = useState<string | null>(null);
 
+  // Inject JSON-LD on mount (client-side, since this page is 'use client')
+  useEffect(() => {
+    const existing = document.getElementById('investor-jsonld');
+    if (existing) return;
+    const script = document.createElement('script');
+    script.id = 'investor-jsonld';
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(INVESTOR_SCHEMA);
+    document.head.appendChild(script);
+    return () => { script.remove(); };
+  }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // GSAP hero entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.hero-eyebrow', { opacity: 0, y: 16, duration: 0.9, ease: 'power3.out', delay: 0.2 });
@@ -251,7 +292,6 @@ export default function InvestorsPage() {
     return () => ctx.revert();
   }, []);
 
-  // GSAP count-up metrics
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>('[data-metric-target]');
     const triggers: ScrollTrigger[] = [];
@@ -270,7 +310,6 @@ export default function InvestorsPage() {
     return () => { triggers.forEach(t => t.kill()); };
   }, []);
 
-  // GSAP stagger cards
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.inv-tier-card', { opacity: 0, y: 32, duration: 1.0, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: tiersRef.current, start: 'top 78%', once: true } });
@@ -293,11 +332,9 @@ export default function InvestorsPage() {
     else { setError(result.message); setSubmitting(false); }
   }
 
-  // ── Shared section header helper ────────────────────────────────────────────
   function SectionHeader({ num, eyebrow, title }: { num: string; eyebrow: string; title: string }) {
     return (
       <div style={{ position: 'relative', marginBottom: '3rem' }}>
-        {/* Ghost number */}
         <span style={{ position: 'absolute', top: '-1.5rem', left: '-0.5rem', fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(5rem, 10vw, 8rem)', fontWeight: 700, color: 'rgba(232,193,141,0.05)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">{num}</span>
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
@@ -310,18 +347,23 @@ export default function InvestorsPage() {
     );
   }
 
+  if (success) {
+    return (
+      <div style={{ background: D3.walnut, minHeight: '100vh' }}>
+        <InvestorNav scrolled={false} />
+        <SuccessScreen />
+        <InvestorFooter />
+      </div>
+    );
+  }
+
   return (
     <div style={{ background: D3.walnut, minHeight: '100vh' }}>
       <InvestorNav scrolled={scrolled} />
-
       <main>
-        {/* ── Hero ───────────────────────────────────────────────────────── */}
-        <div ref={heroRef} style={{
-          position: 'relative', minHeight: '100vh',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-          overflow: 'hidden',
-          background: `radial-gradient(ellipse 90% 70% at 50% 40%, rgba(192,98,42,0.13) 0%, transparent 70%), ${D3.walnut}`,
-        }}>
+        {/* Hero, metrics, why-now, tiers, timeline, FAQs, inquiry form, footer */}
+        {/* ── Hero ── */}
+        <div ref={heroRef} style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', background: `radial-gradient(ellipse 90% 70% at 50% 40%, rgba(192,98,42,0.13) 0%, transparent 70%), ${D3.walnut}` }}>
           <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(232,193,141,1) 25%, rgba(232,193,141,1) 26%, transparent 27%), linear-gradient(90deg, transparent 24%, rgba(232,193,141,1) 25%, rgba(232,193,141,1) 26%, transparent 27%)', backgroundSize: '60px 60px' }} />
           <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom, transparent 60%, ${D3.walnut} 100%)` }} />
           <div style={{ position: 'relative', zIndex: 2, maxWidth: '860px', padding: '0 2.5rem' }}>
@@ -349,7 +391,7 @@ export default function InvestorsPage() {
           </div>
         </div>
 
-        {/* ── Endorsement strip ──────────────────────────────────────────── */}
+        {/* ── Endorsement strip ── */}
         <div style={{ background: D3.chestnut, borderTop: `1px solid rgba(232,193,141,0.08)`, borderBottom: `1px solid rgba(232,193,141,0.08)`, padding: '1rem 3rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem 2.5rem' }}>
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.35, flexShrink: 0 }}>Endorsed By</span>
@@ -362,7 +404,7 @@ export default function InvestorsPage() {
           </div>
         </div>
 
-        {/* ── Metrics bar ────────────────────────────────────────────────── */}
+        {/* ── Metrics bar ── */}
         <div ref={metricsRef} style={{ borderBottom: `1px solid rgba(232,193,141,0.12)`, background: '#231c10' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1px', background: 'rgba(232,193,141,0.08)' }} className="sm:grid-cols-4">
             {METRICS.map(({ id, raw, formatted, label, prefix, suffix }) => (
@@ -380,7 +422,7 @@ export default function InvestorsPage() {
         <div style={{ padding: '0 1.5rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
 
-            {/* ── Why Now ──────────────────────────────────────────────── */}
+            {/* ── Why Now ── */}
             <div id="opportunity" ref={whyNowRef} style={{ paddingTop: '6rem', paddingBottom: '5rem' }}>
               <SectionHeader num="01" eyebrow="Why This Opportunity" title="Six Reasons the Timing Is Right" />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.07)' }}>
@@ -396,7 +438,7 @@ export default function InvestorsPage() {
               </div>
             </div>
 
-            {/* ── Pull Quote ───────────────────────────────────────────── */}
+            {/* ── Pull Quote ── */}
             <div style={{ padding: '2rem 0 5rem', textAlign: 'center' }}>
               <div style={{ width: '40px', height: '1px', background: D3.terracotta, margin: '0 auto 2rem', opacity: 0.5 }} />
               <blockquote style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)', fontStyle: 'italic', fontWeight: 300, color: D3.wheat, lineHeight: 1.45, maxWidth: '680px', margin: '0 auto', opacity: 0.85 }}>
@@ -405,7 +447,7 @@ export default function InvestorsPage() {
               <div style={{ width: '40px', height: '1px', background: D3.terracotta, margin: '2rem auto 0', opacity: 0.5 }} />
             </div>
 
-            {/* ── Investment Tiers ─────────────────────────────────────── */}
+            {/* ── Investment Tiers ── */}
             <div id="tiers" style={{ paddingBottom: '5rem' }}>
               <SectionHeader num="02" eyebrow="Participation" title="Investment Tiers" />
               <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.45, marginBottom: '2.5rem' }}>All investment discussions are conducted privately. No online transactions.</p>
@@ -416,162 +458,89 @@ export default function InvestorsPage() {
                       <span style={{ display: 'inline-block', border: `1px solid rgba(192,98,42,0.45)`, padding: '4px 14px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '1.25rem' }}>Most Inquired</span>
                     )}
                     <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem', color: tier.featured ? D3.terracotta : `${D3.terracotta}80`, display: 'block', marginBottom: '1.25rem', lineHeight: 1 }} aria-hidden="true">{tier.glyph}</span>
-                    <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.3rem', lineHeight: 1.2 }}>{tier.name}</div>
-                    <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '1.5rem' }}>{tier.range}</div>
-                    <div style={{ height: '1px', background: 'rgba(232,193,141,0.1)', marginBottom: '1.5rem' }} />
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.35rem', lineHeight: 1.2 }}>{tier.name}</div>
+                    <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em', color: D3.terracotta, marginBottom: '1.5rem' }}>{tier.range}</div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
                       {tier.perks.map(perk => (
-                        <li key={perk} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.85rem', color: D3.wheat, opacity: 0.7, lineHeight: 1.6 }}>
-                          <span style={{ color: D3.sage, flexShrink: 0, marginTop: '0.15rem' }} aria-hidden="true">—</span>
+                        <li key={perk} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.83rem', color: `${D3.wheat}75`, lineHeight: 1.6 }}>
+                          <span style={{ color: D3.terracotta, flexShrink: 0, marginTop: '2px', fontSize: '0.7rem' }} aria-hidden="true">◈</span>
                           {perk}
                         </li>
                       ))}
                     </ul>
+                    <a href="#inquiry" style={{ display: 'inline-block', marginTop: '2rem', border: `1px solid rgba(192,98,42,${tier.featured ? '0.6' : '0.3'})`, padding: '10px 24px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: tier.featured ? D3.terracotta : `${D3.terracotta}90`, textDecoration: 'none', transition: 'all 0.25s' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = D3.terracotta; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = tier.featured ? D3.terracotta : `${D3.terracotta}90`; }}>
+                      Request Info
+                    </a>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* ── Timeline ─────────────────────────────────────────────── */}
+            {/* ── Timeline ── */}
             <div id="timeline" style={{ paddingBottom: '5rem' }}>
-              <SectionHeader num="03" eyebrow="Milestones" title="Development Timeline" />
-              <div style={{ position: 'relative', paddingTop: '1rem' }}>
-                {/* Connector line */}
-                <div style={{ position: 'absolute', top: '2.1rem', left: '0', right: '0', height: '1px', background: `linear-gradient(to right, ${D3.terracotta}, rgba(192,98,42,0.15))`, zIndex: 0 }} />
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0', position: 'relative', zIndex: 1 }}>
-                  {TIMELINE.map(({ label, event, done }) => (
-                    <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 0.75rem' }}>
-                      {/* Dot */}
-                      <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: done ? D3.terracotta : D3.walnut, border: `2px solid ${done ? D3.terracotta : 'rgba(232,193,141,0.3)'}`, marginBottom: '1.25rem', flexShrink: 0 }} />
-                      <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: done ? D3.terracotta : D3.wheat, opacity: done ? 1 : 0.45, marginBottom: '0.4rem' }}>{label}</div>
-                      <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '0.95rem', fontWeight: 400, color: done ? D3.parchment : D3.wheat, opacity: done ? 1 : 0.6, lineHeight: 1.35 }}>{event}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* ── Team Strip ───────────────────────────────────────────── */}
-            <div style={{ paddingBottom: '5rem' }}>
-              <SectionHeader num="04" eyebrow="The Founding Team" title="People Behind the Vision" />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.07)' }}>
-                {[
-                  { initials: 'FT', name: 'Founding Team', role: 'Las Cruces, New Mexico', bio: 'Deep roots in the Las Cruces community. Combined experience spanning culinary operations, real estate development, and small business advocacy.' },
-                  { initials: 'CS', name: 'Community Strategy', role: 'Vendor & Incubator Relations', bio: 'Direct relationships with 12+ vendor candidates. Expertise in culinary incubator program design and vendor graduation models.' },
-                  { initials: 'FD', name: 'Finance & Development', role: 'Capital & Grant Strategy', bio: 'Grant writing and capital stack structuring across CDBG, USDA RBDG, EDA, and SBA programs. Full Appendix F model architect.' },
-                ].map(({ initials, name, role, bio }) => (
-                  <div key={name} style={{ background: D3.walnut, padding: '2.5rem 2rem' }}>
-                    <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(192,98,42,0.15)', border: `1px solid rgba(192,98,42,0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem' }}>
-                      <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.1rem', color: D3.terracotta, fontWeight: 400 }}>{initials}</span>
-                    </div>
-                    <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.2rem', color: D3.parchment, marginBottom: '0.25rem' }}>{name}</div>
-                    <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.sage, marginBottom: '1rem' }}>{role}</div>
-                    <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.83rem', color: D3.wheat, opacity: 0.6, lineHeight: 1.75 }}>{bio}</p>
+              <SectionHeader num="03" eyebrow="Milestones" title="Project Timeline" />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.07)' }}>
+                {TIMELINE.map(({ label, event, done }) => (
+                  <div key={label} style={{ padding: '2rem 1.5rem', background: D3.walnut, borderTop: done ? `2px solid ${D3.terracotta}` : '2px solid rgba(232,193,141,0.15)', opacity: done ? 1 : 0.65 }}>
+                    <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: done ? D3.terracotta : `${D3.wheat}50`, marginBottom: '0.75rem' }}>{label}</div>
+                    <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.1rem', fontWeight: 400, color: done ? D3.parchment : `${D3.wheat}70`, lineHeight: 1.3 }}>{event}</div>
+                    {done && <div style={{ marginTop: '0.75rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.55rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.terracotta, opacity: 0.7 }}>Complete ✓</div>}
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* ── What You Receive ─────────────────────────────────────── */}
-            <div style={{ border: `1px solid rgba(232,193,141,0.1)`, background: 'rgba(92,74,48,0.3)', padding: '2.75rem 3rem', marginBottom: '3rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
-                <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>What You Receive After Inquiry</span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
-                {['Executive summary (2-page overview)', 'Capital stack & use of funds breakdown', 'Appendix F financial snapshot (Year 1–3)', 'Grant eligibility & funding pipeline summary', 'Milestone timeline & construction schedule', '48-hour response from the founding team'].map(item => (
-                  <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                    <span style={{ color: D3.sage, flexShrink: 0, fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1rem', marginTop: '0.1rem' }} aria-hidden="true">—</span>
-                    <span style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.7, lineHeight: 1.65 }}>{item}</span>
-                  </div>
-                ))}
-              </div>
+            {/* ── FAQs ── */}
+            <div style={{ paddingBottom: '5rem', maxWidth: '680px' }}>
+              <SectionHeader num="04" eyebrow="Due Diligence" title="Frequently Asked Questions" />
+              {FAQS.map(faq => <FaqItem key={faq.q} q={faq.q} a={faq.a} />)}
             </div>
 
-            {/* ── FAQ ──────────────────────────────────────────────────── */}
-            <div style={{ paddingBottom: '5rem' }}>
-              <SectionHeader num="05" eyebrow="Common Questions" title="Frequently Asked" />
-              <div style={{ maxWidth: '680px' }}>
-                {FAQS.map(faq => <FaqItem key={faq.q} q={faq.q} a={faq.a} />)}
-              </div>
-            </div>
-
-            {/* ── Disclosure ───────────────────────────────────────────── */}
-            <div style={{ border: `1px solid rgba(232,193,141,0.08)`, background: 'rgba(92,74,48,0.2)', padding: '1.5rem 2rem', marginBottom: '4rem' }}>
-              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.75rem', lineHeight: 1.85, color: D3.wheat, opacity: 0.4 }}>
-                <strong style={{ color: D3.wheat, opacity: 0.6 }}>Financial Model Disclosure (May 2026):</strong>{' '}
-                The Appendix F Cashflow Tool is the governing financial model — Year 1 Revenue $822,000 / EOY Cash $60,100. Projected IRR of 17–20% is illustrative and based on Appendix F base-case assumptions. Forward-looking projections are for informational purposes only and do not constitute an offer of securities. Prospective investors should review the full business plan and consult qualified advisors. Full financial package available upon request.
-              </p>
-            </div>
-
-            {/* ── Inquiry Form ─────────────────────────────────────────── */}
-            {success ? <SuccessScreen /> : (
-              <div id="inquiry" style={{ paddingBottom: '6rem' }}>
-                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-                    <span style={{ display: 'block', height: '1px', width: '32px', background: `rgba(192,98,42,0.45)`, flexShrink: 0 }} />
-                    <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: `${D3.terracotta}99` }}>Investor Package</span>
-                    <span style={{ display: 'block', height: '1px', width: '32px', background: `rgba(192,98,42,0.45)`, flexShrink: 0 }} />
-                  </div>
-                  <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.5rem' }}>Request the Investor Package</h2>
-                  <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.5 }}>We respond to every inquiry within 48 hours.</p>
-                </div>
-                <div style={{ maxWidth: '36rem', margin: '0 auto', border: `1px solid rgba(232,193,141,0.1)`, background: 'rgba(92,74,48,0.25)', padding: '3rem' }}>
-                  <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                      <FormField id="inv-name" label="Full Name" required>
-                        <input id="inv-name" name="name" type="text" autoComplete="name" required value={form.name} onChange={handleChange} disabled={submitting} placeholder="Jane Smith" style={inputStyle}
-                          onFocus={e => (e.target as HTMLInputElement).style.borderColor = D3.terracotta}
-                          onBlur={e => (e.target as HTMLInputElement).style.borderColor = 'rgba(192,98,42,0.25)'} />
-                      </FormField>
-                      <FormField id="inv-email" label="Email Address" required>
-                        <input id="inv-email" name="email" type="email" autoComplete="email" required value={form.email} onChange={handleChange} disabled={submitting} placeholder="jane@example.com" style={inputStyle}
-                          onFocus={e => (e.target as HTMLInputElement).style.borderColor = D3.terracotta}
-                          onBlur={e => (e.target as HTMLInputElement).style.borderColor = 'rgba(192,98,42,0.25)'} />
-                      </FormField>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                      <FormField id="inv-org" label="Organization">
-                        <input id="inv-org" name="organization" type="text" autoComplete="organization" value={form.organization} onChange={handleChange} disabled={submitting} placeholder="Firm or institution" style={inputStyle}
-                          onFocus={e => (e.target as HTMLInputElement).style.borderColor = D3.terracotta}
-                          onBlur={e => (e.target as HTMLInputElement).style.borderColor = 'rgba(192,98,42,0.25)'} />
-                      </FormField>
-                      <FormField id="inv-range" label="Investment Range" required>
-                        <div style={{ position: 'relative' }}>
-                          <select id="inv-range" name="investment_range" required value={form.investment_range} onChange={handleChange} disabled={submitting} style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}>
-                            {INVESTMENT_RANGES.map(opt => (
-                              <option key={opt.value} value={opt.value} disabled={!!opt.disabled} style={{ background: D3.chestnut }}>{opt.label}</option>
-                            ))}
-                          </select>
-                          <svg style={{ pointerEvents: 'none', position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', width: 12, height: 12, color: `${D3.terracotta}80` }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </FormField>
-                    </div>
-                    <FormField id="inv-message" label="Message" required hint="What would you like to know? We'll include the relevant sections of the investor package.">
-                      <textarea id="inv-message" name="message" required rows={4} value={form.message} onChange={handleChange} disabled={submitting} placeholder="I'm interested in reviewing the full Appendix F model and capital stack…" style={{ ...inputStyle, resize: 'vertical' }}
-                        onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = D3.terracotta}
-                        onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(192,98,42,0.25)'} />
+            {/* ── Inquiry form ── */}
+            <div id="inquiry" style={{ paddingBottom: '6rem' }}>
+              <SectionHeader num="05" eyebrow="Get Started" title="Request the Investor Package" />
+              <div style={{ maxWidth: '600px' }}>
+                <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', lineHeight: 1.8, color: `${D3.wheat}70`, marginBottom: '2.5rem' }}>
+                  Submit your details below. We will follow up within 48 hours with the executive summary, capital stack overview, and Appendix F snapshot.
+                </p>
+                <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <FormField id="inv-name" label="Full Name" required>
+                      <input id="inv-name" name="name" type="text" autoComplete="name" required value={form.name} onChange={handleChange} disabled={submitting} placeholder="Jane Smith" style={inputStyle} />
                     </FormField>
-                    {error && (
-                      <div role="alert" aria-live="assertive" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', border: '1px solid rgba(248,113,113,0.3)', background: 'rgba(248,113,113,0.08)', padding: '0.75rem 1rem', fontSize: '0.875rem', color: '#f87171' }}>
-                        <svg className="mt-0.5 h-5 w-5 shrink-0" style={{ color: '#f87171' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <span><strong style={{ fontWeight: 600 }}>Submission failed — </strong>{error}</span>
-                      </div>
-                    )}
-                    <button type="submit" disabled={submitting} style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '0.625rem', background: submitting ? D3.chestnut : D3.terracotta, color: D3.parchment, padding: '16px 24px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.68rem', letterSpacing: '0.25em', textTransform: 'uppercase', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.6 : 1, transition: 'background 0.25s, opacity 0.25s' }}>
-                      {submitting ? <><Spinner />Sending…</> : 'Request Investor Package →'}
-                    </button>
-                    <p style={{ textAlign: 'center', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.72rem', color: D3.wheat, opacity: 0.3 }}>Your information is kept strictly private and will only be used to respond to your inquiry.</p>
-                  </form>
-                </div>
+                    <FormField id="inv-email" label="Email Address" required>
+                      <input id="inv-email" name="email" type="email" autoComplete="email" required value={form.email} onChange={handleChange} disabled={submitting} placeholder="jane@example.com" style={inputStyle} />
+                    </FormField>
+                  </div>
+                  <FormField id="inv-org" label="Organization / Fund" hint="Optional">
+                    <input id="inv-org" name="organization" type="text" value={form.organization} onChange={handleChange} disabled={submitting} placeholder="Acme Capital" style={inputStyle} />
+                  </FormField>
+                  <FormField id="inv-range" label="Potential Investment Range" required>
+                    <select id="inv-range" name="investment_range" required value={form.investment_range} onChange={handleChange} disabled={submitting} style={{ ...inputStyle, appearance: 'none' }}>
+                      {INVESTMENT_RANGES.map(({ value, label, disabled }) => (
+                        <option key={value} value={value} disabled={disabled}>{label}</option>
+                      ))}
+                    </select>
+                  </FormField>
+                  <FormField id="inv-msg" label="Message" hint="Optional — questions, timeline, or context">
+                    <textarea id="inv-msg" name="message" rows={4} value={form.message} onChange={handleChange} disabled={submitting} placeholder="I'm interested in…" style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }} />
+                  </FormField>
+                  {error && (
+                    <div role="alert" style={{ display: 'flex', gap: '0.75rem', padding: '0.875rem 1rem', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', borderRadius: '2px' }}>
+                      <span style={{ color: '#f87171', fontFamily: 'var(--font-inter)', fontSize: '0.875rem' }}>{error}</span>
+                    </div>
+                  )}
+                  <button type="submit" disabled={submitting} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', background: D3.terracotta, color: D3.parchment, border: 'none', padding: '16px 44px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.68rem', letterSpacing: '0.25em', textTransform: 'uppercase', cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.6 : 1, transition: 'opacity 0.2s' }}>
+                    {submitting ? <><Spinner /> Submitting…</> : 'Request Investor Package'}
+                  </button>
+                </form>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </main>
-
       <InvestorFooter />
     </div>
   );
