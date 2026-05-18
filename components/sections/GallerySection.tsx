@@ -1,12 +1,13 @@
 'use client';
-// Gallery section — fixed:
-//  1. id changed from "cider-bar" to "gallery" (was conflicting with CiderBarSection anchor)
-//  2. Grid balanced: 1 hero (col-span-2) + 2 normal = row1 | 3+3 = rows 2-3. Clean 3-col layout.
-//  3. First image gets priority prop for LCP.
-//  4. Mobile captions always visible (not hover-only).
-//  5. Lightbox modal for full-size viewing.
-//  6. Stall images use aspect-[3/4] (portrait) — renders correctly without stretching.
-//  7. loading="lazy" on all non-hero images.
+// Gallery section — Direction 3: Artisan Collective
+// Grammar pass: disclaimer copy, CTA subtext, lightbox aria-label updated.
+//  1. id = 'gallery' (no conflict with CiderBarSection anchor)
+//  2. Grid: 1 hero (col-span-2) + 8 normal = 9 images. No orphans.
+//  3. First image gets priority for LCP.
+//  4. Mobile captions always visible.
+//  5. Lightbox with keyboard navigation.
+//  6. Portrait stalls use aspect-[3/4].
+//  7. loading='lazy' on all non-hero images.
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
@@ -22,7 +23,7 @@ interface GalleryImage {
   alt: string;
   caption: string;
   disclaimer?: boolean;
-  portrait?: boolean;   // true → aspect-[3/4], false → aspect-[4/3]
+  portrait?: boolean;
 }
 
 const images: GalleryImage[] = [
@@ -96,12 +97,11 @@ function Lightbox({
 }) {
   const img = images[index];
 
-  // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape')       onClose();
-      if (e.key === 'ArrowLeft')    onPrev();
-      if (e.key === 'ArrowRight')   onNext();
+      if (e.key === 'Escape')     onClose();
+      if (e.key === 'ArrowLeft')  onPrev();
+      if (e.key === 'ArrowRight') onNext();
     };
     window.addEventListener('keydown', handler);
     document.body.style.overflow = 'hidden';
@@ -115,16 +115,12 @@ function Lightbox({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Image ${index + 1} of ${images.length}: ${img.caption}`}
+      aria-label={`Gallery image ${index + 1} of ${images.length}: ${img.caption}`}
       className="fixed inset-0 z-50 flex items-center justify-center bg-bg/95 backdrop-blur-sm px-4"
       onClick={onClose}
     >
-      {/* Container — stop propagation so clicking image doesn't close */}
-      <div
-        className="relative w-full max-w-5xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Image */}
+      <div className="relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+
         <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
           <Image
             src={img.src}
@@ -136,7 +132,6 @@ function Lightbox({
           />
         </div>
 
-        {/* Caption bar */}
         <div className="flex items-center justify-between mt-4 px-1">
           <div>
             <p className="font-label text-[10px] tracking-[0.25em] uppercase text-gold">
@@ -144,7 +139,7 @@ function Lightbox({
             </p>
             {img.disclaimer && (
               <p className="font-sans text-[10px] text-cream/40 mt-0.5">
-                Illustrative concept · Not a confirmed tenant
+                Illustrative concept &middot; Not a confirmed tenant
               </p>
             )}
           </div>
@@ -153,39 +148,28 @@ function Lightbox({
           </p>
         </div>
 
-        {/* Prev */}
         <button
-          type="button"
-          onClick={onPrev}
-          aria-label="Previous image"
+          type="button" onClick={onPrev} aria-label="Previous image"
           className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-14
                      w-10 h-10 flex items-center justify-center
                      border border-cream/20 hover:border-gold/50 text-cream/50
-                     hover:text-gold transition-all duration-300
-                     max-lg:hidden"
+                     hover:text-gold transition-all duration-300 max-lg:hidden"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
-        {/* Next */}
         <button
-          type="button"
-          onClick={onNext}
-          aria-label="Next image"
+          type="button" onClick={onNext} aria-label="Next image"
           className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-14
                      w-10 h-10 flex items-center justify-center
                      border border-cream/20 hover:border-gold/50 text-cream/50
-                     hover:text-gold transition-all duration-300
-                     max-lg:hidden"
+                     hover:text-gold transition-all duration-300 max-lg:hidden"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
-        {/* Close */}
         <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close lightbox"
+          type="button" onClick={onClose} aria-label="Close lightbox"
           className="absolute -top-12 right-0 w-9 h-9 flex items-center justify-center
                      border border-cream/20 hover:border-gold/50 text-cream/50
                      hover:text-gold transition-all duration-300"
@@ -193,20 +177,15 @@ function Lightbox({
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
 
-        {/* Mobile prev/next row */}
         <div className="flex justify-center gap-4 mt-5 lg:hidden">
-          <button
-            type="button" onClick={onPrev} aria-label="Previous image"
+          <button type="button" onClick={onPrev} aria-label="Previous image"
             className="w-10 h-10 flex items-center justify-center border border-cream/20
-                       hover:border-gold/50 text-cream/50 hover:text-gold transition-all duration-300"
-          >
+                       hover:border-gold/50 text-cream/50 hover:text-gold transition-all duration-300">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <button
-            type="button" onClick={onNext} aria-label="Next image"
+          <button type="button" onClick={onNext} aria-label="Next image"
             className="w-10 h-10 flex items-center justify-center border border-cream/20
-                       hover:border-gold/50 text-cream/50 hover:text-gold transition-all duration-300"
-          >
+                       hover:border-gold/50 text-cream/50 hover:text-gold transition-all duration-300">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
@@ -259,16 +238,9 @@ export default function GallerySection() {
             id="gallery-heading"
             badge="The Space"
             title="A Vision in the Making"
-            subtitle="Concept renderings of the Cider & Spice food hall — opening Q1–Q2 2027 in downtown Las Cruces."
+            subtitle="Concept renderings of Cider & Spice — opening Q1–Q2 2027 in downtown Las Cruces, NM."
           />
 
-          {/*
-            Grid layout (3-col desktop):
-            Row 1: [hero col-span-2] [img 1]
-            Row 2: [img 2] [img 3]   [img 4]
-            Row 3: [img 5] [img 6]   [img 7] ← portrait stalls
-            Totals: 1 hero + 8 normal = 9 images. No orphans.
-          */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-cream/[0.06]">
             {images.map(({ src, alt, caption, disclaimer, portrait }, i) => {
               const isHero    = i === 0;
@@ -304,14 +276,12 @@ export default function GallerySection() {
                     loading={isHero ? undefined : 'lazy'}
                   />
 
-                  {/* Dark overlay */}
                   <div
                     className="absolute inset-0 bg-bg/40 opacity-0
                                group-hover:opacity-100 transition-opacity duration-400"
                     aria-hidden="true"
                   />
 
-                  {/* Expand icon — desktop hover */}
                   <div
                     className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center
                                border border-cream/30 bg-bg/60 opacity-0
@@ -324,10 +294,6 @@ export default function GallerySection() {
                     </svg>
                   </div>
 
-                  {/*
-                    Caption — always visible on mobile (translate-y-0 opacity-100),
-                    hover-reveal on desktop.
-                  */}
                   <div
                     className="absolute inset-x-0 bottom-0 p-4
                                bg-gradient-to-t from-bg/80 to-transparent
@@ -340,7 +306,7 @@ export default function GallerySection() {
                     </p>
                     {disclaimer && (
                       <p className="font-sans text-[10px] text-cream/50">
-                        Illustrative concept · Not a confirmed tenant
+                        Illustrative concept &middot; Not a confirmed tenant
                       </p>
                     )}
                   </div>
@@ -349,16 +315,14 @@ export default function GallerySection() {
             })}
           </div>
 
-          {/* Global disclaimer */}
           <p className="mt-6 text-center font-sans text-[11px] text-cream/30 leading-relaxed">
-            All imagery represents architectural concept renderings for illustration purposes only.
-            Vendor brands, pricing, and layouts are subject to change.
+            All imagery represents architectural concept renderings for illustrative purposes only.
+            Vendor brands, layouts, and pricing are subject to change prior to opening.
           </p>
 
-          {/* Floor plan CTA */}
           <div className="mt-12 flex flex-col items-center gap-4">
             <p className="font-sans text-sm text-cream/45">
-              Want to explore every zone, stall, and seat count in detail?
+              Explore every zone, stall, and seat count in detail.
             </p>
             <Link
               href="/floor-plan/"

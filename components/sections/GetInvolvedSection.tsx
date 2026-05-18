@@ -1,7 +1,6 @@
 'use client';
 // Get Involved + Newsletter — Direction 3: Artisan Collective
-// Terracotta featured card, D3 tokens throughout, newsletter in D3 palette.
-// All existing logic (formspree, status states, GSAP) preserved.
+// Grammar pass: card body copy, tier names corrected, newsletter headline + subtext tightened.
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -23,7 +22,7 @@ const paths = [
   {
     glyph: '◈',
     title: 'Apply as a Vendor',
-    body: 'Have a food concept? We want to hear from you. Applications are open for our founding cohort of 10–13 stall vendors launching Q1–Q2 2027.',
+    body: 'Have a food concept? We’d love to hear from you. Applications are open for our founding cohort of 10–13 stall vendors launching Q1–Q2 2027.',
     cta: 'Start Your Application',
     href: '/vendors',
     external: false,
@@ -32,7 +31,7 @@ const paths = [
   {
     glyph: '◉',
     title: 'Join the Cider Club',
-    body: 'Get early access, exclusive event invitations, and member pricing at the craft cider bar. Three tiers available — from Taster to Connoisseur.',
+    body: 'Get early access, exclusive event invitations, and member pricing at the craft cider bar. Three tiers available — from Taster to Founding Member.',
     cta: 'Explore Membership',
     href: '/cider-club',
     external: false,
@@ -41,7 +40,7 @@ const paths = [
   {
     glyph: '✦',
     title: 'Invest in the Hub',
-    body: 'The Hub is seeking $1.5M in total capital. Qualifying for six grant categories with a 17–20% illustrative IRR and Month 18–20 cash-flow breakeven.',
+    body: 'The Hub is seeking $1.5M in total capital — qualifying for six grant categories with a 17–20% illustrative projected IRR and Month 18–20 cash-flow breakeven.',
     cta: 'View Investor Overview',
     href: '/investors',
     external: false,
@@ -49,8 +48,8 @@ const paths = [
   },
   {
     glyph: '◆',
-    title: 'Partner with Us',
-    body: "We’re actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to build this together.",
+    title: 'Partner or Sponsor',
+    body: 'We’re actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to help build this together.',
     cta: 'Get in Touch',
     href: 'mailto:info@lccullinaryhub.com',
     external: true,
@@ -101,7 +100,6 @@ export default function GetInvolvedSection() {
     >
       <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
 
-        {/* Section header */}
         <div style={{ marginBottom: '3.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, flexShrink: 0 }} />
@@ -113,7 +111,6 @@ export default function GetInvolvedSection() {
           </p>
         </div>
 
-        {/* Path cards */}
         <div className="inv-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.07)', marginBottom: '4rem' }}>
           {paths.map(({ glyph, title, body, cta, href, external, featured }) => (
             <div
@@ -128,7 +125,7 @@ export default function GetInvolvedSection() {
               onMouseEnter={e => {
                 if (!featured) {
                   (e.currentTarget as HTMLDivElement).style.background = '#33291a';
-                  (e.currentTarget as HTMLDivElement).style.borderTopColor = `rgba(192,98,42,0.4)`;
+                  (e.currentTarget as HTMLDivElement).style.borderTopColor = 'rgba(192,98,42,0.4)';
                 }
               }}
               onMouseLeave={e => {
@@ -142,7 +139,6 @@ export default function GetInvolvedSection() {
                 fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem',
                 color: featured ? D3.terracotta : `${D3.terracotta}60`,
                 display: 'block', marginBottom: '1.25rem', lineHeight: 1,
-                transition: 'color 0.3s',
               }} aria-hidden="true">{glyph}</span>
 
               <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.35rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.6rem', lineHeight: 1.25 }}>
@@ -158,7 +154,7 @@ export default function GetInvolvedSection() {
                   fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem',
                   letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none',
                   paddingBottom: '2px', width: 'fit-content',
-                  borderBottom: featured ? `1px solid rgba(192,98,42,0.5)` : '1px solid rgba(232,193,141,0.25)',
+                  borderBottom: featured ? '1px solid rgba(192,98,42,0.5)' : '1px solid rgba(232,193,141,0.25)',
                   color: featured ? D3.terracotta : `${D3.wheat}80`,
                   transition: 'color 0.25s, border-color 0.25s',
                 }}
@@ -170,7 +166,7 @@ export default function GetInvolvedSection() {
                   fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.65rem',
                   letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none',
                   paddingBottom: '2px', width: 'fit-content',
-                  borderBottom: featured ? `1px solid rgba(192,98,42,0.5)` : '1px solid rgba(232,193,141,0.25)',
+                  borderBottom: featured ? '1px solid rgba(192,98,42,0.5)' : '1px solid rgba(232,193,141,0.25)',
                   color: featured ? D3.terracotta : `${D3.wheat}80`,
                   transition: 'color 0.25s, border-color 0.25s',
                 }}
@@ -182,7 +178,6 @@ export default function GetInvolvedSection() {
           ))}
         </div>
 
-        {/* Newsletter */}
         <div className="inv-newsletter" style={{
           border: '1px solid rgba(232,193,141,0.1)',
           background: 'rgba(92,74,48,0.2)',
@@ -199,14 +194,16 @@ export default function GetInvolvedSection() {
             <span style={{ display: 'block', height: '1px', width: '32px', background: D3.terracotta, opacity: 0.6 }} />
           </div>
 
-          <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.75rem' }}>Stay in the Loop</h3>
+          <h3 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.75rem' }}>
+            Be First to Know
+          </h3>
           <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.5, lineHeight: 1.8, maxWidth: '400px', margin: '0 auto 2.5rem' }}>
-            Construction updates, event announcements, vendor spotlights, and early-access invitations — delivered to your inbox.
+            Opening announcements, vendor spotlights, and early-access invitations — straight to your inbox.
           </p>
 
           {status === 'done' ? (
             <div role="status" style={{ border: '1px solid rgba(192,98,42,0.3)', background: 'rgba(192,98,42,0.07)', padding: '1.25rem 2rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.85 }}>
-              You&apos;re on the list — thank you for your support.
+              You’re on the list — we’ll be in touch soon.
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
@@ -237,12 +234,12 @@ export default function GetInvolvedSection() {
 
           {status === 'error' && (
             <p role="alert" style={{ marginTop: '1rem', fontFamily: 'var(--font-inter)', fontSize: '0.75rem', color: '#f87171', opacity: 0.8 }}>
-              Something went wrong — please email us at info@lccullinaryhub.com
+              Something went wrong — please try again or email us at info@lccullinaryhub.com.
             </p>
           )}
 
           <p style={{ marginTop: '1.5rem', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.25 }}>
-            No spam · Unsubscribe anytime
+            No spam &middot; Unsubscribe anytime
           </p>
         </div>
       </div>
