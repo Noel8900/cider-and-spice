@@ -228,6 +228,10 @@ function StallDrawer({ stall, onClose }: { stall: Stall | null; onClose: () => v
       role="dialog" aria-modal="true" aria-label={`Stall story: ${s.label}`}
       style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 80,
+        // FIX 2 — mobile drawer height: cap at 80dvh and allow internal scroll
+        // so the story content never overflows the screen on small phones.
+        maxHeight: '80dvh',
+        overflowY: 'auto',
         background: 'linear-gradient(160deg, #1A1510 0%, #100E0A 100%)',
         borderTop: `1px solid ${STATUS_COLOR[s.status]}44`,
         boxShadow: '0 -24px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(232,211,165,0.04) inset',
@@ -360,14 +364,13 @@ function ZoomControls({
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function FloorPlanClient() {
-  const svgRef        = useRef<SVGSVGElement>(null);
-  const containerRef  = useRef<HTMLDivElement>(null);
-  // Shell ref for the StallDrawer — used to scroll it into view from the tooltip
+  const svgRef         = useRef<SVGSVGElement>(null);
+  const containerRef   = useRef<HTMLDivElement>(null);
   const drawerShellRef = useRef<HTMLDivElement>(null);
-  const glowRef       = useRef<gsap.core.Tween | null>(null);
-  const activeGlowRef = useRef<SVGRectElement | null>(null);
-  const entranceDone  = useRef(false);
-  const cameraTween   = useRef<gsap.core.Tween | null>(null);
+  const glowRef        = useRef<gsap.core.Tween | null>(null);
+  const activeGlowRef  = useRef<SVGRectElement | null>(null);
+  const entranceDone   = useRef(false);
+  const cameraTween    = useRef<gsap.core.Tween | null>(null);
 
   const [activeZone, setActiveZone]   = useState<Zone>('all');
   const [activeStall, setActiveStall] = useState<Stall | null>(null);
@@ -430,7 +433,6 @@ export default function FloorPlanClient() {
     activeZone === 'all' || stall.zone === activeZone,
   [activeZone]);
 
-  // ─── focusOnStall — cinematic camera tween ────────────────────────────────
   const focusOnStall = useCallback((stall: Stall) => {
     const container = containerRef.current;
     if (!container) return;
@@ -461,8 +463,8 @@ export default function FloorPlanClient() {
   }
 
   const STEP = 0.25;
-  const zoomIn   = () => { killCamera(); setTransform(t => { const n = { ...t, scale: Math.min(t.scale + STEP, MAX_SCALE) }; transformRef.current = n; return n; }); };
-  const zoomOut  = () => { killCamera(); setTransform(t => { const n = { ...t, scale: Math.max(t.scale - STEP, MIN_SCALE) }; transformRef.current = n; return n; }); };
+  const zoomIn    = () => { killCamera(); setTransform(t => { const n = { ...t, scale: Math.min(t.scale + STEP, MAX_SCALE) }; transformRef.current = n; return n; }); };
+  const zoomOut   = () => { killCamera(); setTransform(t => { const n = { ...t, scale: Math.max(t.scale - STEP, MIN_SCALE) }; transformRef.current = n; return n; }); };
   const resetView = () => { killCamera(); const n = isMobile ? DEFAULT_MOBILE : DEFAULT_DESKTOP; transformRef.current = n; setTransform(n); };
   const fitView   = () => { killCamera(); const n = { scale: 0.92, x: 0, y: 0 }; transformRef.current = n; setTransform(n); };
 
@@ -508,7 +510,16 @@ export default function FloorPlanClient() {
     e.stopPropagation();
     if (activeStall?.id === stall.id) { setActiveStall(null); return; }
     const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    if (rect) {
+      const canvasH = containerRef.current?.offsetHeight ?? 0;
+      // FIX 1 — tooltip hover: clamp top so tooltip never overflows the canvas bottom.
+      // Also capture raw pointer position inside the canvas for accurate placement.
+      setTooltipPos({
+        x: e.clientX - rect.left,
+        // Clamp: keep tooltip at least 8px from top and 8px from canvas bottom
+        y: Math.min(Math.max(e.clientY - rect.top, 8), canvasH - 8),
+      });
+    }
     setActiveStall(stall);
     focusOnStall(stall);
   }
@@ -522,22 +533,21 @@ export default function FloorPlanClient() {
     }
   }
 
+  // FIX 3 — directory scroll: scroll the canvas into view before firing the
+  // cinematic camera move, so mobile users can see the map animate.
   function handleDirectoryClick(stall: Stall) {
     setActiveZone('all');
     setActiveStall(stall);
     setTooltipPos({ x: 300, y: 200 });
-    focusOnStall(stall);
+    // Scroll the SVG canvas into view first, then focus — small delay lets the
+    // browser finish the scroll before GSAP reads offsetWidth/offsetHeight.
+    containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => focusOnStall(stall), 350);
   }
 
-  // ─── Scroll the fixed drawer into the viewport and close the tooltip ───────
-  // The drawer is position:fixed so scrollIntoView won’t move it — instead
-  // we scroll the page to the bottom so the drawer is fully visible, then
-  // close the floating tooltip so the story has full focus.
   function openFullStory() {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    // Give the scroll a 300ms head-start before closing the tooltip so the
-    // user doesn’t lose their stall selection visually before the drawer appears.
-    setTimeout(() => setActiveStall(s => s), 0); // keep stall active
+    setTimeout(() => setActiveStall(s => s), 0);
   }
 
   const vendorCount    = STALLS.filter(s => s.zone === 'vendor').length;
@@ -768,7 +778,7 @@ export default function FloorPlanClient() {
                   <text x="0" y="-18" textAnchor="middle" fill="#D4A84B" fontSize="6" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">N</text>
                 </g>
                 <g transform="translate(60,604)" opacity="0.38">
-                  <line x1="0" y1="0" x2="100" y2="0" stroke="#C97A3E" strokeWidth="0.75" />
+  <line x1="0" y1="0" x2="100" y2="0" stroke="#C97A3E" strokeWidth="0.75" />
                   {[0,25,50,75,100].map(x => <line key={x} x1={x} y1="-3.5" x2={x} y2="3.5" stroke="#C97A3E" strokeWidth="0.75" />)}
                   <text x="50" y="-7" textAnchor="middle" fill="#C97A3E" fontSize="6.5" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.12em">~75 FT</text>
                 </g>
@@ -784,7 +794,12 @@ export default function FloorPlanClient() {
               <div className="absolute z-20 w-[288px] pointer-events-auto hidden sm:block"
                 style={{
                   left: Math.min(tooltipPos.x + 14, (containerRef.current?.offsetWidth ?? 600) - 304),
-                  top: Math.max(tooltipPos.y - 170, 8),
+                  // FIX 1 cont. — also clamp tooltip top against the rendered canvas height
+                  // so it never slides below the canvas boundary on a click near the bottom.
+                  top: Math.min(
+                    Math.max(tooltipPos.y - 170, 8),
+                    (containerRef.current?.offsetHeight ?? 400) - 340,
+                  ),
                   border: `1px solid ${STATUS_COLOR[activeStall.status]}44`,
                   background: 'linear-gradient(160deg, rgba(26,21,16,0.97) 0%, rgba(16,14,10,0.99) 100%)',
                   boxShadow: `0 0 40px ${STATUS_COLOR[activeStall.status]}18, 0 24px 48px rgba(0,0,0,0.7)`,
@@ -800,11 +815,16 @@ export default function FloorPlanClient() {
                       <div className="font-corp-display text-xl font-light leading-tight" style={{ color: '#E8D3A5' }}>{activeStall.label}</div>
                       <div className="font-label text-[7.5px] tracking-[0.28em] uppercase mt-1.5" style={{ color: STATUS_COLOR[activeStall.status] }}>{STATUS_LABEL[activeStall.status]}</div>
                     </div>
-                    <button onClick={() => setActiveStall(null)} style={{ color: 'rgba(232,211,165,0.25)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(232,211,165,0.70)'; }}
+                    {/* FIX 1 — tooltip × button: hover color now matches the stall status color */}
+                    <button
+                      onClick={() => setActiveStall(null)}
+                      style={{ color: 'rgba(232,211,165,0.25)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = STATUS_COLOR[activeStall.status]; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(232,211,165,0.25)'; }}
                       aria-label="Close stall details"
-                    ><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
                   </div>
                   <div className="grid grid-cols-2 mb-4" style={{ gap: '1px', background: 'rgba(232,211,165,0.06)' }}>
                     <div style={{ background: 'rgba(26,21,16,1)', padding: '10px 12px' }}>
@@ -834,7 +854,6 @@ export default function FloorPlanClient() {
                       style={{ border: '1px solid rgba(79,152,163,0.20)', background: 'rgba(79,152,163,0.05)', color: 'rgba(79,152,163,0.55)' }}
                     >Hub Anchor Space</div>
                   )}
-                  {/* ── Read full stall story button — scrolls to bottom drawer ── */}
                   <button
                     onClick={openFullStory}
                     className="mt-3 w-full font-label text-[8px] tracking-[0.2em] uppercase transition-colors duration-300 py-2"
