@@ -228,8 +228,6 @@ function StallDrawer({ stall, onClose }: { stall: Stall | null; onClose: () => v
       role="dialog" aria-modal="true" aria-label={`Stall story: ${s.label}`}
       style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 80,
-        // FIX 2 — mobile drawer height: cap at 80dvh and allow internal scroll
-        // so the story content never overflows the screen on small phones.
         maxHeight: '80dvh',
         overflowY: 'auto',
         background: 'linear-gradient(160deg, #1A1510 0%, #100E0A 100%)',
@@ -387,13 +385,21 @@ export default function FloorPlanClient() {
   const pinchDist  = useRef<number | null>(null);
   const pinchScale = useRef(1);
 
+  // ─── FIX 2: ResizeObserver keeps isMobile accurate and resets default
+  // transform on orientation change / window resize so the plan never
+  // starts zoomed in on a newly-widened viewport or vice-versa.
   useEffect(() => {
-    const mobile = window.innerWidth < 640;
-    setIsMobile(mobile);
-    if (mobile) {
-      setTransform(DEFAULT_MOBILE);
-      transformRef.current = DEFAULT_MOBILE;
-    }
+    const update = () => {
+      const mobile = window.innerWidth < 640;
+      setIsMobile(mobile);
+      const defaults = mobile ? DEFAULT_MOBILE : DEFAULT_DESKTOP;
+      transformRef.current = defaults;
+      setTransform(defaults);
+    };
+    update(); // run once on mount
+    const ro = new ResizeObserver(update);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
@@ -418,6 +424,34 @@ export default function FloorPlanClient() {
       if (bounds && bounds.top < window.innerHeight * 0.8) setTimeout(() => { if (!entranceDone.current) tl.play(); }, 100);
     }, svgRef);
     return () => ctx.revert();
+  }, []);
+
+  // ─── FIX 1: Scroll-wheel zoom — zooms toward the pointer position so the
+  // map stays anchored under the cursor, matching standard map UX.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      killCamera();
+      const rect   = el.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;  // pointer x relative to canvas
+      const mouseY = e.clientY - rect.top;
+      const delta  = e.deltaY > 0 ? -0.12 : 0.12;
+      const prev   = transformRef.current;
+      const next   = Math.min(Math.max(prev.scale + delta, MIN_SCALE), MAX_SCALE);
+      // Anchor zoom to cursor: shift tx/ty so the point under the cursor
+      // stays stationary as scale changes.
+      const ratio  = next / prev.scale;
+      const newX   = mouseX - ratio * (mouseX - prev.x);
+      const newY   = mouseY - ratio * (mouseY - prev.y);
+      const n = { scale: next, x: newX, y: newY };
+      transformRef.current = n;
+      setTransform(n);
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -468,14 +502,23 @@ export default function FloorPlanClient() {
   const resetView = () => { killCamera(); const n = isMobile ? DEFAULT_MOBILE : DEFAULT_DESKTOP; transformRef.current = n; setTransform(n); };
   const fitView   = () => { killCamera(); const n = { scale: 0.92, x: 0, y: 0 }; transformRef.current = n; setTransform(n); };
 
+  // ─── FIX 3: Pan handlers now always read from transformRef.current instead
+  // of the React state snapshot at event time, so a mid-flight GSAP tween
+  // never causes a position jump when the user starts dragging.
   function onMouseDown(e: React.MouseEvent) {
     killCamera();
     isPanning.current = true;
-    panStart.current = { x: e.clientX, y: e.clientY, tx: transform.x, ty: transform.y };
+    panStart.current = { x: e.clientX, y: e.clientY, tx: transformRef.current.x, ty: transformRef.current.y };
   }
   function onMouseMove(e: React.MouseEvent) {
     if (!isPanning.current) return;
-    setTransform(t => { const n = { ...t, x: panStart.current.tx + e.clientX - panStart.current.x, y: panStart.current.ty + e.clientY - panStart.current.y }; transformRef.current = n; return n; });
+    const n = {
+      ...transformRef.current,
+      x: panStart.current.tx + e.clientX - panStart.current.x,
+      y: panStart.current.ty + e.clientY - panStart.current.y,
+    };
+    transformRef.current = n;
+    setTransform(n);
   }
   function onMouseUp() { isPanning.current = false; }
 
@@ -488,20 +531,29 @@ export default function FloorPlanClient() {
     killCamera();
     if (e.touches.length === 1) {
       isPanning.current = true;
-      panStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: transform.x, ty: transform.y };
+      // FIX 3 applied to touch as well
+      panStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: transformRef.current.x, ty: transformRef.current.y };
     } else if (e.touches.length === 2) {
       isPanning.current = false;
       pinchDist.current = getTouchDist(e.touches);
-      pinchScale.current = transform.scale;
+      pinchScale.current = transformRef.current.scale;
     }
   }
   function onTouchMove(e: React.TouchEvent) {
     e.preventDefault();
     if (e.touches.length === 1 && isPanning.current) {
-      setTransform(t => { const n = { ...t, x: panStart.current.tx + e.touches[0].clientX - panStart.current.x, y: panStart.current.ty + e.touches[0].clientY - panStart.current.y }; transformRef.current = n; return n; });
+      const n = {
+        ...transformRef.current,
+        x: panStart.current.tx + e.touches[0].clientX - panStart.current.x,
+        y: panStart.current.ty + e.touches[0].clientY - panStart.current.y,
+      };
+      transformRef.current = n;
+      setTransform(n);
     } else if (e.touches.length === 2 && pinchDist.current !== null) {
       const ratio = getTouchDist(e.touches) / pinchDist.current;
-      setTransform(t => { const n = { ...t, scale: Math.min(Math.max(pinchScale.current * ratio, MIN_SCALE), MAX_SCALE) }; transformRef.current = n; return n; });
+      const n = { ...transformRef.current, scale: Math.min(Math.max(pinchScale.current * ratio, MIN_SCALE), MAX_SCALE) };
+      transformRef.current = n;
+      setTransform(n);
     }
   }
   function onTouchEnd() { isPanning.current = false; pinchDist.current = null; }
@@ -512,11 +564,8 @@ export default function FloorPlanClient() {
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
       const canvasH = containerRef.current?.offsetHeight ?? 0;
-      // FIX 1 — tooltip hover: clamp top so tooltip never overflows the canvas bottom.
-      // Also capture raw pointer position inside the canvas for accurate placement.
       setTooltipPos({
         x: e.clientX - rect.left,
-        // Clamp: keep tooltip at least 8px from top and 8px from canvas bottom
         y: Math.min(Math.max(e.clientY - rect.top, 8), canvasH - 8),
       });
     }
@@ -533,14 +582,10 @@ export default function FloorPlanClient() {
     }
   }
 
-  // FIX 3 — directory scroll: scroll the canvas into view before firing the
-  // cinematic camera move, so mobile users can see the map animate.
   function handleDirectoryClick(stall: Stall) {
     setActiveZone('all');
     setActiveStall(stall);
     setTooltipPos({ x: 300, y: 200 });
-    // Scroll the SVG canvas into view first, then focus — small delay lets the
-    // browser finish the scroll before GSAP reads offsetWidth/offsetHeight.
     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(() => focusOnStall(stall), 350);
   }
@@ -612,7 +657,7 @@ export default function FloorPlanClient() {
       <div className="px-4 pt-5 pb-1">
         <div className="mx-auto max-w-5xl flex items-center justify-between gap-4">
           <span className="font-label text-[8px] tracking-[0.22em] uppercase sm:hidden" style={{ color: 'rgba(232,211,165,0.20)' }}>Pinch to zoom · drag to explore</span>
-          <span className="font-label text-[8px] tracking-[0.22em] uppercase hidden sm:block" style={{ color: 'rgba(232,211,165,0.20)' }}>Interactive Plan · Drag to Pan</span>
+          <span className="font-label text-[8px] tracking-[0.22em] uppercase hidden sm:block" style={{ color: 'rgba(232,211,165,0.20)' }}>Interactive Plan · Scroll to Zoom · Drag to Pan</span>
           <ZoomControls scale={transform.scale} onZoomIn={zoomIn} onZoomOut={zoomOut} onReset={resetView} onFit={fitView} />
         </div>
       </div>
@@ -778,7 +823,7 @@ export default function FloorPlanClient() {
                   <text x="0" y="-18" textAnchor="middle" fill="#D4A84B" fontSize="6" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.1em">N</text>
                 </g>
                 <g transform="translate(60,604)" opacity="0.38">
-  <line x1="0" y1="0" x2="100" y2="0" stroke="#C97A3E" strokeWidth="0.75" />
+                  <line x1="0" y1="0" x2="100" y2="0" stroke="#C97A3E" strokeWidth="0.75" />
                   {[0,25,50,75,100].map(x => <line key={x} x1={x} y1="-3.5" x2={x} y2="3.5" stroke="#C97A3E" strokeWidth="0.75" />)}
                   <text x="50" y="-7" textAnchor="middle" fill="#C97A3E" fontSize="6.5" fontFamily="var(--font-josefin, sans-serif)" letterSpacing="0.12em">~75 FT</text>
                 </g>
@@ -794,8 +839,6 @@ export default function FloorPlanClient() {
               <div className="absolute z-20 w-[288px] pointer-events-auto hidden sm:block"
                 style={{
                   left: Math.min(tooltipPos.x + 14, (containerRef.current?.offsetWidth ?? 600) - 304),
-                  // FIX 1 cont. — also clamp tooltip top against the rendered canvas height
-                  // so it never slides below the canvas boundary on a click near the bottom.
                   top: Math.min(
                     Math.max(tooltipPos.y - 170, 8),
                     (containerRef.current?.offsetHeight ?? 400) - 340,
@@ -815,7 +858,6 @@ export default function FloorPlanClient() {
                       <div className="font-corp-display text-xl font-light leading-tight" style={{ color: '#E8D3A5' }}>{activeStall.label}</div>
                       <div className="font-label text-[7.5px] tracking-[0.28em] uppercase mt-1.5" style={{ color: STATUS_COLOR[activeStall.status] }}>{STATUS_LABEL[activeStall.status]}</div>
                     </div>
-                    {/* FIX 1 — tooltip × button: hover color now matches the stall status color */}
                     <button
                       onClick={() => setActiveStall(null)}
                       style={{ color: 'rgba(232,211,165,0.25)' }}
@@ -942,7 +984,7 @@ export default function FloorPlanClient() {
         </div>
       </div>
 
-      {/* ── Story Drawer — shell div holds the ref for scroll targeting ─────── */}
+      {/* ── Story Drawer ─────────────────────────────────────────────────── */}
       <div ref={drawerShellRef}>
         <StallDrawer stall={activeStall} onClose={() => setActiveStall(null)} />
       </div>
