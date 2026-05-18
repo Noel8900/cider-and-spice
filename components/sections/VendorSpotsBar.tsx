@@ -1,12 +1,23 @@
 'use client';
-// VendorSpotsBar — urgency strip for the vendor application page.
-// Shows remaining spots out of 13, animates fill bar on mount.
+// VendorSpotsBar — Direction 3: Artisan Collective
+// D3 palette throughout. Terracotta fill bar, wheat labels.
+// Grammar: clearer reserved vs. remaining copy.
+// ARIA updated to match new label text.
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
+const D3 = {
+  walnut:     '#2c2416',
+  chestnut:   '#5c4a30',
+  terracotta: '#c0622a',
+  sage:       '#6b8c6b',
+  wheat:      '#e8c18d',
+  parchment:  '#f7f3ec',
+} as const;
+
 const TOTAL_SPOTS  = 13;
-const FILLED_SPOTS = 4;   // UPDATE this as applications come in
+const FILLED_SPOTS = 4;   // UPDATE as applications come in
 const OPEN_SPOTS   = TOTAL_SPOTS - FILLED_SPOTS;
 
 export default function VendorSpotsBar() {
@@ -24,39 +35,48 @@ export default function VendorSpotsBar() {
   const pct = Math.round((FILLED_SPOTS / TOTAL_SPOTS) * 100);
 
   return (
-    <div className="border border-cream/[0.08] bg-white/[0.02] px-6 py-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <div className="flex items-center gap-3">
-          <span className="font-label text-[9px] tracking-[0.25em] uppercase text-gold">
-            Founding Cohort Spots
+    <div style={{
+      border: `1px solid rgba(232,193,141,0.1)`,
+      background: 'rgba(92,74,48,0.18)',
+      padding: '1.25rem 1.5rem',
+    }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.875rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: D3.terracotta }}>
+            Founding Cohort
           </span>
-          <span className="border border-ember/40 bg-ember/10 px-2.5 py-0.5
-                            font-label text-[9px] tracking-[0.15em] uppercase text-ember">
-            {OPEN_SPOTS} of {TOTAL_SPOTS} Open
+          <span style={{
+            border: `1px solid rgba(192,98,42,0.4)`,
+            background: 'rgba(192,98,42,0.08)',
+            padding: '2px 10px',
+            fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+            fontSize: '0.58rem', letterSpacing: '0.15em', textTransform: 'uppercase',
+            color: D3.terracotta,
+          }}>
+            {OPEN_SPOTS} of {TOTAL_SPOTS} Remaining
           </span>
         </div>
-        <span className="font-label text-[9px] tracking-[0.2em] uppercase text-cream/35">
+        <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.wheat}40` }}>
           {FILLED_SPOTS} spot{FILLED_SPOTS !== 1 ? 's' : ''} reserved
         </span>
       </div>
 
-      {/* Track */}
-      <div className="h-px bg-cream/[0.08] relative overflow-visible">
+      {/* Progress track */}
+      <div style={{ height: '1px', background: 'rgba(232,193,141,0.08)', position: 'relative', overflow: 'visible' }}>
         <div
           ref={barRef}
-          className="absolute inset-y-0 left-0 h-full"
-          style={{ width: `${pct}%`, background: 'var(--color-ember, #c45d2a)' }}
+          style={{ position: 'absolute', inset: '0 auto 0 0', width: `${pct}%`, background: D3.terracotta }}
           role="progressbar"
           aria-valuenow={FILLED_SPOTS}
           aria-valuemin={0}
           aria-valuemax={TOTAL_SPOTS}
-          aria-label={`${FILLED_SPOTS} of ${TOTAL_SPOTS} vendor spots reserved`}
+          aria-label={`${FILLED_SPOTS} of ${TOTAL_SPOTS} founding vendor spots reserved`}
         />
       </div>
 
-      <p className="mt-3 font-sans text-xs text-cream/30 leading-snug">
+      <p style={{ marginTop: '0.75rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.75rem', color: `${D3.wheat}35`, lineHeight: 1.65 }}>
         We&apos;re curating a founding cohort of {TOTAL_SPOTS} distinctive food concepts.
-        Once all spots are reserved, applications close until a stall becomes available.
+        Once the founding cohort is full, applications will close until a stall becomes available.
       </p>
     </div>
   );
