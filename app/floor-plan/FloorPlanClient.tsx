@@ -385,9 +385,6 @@ export default function FloorPlanClient() {
   const pinchDist  = useRef<number | null>(null);
   const pinchScale = useRef(1);
 
-  // ─── FIX 2: ResizeObserver keeps isMobile accurate and resets default
-  // transform on orientation change / window resize so the plan never
-  // starts zoomed in on a newly-widened viewport or vice-versa.
   useEffect(() => {
     const update = () => {
       const mobile = window.innerWidth < 640;
@@ -396,7 +393,7 @@ export default function FloorPlanClient() {
       transformRef.current = defaults;
       setTransform(defaults);
     };
-    update(); // run once on mount
+    update();
     const ro = new ResizeObserver(update);
     ro.observe(document.documentElement);
     return () => ro.disconnect();
@@ -426,8 +423,6 @@ export default function FloorPlanClient() {
     return () => ctx.revert();
   }, []);
 
-  // ─── FIX 1: Scroll-wheel zoom — zooms toward the pointer position so the
-  // map stays anchored under the cursor, matching standard map UX.
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -435,13 +430,11 @@ export default function FloorPlanClient() {
       e.preventDefault();
       killCamera();
       const rect   = el.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;  // pointer x relative to canvas
+      const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
       const delta  = e.deltaY > 0 ? -0.12 : 0.12;
       const prev   = transformRef.current;
       const next   = Math.min(Math.max(prev.scale + delta, MIN_SCALE), MAX_SCALE);
-      // Anchor zoom to cursor: shift tx/ty so the point under the cursor
-      // stays stationary as scale changes.
       const ratio  = next / prev.scale;
       const newX   = mouseX - ratio * (mouseX - prev.x);
       const newY   = mouseY - ratio * (mouseY - prev.y);
@@ -502,9 +495,6 @@ export default function FloorPlanClient() {
   const resetView = () => { killCamera(); const n = isMobile ? DEFAULT_MOBILE : DEFAULT_DESKTOP; transformRef.current = n; setTransform(n); };
   const fitView   = () => { killCamera(); const n = { scale: 0.92, x: 0, y: 0 }; transformRef.current = n; setTransform(n); };
 
-  // ─── FIX 3: Pan handlers now always read from transformRef.current instead
-  // of the React state snapshot at event time, so a mid-flight GSAP tween
-  // never causes a position jump when the user starts dragging.
   function onMouseDown(e: React.MouseEvent) {
     killCamera();
     isPanning.current = true;
@@ -531,7 +521,6 @@ export default function FloorPlanClient() {
     killCamera();
     if (e.touches.length === 1) {
       isPanning.current = true;
-      // FIX 3 applied to touch as well
       panStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: transformRef.current.x, ty: transformRef.current.y };
     } else if (e.touches.length === 2) {
       isPanning.current = false;
@@ -590,9 +579,14 @@ export default function FloorPlanClient() {
     setTimeout(() => focusOnStall(stall), 350);
   }
 
+  // FIX 4 — openFullStory: The drawer is position:fixed so it doesn’t live
+  // in the scroll flow — scrolling to body.scrollHeight does nothing useful.
+  // Instead, scroll the drawerShellRef anchor (the in-flow div that wraps the
+  // drawer) into view so the page smoothly advances to the bottom section,
+  // which gives the visual impression of “going to” the full story. The
+  // activeStall state is already set; no no-op setState needed.
   function openFullStory() {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    setTimeout(() => setActiveStall(s => s), 0);
+    drawerShellRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
   const vendorCount    = STALLS.filter(s => s.zone === 'vendor').length;
