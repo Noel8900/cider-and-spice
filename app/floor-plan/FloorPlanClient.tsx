@@ -149,6 +149,11 @@ const STALLS: Stall[] = [
   },
 ];
 
+// PERF 3 — Hoist static derived counts to module level so they are computed
+// exactly once at import time, not on every component render.
+const VENDOR_COUNT    = STALLS.filter(s => s.zone === 'vendor').length;
+const AVAILABLE_COUNT = STALLS.filter(s => s.zone === 'vendor' && s.status === 'available').length;
+
 const ZONES: { id: Zone; label: string }[] = [
   { id: 'all',     label: 'All Zones'    },
   { id: 'vendor',  label: 'Vendor Stalls'},
@@ -186,7 +191,6 @@ const STATUS_LABEL: Record<Status, string> = {
   anchor:    'Anchor',
 };
 
-// ─── Zoom levels per zone ──────────────────────────────────────────────────────
 const FOCUS_ZOOM: Record<Exclude<Zone,'all'>, number> = {
   vendor:  1.9,
   cider:   1.45,
@@ -370,6 +374,13 @@ export default function FloorPlanClient() {
   const entranceDone   = useRef(false);
   const cameraTween    = useRef<gsap.core.Tween | null>(null);
 
+  // PERF 1+2 — rAF pending flag. A single requestAnimationFrame id is stored
+  // here; when non-null a frame is already scheduled so we skip scheduling
+  // another one. This throttles setTransform to at most one call per paint
+  // frame during pan and pinch, preventing React render-storm on fast pointer
+  // events. The ref is cancelled on unmount via the wheel useEffect cleanup.
+  const rafPending = useRef<number | null>(null);
+
   const [activeZone, setActiveZone]   = useState<Zone>('all');
   const [activeStall, setActiveStall] = useState<Stall | null>(null);
   const [tooltipPos, setTooltipPos]   = useState({ x: 0, y: 0 });
@@ -384,6 +395,16 @@ export default function FloorPlanClient() {
   const panStart   = useRef({ x: 0, y: 0, tx: 0, ty: 0 });
   const pinchDist  = useRef<number | null>(null);
   const pinchScale = useRef(1);
+
+  // Flush the latest transformRef value into React state on the next frame.
+  // Calling this multiple times within the same frame is a no-op.
+  function scheduleTransformFlush() {
+    if (rafPending.current !== null) return;
+    rafPending.current = requestAnimationFrame(() => {
+      rafPending.current = null;
+      setTransform({ ...transformRef.current });
+    });
+  }
 
   useEffect(() => {
     const update = () => {
@@ -438,12 +459,19 @@ export default function FloorPlanClient() {
       const ratio  = next / prev.scale;
       const newX   = mouseX - ratio * (mouseX - prev.x);
       const newY   = mouseY - ratio * (mouseY - prev.y);
-      const n = { scale: next, x: newX, y: newY };
-      transformRef.current = n;
-      setTransform(n);
+      transformRef.current = { scale: next, x: newX, y: newY };
+      // Wheel events also throttled via rAF so rapid scroll-zooming doesn’t
+      // queue more React renders than frames available to paint.
+      scheduleTransformFlush();
     };
     el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      if (rafPending.current !== null) {
+        cancelAnimationFrame(rafPending.current);
+        rafPending.current = null;
+      }
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -502,13 +530,13 @@ export default function FloorPlanClient() {
   }
   function onMouseMove(e: React.MouseEvent) {
     if (!isPanning.current) return;
-    const n = {
+    transformRef.current = {
       ...transformRef.current,
       x: panStart.current.tx + e.clientX - panStart.current.x,
       y: panStart.current.ty + e.clientY - panStart.current.y,
     };
-    transformRef.current = n;
-    setTransform(n);
+    // PERF 2 — throttle React re-render to one per animation frame.
+    scheduleTransformFlush();
   }
   function onMouseUp() { isPanning.current = false; }
 
@@ -531,18 +559,21 @@ export default function FloorPlanClient() {
   function onTouchMove(e: React.TouchEvent) {
     e.preventDefault();
     if (e.touches.length === 1 && isPanning.current) {
-      const n = {
+      transformRef.current = {
         ...transformRef.current,
         x: panStart.current.tx + e.touches[0].clientX - panStart.current.x,
         y: panStart.current.ty + e.touches[0].clientY - panStart.current.y,
       };
-      transformRef.current = n;
-      setTransform(n);
+      // PERF 2 — throttle touch pan re-renders to one per frame.
+      scheduleTransformFlush();
     } else if (e.touches.length === 2 && pinchDist.current !== null) {
       const ratio = getTouchDist(e.touches) / pinchDist.current;
-      const n = { ...transformRef.current, scale: Math.min(Math.max(pinchScale.current * ratio, MIN_SCALE), MAX_SCALE) };
-      transformRef.current = n;
-      setTransform(n);
+      transformRef.current = {
+        ...transformRef.current,
+        scale: Math.min(Math.max(pinchScale.current * ratio, MIN_SCALE), MAX_SCALE),
+      };
+      // PERF 2 — throttle pinch re-renders to one per frame.
+      scheduleTransformFlush();
     }
   }
   function onTouchEnd() { isPanning.current = false; pinchDist.current = null; }
@@ -579,18 +610,9 @@ export default function FloorPlanClient() {
     setTimeout(() => focusOnStall(stall), 350);
   }
 
-  // FIX 4 — openFullStory: The drawer is position:fixed so it doesn’t live
-  // in the scroll flow — scrolling to body.scrollHeight does nothing useful.
-  // Instead, scroll the drawerShellRef anchor (the in-flow div that wraps the
-  // drawer) into view so the page smoothly advances to the bottom section,
-  // which gives the visual impression of “going to” the full story. The
-  // activeStall state is already set; no no-op setState needed.
   function openFullStory() {
     drawerShellRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
-
-  const vendorCount    = STALLS.filter(s => s.zone === 'vendor').length;
-  const availableCount = STALLS.filter(s => s.zone === 'vendor' && s.status === 'available').length;
 
   return (
     <main className="min-h-screen text-cream" style={{ background: '#100E0A' }}>
@@ -611,7 +633,7 @@ export default function FloorPlanClient() {
               </div>
               <h1 className="font-corp-display text-5xl sm:text-6xl font-light leading-[0.92]" style={{ color: '#E8D3A5' }}>8,000 Sq Ft</h1>
               <p className="mt-4 font-sans text-sm leading-relaxed max-w-md" style={{ color: 'rgba(232,211,165,0.40)' }}>
-                {vendorCount} vendor stalls &nbsp;·&nbsp; Craft Cider Bar &nbsp;·&nbsp; Commissary Kitchen &nbsp;·&nbsp; Event Stage
+                {VENDOR_COUNT} vendor stalls &nbsp;·&nbsp; Craft Cider Bar &nbsp;·&nbsp; Commissary Kitchen &nbsp;·&nbsp; Event Stage
               </p>
               <p className="mt-2 font-label text-[8px] tracking-[0.2em] uppercase" style={{ color: 'rgba(232,211,165,0.20)' }}>Conceptual plan — subject to refinement with anchor tenants</p>
             </div>
@@ -619,7 +641,7 @@ export default function FloorPlanClient() {
               style={{ border: '1px solid rgba(212,168,75,0.18)', background: 'linear-gradient(135deg, rgba(212,168,75,0.06) 0%, rgba(201,122,62,0.04) 100%)', boxShadow: '0 0 40px rgba(212,168,75,0.04) inset' }}
             >
               <div className="font-corp-display text-4xl font-light" style={{ color: '#D4A84B' }}>
-                {availableCount}<span className="font-sans text-lg font-normal" style={{ color: 'rgba(232,211,165,0.35)' }}> / {vendorCount}</span>
+                {AVAILABLE_COUNT}<span className="font-sans text-lg font-normal" style={{ color: 'rgba(232,211,165,0.35)' }}> / {VENDOR_COUNT}</span>
               </div>
               <div className="font-label text-[8px] tracking-[0.3em] uppercase mt-1.5" style={{ color: 'rgba(232,211,165,0.35)' }}>Vendor Spots Open</div>
             </div>
@@ -760,7 +782,11 @@ export default function FloorPlanClient() {
                     aria-pressed={isActive}
                     onClick={(e) => visible && handleStallClick(stall, e)}
                     onKeyDown={(e) => visible && handleKeyDown(stall, e)}
-                    onMouseEnter={() => visible && setHoverStall(stall.id)}
+                    onMouseEnter={() => {
+                      // PERF 1 — suppress hover state updates while panning to
+                      // avoid spurious React re-renders from cursor skimming stalls.
+                      if (visible && !isPanning.current) setHoverStall(stall.id);
+                    }}
                     onMouseLeave={() => setHoverStall(null)}
                     style={{ cursor: visible ? 'pointer' : 'default', opacity: visible ? 1 : 0.12, transition: 'opacity 0.4s ease' }}
                   >
@@ -914,74 +940,4 @@ export default function FloorPlanClient() {
               ><path d="M6 9l6 6 6-6" /></svg>
             </button>
             <div
-              className={`flex flex-wrap items-center gap-x-8 gap-y-3 ${legendOpen ? 'block' : 'hidden'} sm:flex`}
-              style={{ paddingTop: legendOpen ? 12 : 0, borderBottom: '1px solid rgba(232,211,165,0.06)', paddingBottom: 12 }}
-            >
-              {(Object.entries(STATUS_COLOR) as [Status, string][]).map(([status, color]) => (
-                <div key={status} className="flex items-center gap-2.5">
-                  <span className="block h-2 w-2 rounded-full" style={{ background: color, boxShadow: `0 0 6px ${color}55` }} />
-                  <span className="font-label text-[8px] tracking-[0.20em] uppercase" style={{ color: 'rgba(232,211,165,0.35)' }}>{STATUS_LABEL[status]}</span>
-                </div>
-              ))}
-              <div className="ml-auto font-label text-[8px] tracking-[0.18em] uppercase hidden sm:block" style={{ color: 'rgba(232,211,165,0.18)' }}>Click any stall for details</div>
-              <div className="font-label text-[8px] tracking-[0.18em] uppercase sm:hidden" style={{ color: 'rgba(232,211,165,0.18)' }}>Tap any stall for details</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Stall directory ───────────────────────────────────────────────── */}
-      <div className="px-6 pb-28">
-        <div className="mx-auto max-w-5xl">
-          <div className="flex items-center gap-5 mb-8">
-            <span className="block h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(201,122,62,0.30), transparent)' }} />
-            <span className="font-label text-[8.5px] tracking-[0.35em] uppercase shrink-0" style={{ color: 'rgba(201,122,62,0.55)' }}>Stall Directory</span>
-            <span className="block h-px flex-1" style={{ background: 'linear-gradient(270deg, rgba(201,122,62,0.30), transparent)' }} />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: '1px', background: 'rgba(232,211,165,0.05)' }}>
-            {STALLS.filter(s => s.zone === 'vendor').map((stall) => (
-              <button key={stall.id}
-                onClick={() => handleDirectoryClick(stall)}
-                className="group text-left transition-all duration-400"
-                style={{
-                  background: activeStall?.id === stall.id ? 'linear-gradient(135deg, rgba(212,168,75,0.08), rgba(201,122,62,0.05))' : 'rgba(16,14,10,1)',
-                  padding: '20px',
-                  outline: activeStall?.id === stall.id ? '1px solid rgba(212,168,75,0.25)' : 'none',
-                }}
-              >
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <span className="font-corp-display text-base font-light transition-colors duration-300" style={{ color: activeStall?.id === stall.id ? '#D4A84B' : '#E8D3A5' }}>{stall.label}</span>
-                  <span className="font-label text-[7.5px] tracking-[0.16em] uppercase px-2 py-0.5"
-                    style={{ color: STATUS_COLOR[stall.status], border: `1px solid ${STATUS_COLOR[stall.status]}44`, background: `${STATUS_COLOR[stall.status]}11` }}
-                  >{STATUS_LABEL[stall.status]}</span>
-                </div>
-                <p className="font-label text-[7.5px] tracking-[0.15em] uppercase mb-2" style={{ color: 'rgba(201,122,62,0.50)' }}>{stall.conceptType}</p>
-                <div className="flex items-center gap-4">
-                  <span className="font-sans text-xs" style={{ color: 'rgba(232,211,165,0.32)' }}>{stall.sqft} sq ft</span>
-                  <span className="font-sans text-xs" style={{ color: 'rgba(232,211,165,0.32)' }}>{stall.rent}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-          <div className="mt-10 p-8 flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left"
-            style={{ borderTop: '1px solid rgba(212,168,75,0.20)', borderBottom: '1px solid rgba(212,168,75,0.08)', background: 'linear-gradient(135deg, rgba(212,168,75,0.05) 0%, rgba(201,122,62,0.03) 100%)', boxShadow: '0 -1px 0 rgba(212,168,75,0.06)' }}
-          >
-            <div>
-              <div className="font-corp-display text-2xl font-light mb-1.5" style={{ color: '#E8D3A5' }}>Ready to claim your stall?</div>
-              <p className="font-sans text-sm" style={{ color: 'rgba(232,211,165,0.38)' }}>{availableCount} vendor spots remain in the founding cohort.</p>
-            </div>
-            <Link href="/vendors"
-              className="shrink-0 font-label text-[9px] tracking-[0.28em] uppercase transition-all duration-300 whitespace-nowrap"
-              style={{ background: 'linear-gradient(135deg, #C97A3E 0%, #D4A84B 100%)', padding: '16px 36px', color: '#100E0A', fontWeight: 500, boxShadow: '0 8px 32px rgba(212,168,75,0.18)' }}
-            >Apply as a Vendor →</Link>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Story Drawer ─────────────────────────────────────────────────── */}
-      <div ref={drawerShellRef}>
-        <StallDrawer stall={activeStall} onClose={() => setActiveStall(null)} />
-      </div>
-    </main>
-  );
-}
+           
