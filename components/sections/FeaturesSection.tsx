@@ -36,6 +36,7 @@ const features = [
     glyph:   '◉',
     title:   '25-Tap Craft Cider Bar',
     body:    "Southern New Mexico's only dedicated craft cider bar — 25 rotating regional and national taps plus a full Cider Club membership program.",
+    id:      'cider-bar',
   },
   {
     glyph:   '◆',
@@ -117,9 +118,10 @@ export default function FeaturesSection() {
 
         {/* Grid */}
         <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'rgba(232,193,141,0.07)' }}>
-          {features.map(({ glyph, title, body }) => (
+          {features.map(({ glyph, title, body, id }) => (
             <div
               key={title}
+              id={id}
               className="feature-card"
               style={{
                 position: 'relative',

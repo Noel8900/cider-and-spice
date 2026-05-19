@@ -19,4 +19,16 @@
   --opacity-mid:     0.70;   /* Subheadings */
   --opacity-low:     0.50;   /* Body text */
   --opacity-mute:    0.30;   /* Labels, placeholders */
+
+  /* Surface fills — use instead of ad-hoc bg-white/[0.0x] */
+  --surface-01: rgba(255,255,255,0.02);  /* Default card background */
+  --surface-02: rgba(255,255,255,0.03);  /* Subtle raised surface */
+  --surface-03: rgba(255,255,255,0.04);  /* Hover state */
+  --surface-04: rgba(255,255,255,0.06);  /* Divider grid background */
+
+  /* Border hierarchy — use instead of ad-hoc border-cream/[0.0x] */
+  --border-subtle: rgba(245,236,215,0.07);   /* Hairlines, dividers */
+  --border-muted:  rgba(245,236,215,0.10);   /* Card borders */
+  --border-light:  rgba(245,236,215,0.14);   /* Hover borders */
+  --border-mid:    rgba(245,236,215,0.20);   /* Button borders */
 }

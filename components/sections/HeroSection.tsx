@@ -169,8 +169,8 @@ export default function HeroSection() {
           fontSize: '1rem', lineHeight: 1.85, color: D3.wheat, opacity: 0.7,
           maxWidth: '520px', marginBottom: '2.5rem', letterSpacing: '0.02em',
         }}>
-          A next-generation food hall, culinary incubator, and Southern New Mexico&apos;s
-          only craft cider bar — giving Borderland food makers a permanent downtown home.
+          The Borderland has extraordinary food talent — street cooks, home chefs, generational
+          recipes. Cider &amp; Spice gives that talent a permanent downtown address.
         </p>
 
         {/* CTAs */}

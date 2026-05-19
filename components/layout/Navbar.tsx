@@ -252,7 +252,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link href="/vendors"
             className="nav-cta hidden border border-cream/20 px-6 py-2.5 font-label text-[9px] tracking-[0.2em] uppercase text-cream/70 md:inline-block">
-            <span>Apply Now →</span>
+            <span>Claim Your Stall →</span>
           </Link>
           <button type="button"
             className="p-2 text-cream transition-colors hover:bg-white/10 md:hidden focus-visible:ring-2 focus-visible:ring-ember/50"
@@ -322,7 +322,7 @@ export default function Navbar() {
           <li className="mob-item pt-4 pb-2" style={{ opacity: 0 }}>
             <Link href="/vendors"
               className="block border border-cream/20 hover:border-gold/50 px-5 py-3.5 text-center font-label text-[10px] tracking-[0.25em] uppercase text-cream/70 hover:text-gold transition-all duration-300"
-              onClick={() => setMenuOpen(false)}>Apply Now →</Link>
+              onClick={() => setMenuOpen(false)}>Claim Your Stall →</Link>
           </li>
         </ul>
       </div>
