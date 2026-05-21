@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
+import MobileNav from './MobileNav';
 import ThemeToggle from './ThemeToggle';
 import ActiveSectionHighlight from './ActiveSectionHighlight';
 import PageTransition from './PageTransition';
@@ -20,9 +21,13 @@ export default function ConditionalCulinaryUI() {
       {/* GSAP fade overlay fires on every route change */}
       <PageTransition />
 
+      {/* Desktop nav — hidden on mobile via sm:hidden inside Navbar */}
       <Navbar />
 
-      {/* Theme toggle — fixed top-right, outside nav to avoid layout conflicts */}
+      {/* Mobile nav — sticky top bar + slide drawer, visible only on mobile */}
+      <MobileNav />
+
+      {/* Theme toggle — fixed top-right, desktop only */}
       <div className="fixed top-4 right-20 z-[60] hidden md:flex items-center">
         <ThemeToggle />
       </div>
