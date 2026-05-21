@@ -1,15 +1,13 @@
 'use client';
 // Direction 3 — Artisan Collective: hero.
-// Luxury upgrades:
-//   • Scroll indicator: SVG chevron bounces via CSS @keyframes hero-bounce.
-//   • Primary CTA: darkens on hover + translateY(-1px) lift.
-//   • Headline: letter-spacing micro-tightens from -0.01em → -0.025em on mount via GSAP.
+// UI-4 wire: inline GSAP replaced with heroEntrance() from lib/animation/gsap-presets.
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { heroEntrance, EASE, DURATION } from '@/lib/animation/gsap-presets';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -82,11 +80,23 @@ export default function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Stagger reveal
-      gsap.from(
-        ['.hero-eyebrow', '.hero-headline', '.hero-subhead', '.hero-actions', '.hero-stats'],
-        { opacity: 0, y: 24, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.2 }
-      );
+      // Standardised hero entrance via gsap-presets
+      heroEntrance({
+        eyebrow: '.hero-eyebrow',
+        title:   '.hero-headline',
+        sub:     '.hero-subhead',
+        actions: '.hero-actions',
+        scroll:  '.hero-scroll-indicator',
+      });
+
+      // Stat badges — stagger in after actions
+      gsap.from('.hero-stats', {
+        opacity: 0, y: 14,
+        duration: DURATION.base,
+        ease: EASE.smooth,
+        delay: 1.1,
+      });
+
       // Headline letter-spacing micro-tighten
       if (headlineRef.current) {
         gsap.fromTo(
@@ -141,7 +151,7 @@ export default function HeroSection() {
           </span>
         </div>
 
-        {/* Headline — letter-spacing tightens on mount */}
+        {/* Headline */}
         <h1
           ref={headlineRef}
           className="hero-headline"
@@ -181,7 +191,7 @@ export default function HeroSection() {
               padding: '14px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
               fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
               textDecoration: 'none', fontWeight: 600,
-              transition: 'background 0.25s, transform 0.2s',
+              transition: `background ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
             }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLAnchorElement).style.background  = '#a6511f';
@@ -198,7 +208,8 @@ export default function HeroSection() {
             color: `${D3.wheat}bb`, padding: '13px 36px',
             fontFamily: 'var(--font-josefin), system-ui, sans-serif',
             fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
-            textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s, transform 0.2s',
+            textDecoration: 'none',
+            transition: `border-color ${DURATION.fast}s ${EASE.smooth}, color ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
           }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)';
@@ -217,7 +228,8 @@ export default function HeroSection() {
             border: '1px solid rgba(247,243,236,0.2)', color: `${D3.wheat}bb`,
             padding: '13px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
             fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
-            textDecoration: 'none', transition: 'border-color 0.3s, color 0.3s, transform 0.2s',
+            textDecoration: 'none',
+            transition: `border-color ${DURATION.fast}s ${EASE.smooth}, color ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
           }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)';
@@ -243,7 +255,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator — chevron bounces via CSS */}
+      {/* Scroll indicator */}
       <a
         href="#opportunity"
         aria-label="Scroll to the opportunity section"
@@ -253,7 +265,8 @@ export default function HeroSection() {
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
           fontFamily: 'var(--font-josefin), system-ui, sans-serif',
           fontSize: '0.55rem', letterSpacing: '0.3em', textTransform: 'uppercase',
-          color: `${D3.wheat}55`, textDecoration: 'none', transition: 'color 0.3s', zIndex: 10,
+          color: `${D3.wheat}55`, textDecoration: 'none',
+          transition: `color ${DURATION.fast}s ${EASE.smooth}`, zIndex: 10,
         }}
         onMouseEnter={e => (e.currentTarget.style.color = D3.terracotta)}
         onMouseLeave={e => (e.currentTarget.style.color = `${D3.wheat}55`)}
