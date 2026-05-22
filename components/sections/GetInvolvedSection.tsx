@@ -106,7 +106,7 @@ export default function GetInvolvedSection() {
           </div>
           <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.5rem', lineHeight: 1.15 }}>Join the Movement</h2>
           <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '520px', lineHeight: 1.75 }}>
-            Las Cruces is ready for something like this. Here\'s how to be part of it from the very beginning.
+            Las Cruces is ready for something like this. Here's how to be part of it from the very beginning.
           </p>
         </div>
 
@@ -154,7 +154,7 @@ export default function GetInvolvedSection() {
 
           {status === 'done' ? (
             <div role="status" style={{ border: '1px solid rgba(192,98,42,0.3)', background: 'rgba(192,98,42,0.07)', padding: '1.25rem 2rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.85 }}>
-              You\'re on the list — we\'ll be in touch soon.
+              You're on the list — we'll be in touch soon.
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>

@@ -187,16 +187,26 @@ export default function GallerySection() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(245,236,215,0.06)' }}>
             {images.map(({ src, alt, caption, disclaimer, portrait }, i) => {
               const isHero    = i === 0;
-              const aspectCls = isHero ? 'aspect-[16/9]' : portrait ? 'aspect-[3/4]' : 'aspect-[4/3]';
+              const isLast    = i === images.length - 1;
+              // All non-hero images use 4/3 (landscape crop) for consistent row heights.
+              // The last image spans the full row width — mirrors the hero and closes the grid cleanly.
+              const aspectCls = isHero || isLast ? 'aspect-[16/9]' : 'aspect-[4/3]';
+              const colSpan   = isHero ? 'lg:col-span-2' : isLast ? 'sm:col-span-2 lg:col-span-3' : '';
+              // Portrait source images: anchor to top so stall branding/signage stays visible on crop
+              const objPos    = portrait ? 'object-top' : '';
               return (
                 <button key={src} type="button" onClick={() => openLightbox(i)} aria-label={`View full size: ${caption}`}
                   className={`gal-item group relative overflow-hidden bg-bg text-left
                               focus-visible:outline focus-visible:outline-2
                               focus-visible:outline-gold focus-visible:outline-offset-2
-                              ${isHero ? 'lg:col-span-2' : ''} ${aspectCls}`}>
+                              ${colSpan} ${aspectCls}`}>
                   <Image src={src} alt={alt} fill
-                    sizes={isHero ? '(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw' : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes={
+                      isHero ? '(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw'
+                      : isLast ? '100vw'
+                      : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+                    }
+                    className={`object-cover ${objPos} transition-transform duration-700 group-hover:scale-105`}
                     priority={isHero} loading={isHero ? undefined : 'lazy'} />
                   <div className="absolute inset-0 bg-bg/40 opacity-0 group-hover:opacity-100 transition-opacity duration-400" aria-hidden="true" />
                   <div className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center border border-cream/30 bg-bg/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true">

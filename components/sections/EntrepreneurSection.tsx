@@ -162,7 +162,7 @@ export default function EntrepreneurSection() {
             Every Chef Here Has a Story Worth Tasting
           </h2>
           <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '560px', lineHeight: 1.75 }}>
-            Southern New Mexico\'s first culinary incubator — lowering barriers so local food entrepreneurs can build real, lasting businesses.
+            Southern New Mexico's first culinary incubator — lowering barriers so local food entrepreneurs can build real, lasting businesses.
           </p>
         </div>
 
