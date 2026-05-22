@@ -6,6 +6,7 @@
 //   • All existing GSAP entrances (ip-header, ip-pathway, ip-phase, ip-kpi) preserved.
 
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import GlassCard from '@/components/ui/GlassCard';
@@ -78,25 +79,35 @@ export default function IncubatorProgramSection() {
         <div className="ip-pathways"
           style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '4.5rem' }}>
 
-          <GlassCard variant="dark" hover={true} className="ip-pathway" style={{ padding: '2rem' }}>
+          <GlassCard variant="dark" hover={true} className="ip-pathway" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '2.4rem', fontWeight: 300, color: D3.terracotta }}>Semilla</span>
             <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: `${D3.wheat}55`, margin: '0.4rem 0 1rem' }}>Early-Stage Track &middot; ~24 Weeks</p>
-            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', lineHeight: 1.75, color: `${D3.wheat}80` }}>
+            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', lineHeight: 1.75, color: `${D3.wheat}80`, flexGrow: 1 }}>
               A 6-month accelerated track built around the sequence
               <strong style={{ color: D3.wheat }}> Validate &rarr; Verify &rarr; Launch</strong>.
               Combines practical worksheets, cohort networking, menu costing, unit economics,
               and NMED compliance package preparation.
             </p>
+            <Link href="/vendors?track=semilla" style={{ display: 'inline-block', marginTop: '1.5rem', border: `1px solid rgba(192,98,42,0.4)`, padding: '10px 22px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: D3.terracotta, textDecoration: 'none', transition: 'background 0.25s, color 0.25s', alignSelf: 'flex-start' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = D3.terracotta; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = D3.terracotta; }}>
+              Apply for Semilla &rarr;
+            </Link>
           </GlassCard>
 
-          <GlassCard variant="glow" hover={true} className="ip-pathway" style={{ padding: '2rem' }}>
+          <GlassCard variant="glow" hover={true} className="ip-pathway" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '2.4rem', fontWeight: 300, color: D3.terracotta }}>Mariposa</span>
             <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: `${D3.wheat}55`, margin: '0.4rem 0 1rem' }}>Scale Track &middot; Mature Operators</p>
-            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', lineHeight: 1.75, color: `${D3.wheat}80` }}>
+            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', lineHeight: 1.75, color: `${D3.wheat}80`, flexGrow: 1 }}>
               Designed for mature food-industry businesses ready to scale. Provides specialized
               facility access, equipment guidance, wholesale pathway support, and scaling
               infrastructure &mdash; with graduation into an independent location as the target outcome.
             </p>
+            <Link href="/vendors?track=mariposa" style={{ display: 'inline-block', marginTop: '1.5rem', border: `1px solid rgba(192,98,42,0.4)`, padding: '10px 22px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: D3.terracotta, textDecoration: 'none', transition: 'background 0.25s, color 0.25s', alignSelf: 'flex-start' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = D3.terracotta; (e.currentTarget as HTMLAnchorElement).style.color = D3.parchment; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = D3.terracotta; }}>
+              Apply for Mariposa &rarr;
+            </Link>
           </GlassCard>
         </div>
 

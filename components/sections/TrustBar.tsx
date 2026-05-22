@@ -1,3 +1,4 @@
+'use client';
 // Direction 3 — Artisan Collective trust/endorsement bar
 // Infinite CSS marquee: two identical lists create a seamless loop.
 // Pauses on hover/focus. Terracotta ✦ separators, wheat partner names.

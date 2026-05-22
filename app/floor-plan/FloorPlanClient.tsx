@@ -939,5 +939,53 @@ export default function FloorPlanClient() {
                 style={{ transform: legendOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
               ><path d="M6 9l6 6 6-6" /></svg>
             </button>
-            <div
+            <div className={`${legendOpen ? 'flex' : 'hidden'} sm:flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 pb-4`}>
+              {(Object.keys(STATUS_COLOR) as Status[]).map(status => (
+                <div key={status} className="flex items-center gap-1.5">
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: STATUS_COLOR[status as Status], display: 'inline-block', flexShrink: 0 }} aria-hidden="true" />
+                  <span className="font-label text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(232,211,165,0.40)' }}>{STATUS_LABEL[status as Status]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Stall directory ──────────────────────────────────────────────────── */}
+      <div className="px-4 pb-16 pt-6" style={{ borderTop: '1px solid rgba(232,211,165,0.07)' }}>
+        <div className="mx-auto max-w-5xl">
+          <h2 className="font-label text-[9px] tracking-[0.3em] uppercase mb-5" style={{ color: 'rgba(232,211,165,0.25)' }}>Stall Directory</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(232,211,165,0.06)' }}>
+            {STALLS.filter(s => s.zone === 'vendor').map(stall => (
+              <button
+                key={stall.id}
+                onClick={() => handleDirectoryClick(stall)}
+                className="text-left p-4 transition-colors duration-200"
+                style={{ background: '#100E0A', borderTop: `2px solid ${STATUS_COLOR[stall.status]}44` }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#16130F'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#100E0A'; }}
+              >
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span className="font-corp-display text-base font-light" style={{ color: '#E8D3A5' }}>{stall.label}</span>
+                  <span className="font-label text-[7px] tracking-[0.18em] uppercase px-2 py-0.5 shrink-0"
+                    style={{ color: STATUS_COLOR[stall.status], border: `1px solid ${STATUS_COLOR[stall.status]}44`, background: `${STATUS_COLOR[stall.status]}11` }}>
+                    {STATUS_LABEL[stall.status]}
+                  </span>
+                </div>
+                <div className="font-label text-[7.5px] tracking-[0.15em] uppercase" style={{ color: 'rgba(201,122,62,0.55)' }}>
+                  {stall.sqft.toLocaleString()} sq ft &nbsp;&middot;&nbsp; {stall.rent}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Drawer shell — scroll anchor + StallDrawer ───────────────────── */}
+      <div ref={drawerShellRef} style={{ minHeight: '1px' }} aria-hidden="true" />
+      <StallDrawer stall={activeStall} onClose={() => setActiveStall(null)} />
+
+    </main>
+  );
+}
            

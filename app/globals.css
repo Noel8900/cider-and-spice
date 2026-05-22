@@ -1,7 +1,12 @@
-@import "tailwindcss";
+/* Tailwind v3 directives (replaces @import "tailwindcss" which is v4 syntax
+   and causes Turbopack to bundle Node.js internals into the browser bundle) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* ── Design tokens ────────────────────────────────────────────────────────── */
-@theme {
+/* (was @theme in v4 — using :root for v3 compatibility) */
+:root {
   /* Colours */
   --color-bg:           #1C1209;
   --color-cream:        #F5EFE6;

@@ -1,6 +1,11 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // Prevent Tailwind CSS PostCSS internals from being bundled into the browser.
+  // Turbopack + tailwindcss@3 tries to resolve Node.js built-ins (fs, v8, etc.)
+  // from the tailwindcss package into the client bundle. Externalizing it fixes
+  // the build while keeping PostCSS processing intact server-side.
+  serverExternalPackages: ['tailwindcss', 'jiti', '@nodelib/fs.scandir', '@nodelib/fs.stat', 'fast-glob'],
   // Security headers — applied by Vercel (vercel.json) and Netlify (netlify.toml).
   async headers() {
     return [

@@ -1,3 +1,4 @@
+'use client';
 // SiteFooter — Direction 3: Artisan Collective
 // Luxury upgrades:
 //   • Pre-footer editorial band — full-width terracotta radial glow, Cormorant

@@ -62,7 +62,7 @@ const INVESTOR_SCHEMA = {
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 const METRICS = [
-  { id: 'capital',   raw: 1505000, formatted: '$1,505,000', label: 'Total Project Capital',       prefix: '$', suffix: '' },
+  { id: 'capital',   raw: null,    formatted: '$1.5M',       label: 'Total Project Capital',       prefix: '$', suffix: '' },
   { id: 'revenue',   raw: 822,     formatted: '$822K',       label: 'Year 1 Revenue (Appendix F)', prefix: '$', suffix: 'K' },
   { id: 'breakeven', raw: null,    formatted: '18–20 mo',    label: 'Cash Flow Breakeven',         prefix: '',  suffix: '' },
   { id: 'irr',       raw: null,    formatted: '17–20%',      label: 'Illustrative 3-Year IRR',     prefix: '',  suffix: '' },
@@ -378,7 +378,7 @@ export default function InvestorsPage() {
             </h1>
             <div style={{ width: '64px', height: '1px', background: `linear-gradient(to right, transparent, ${D3.wheat}, transparent)`, margin: '0 auto 1.75rem' }} />
             <p className="hero-sub" style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '1rem', lineHeight: 1.85, color: D3.wheat, opacity: 0.75, maxWidth: '560px', margin: '0 auto 3rem', letterSpacing: '0.02em' }}>
-              Conservative assumptions. Six qualifying grant categories. A clear path to $1,068,000 in 3-year cumulative EBITDA for Southern New Mexico&apos;s first food hall and craft cider bar.
+              Conservative assumptions. Six qualifying grant categories. A clear path to $1.07M in 3-year cumulative EBITDA for Southern New Mexico&apos;s first food hall and craft cider bar.
             </p>
             <div className="hero-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="#inquiry" style={{ display: 'inline-block', background: D3.terracotta, color: D3.parchment, padding: '16px 44px', fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.25em', textTransform: 'uppercase', textDecoration: 'none' }}>Request Investor Package</a>

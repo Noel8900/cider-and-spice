@@ -17,8 +17,8 @@ const D3 = {
   parchment:  '#f7f3ec',
 } as const;
 
-const TOTAL_SPOTS  = 13;
-const FILLED_SPOTS = 4;
+const TOTAL_SPOTS:  number = 13;
+const FILLED_SPOTS: number = 4;
 const OPEN_SPOTS   = TOTAL_SPOTS - FILLED_SPOTS;
 const IS_URGENT    = OPEN_SPOTS <= 5;
 
@@ -89,8 +89,9 @@ export default function VendorSpotsBar() {
       </div>
 
       <p style={{ marginTop: '0.75rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.75rem', color: `${D3.wheat}35`, lineHeight: 1.65 }}>
-        We&apos;re curating a founding cohort of {TOTAL_SPOTS} distinctive food concepts.
-        Once the founding cohort is full, applications will close until a stall becomes available.
+        We&apos;re curating a founding cohort of {TOTAL_SPOTS} distinctive food concepts for our
+        Q1&ndash;Q2 2027 opening. Applications close permanently once all {TOTAL_SPOTS} stalls are
+        reserved &mdash; no waitlist.
       </p>
     </div>
   );

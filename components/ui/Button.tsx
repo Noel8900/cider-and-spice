@@ -1,3 +1,4 @@
+'use client';
 // Shared Button component — primary / secondary / ghost variants.
 // Renders <Link> when href is provided, <button> otherwise.
 // Loading state shows a spinner and disables interaction.

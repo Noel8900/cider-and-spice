@@ -51,7 +51,6 @@ export default function GlassCard({
   const bg = VARIANT_BG[variant];
 
   return (
-    // @ts-expect-error polymorphic tag typing
     <Tag
       onClick={onClick}
       className={[

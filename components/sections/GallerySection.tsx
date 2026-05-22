@@ -8,6 +8,11 @@
 //     on open; reverse on close via a closing-ref guard.
 //   • Gallery CTA button: terracotta ::before scaleX fill (matches nav-cta).
 //   • All existing grid/stagger/keyboard nav preserved.
+// Phase 2:
+//   • D3 color object added for consistency with other Direction 3 sections.
+//   • bg-cream/[0.06] grid gap → inline rgba token (design system alignment).
+//   • Section background → explicit inline D3.bg to guarantee Netlify parity.
+//   • Lightbox caption/counter/disclaimer → inline D3 colors.
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
@@ -15,6 +20,15 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionHeader from '@/components/ui/SectionHeader';
+
+const D3 = {
+  bg:         '#1C1209',
+  walnut:     '#2c2416',
+  terracotta: '#c0622a',
+  wheat:      '#e8c18d',
+  parchment:  '#f7f3ec',
+  gold:       '#d4a84b',
+} as const;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -104,12 +118,12 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
 
         <div className="flex items-center justify-between mt-4 px-1">
           <div>
-            <p className="font-label text-[10px] tracking-[0.25em] uppercase text-gold">{img.caption}</p>
+            <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '10px', letterSpacing: '0.25em', textTransform: 'uppercase', color: D3.gold }}>{img.caption}</p>
             {img.disclaimer && (
-              <p className="font-sans text-[10px] text-cream/40 mt-0.5">Illustrative concept &middot; Not a confirmed tenant</p>
+              <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '10px', color: `${D3.parchment}60`, marginTop: '2px' }}>Illustrative concept &middot; Not a confirmed tenant</p>
             )}
           </div>
-          <p className="font-label text-[9px] tracking-[0.2em] uppercase text-cream/30">{index + 1} / {images.length}</p>
+          <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase', color: `${D3.parchment}40` }}>{index + 1} / {images.length}</p>
         </div>
 
         <button type="button" onClick={onPrev} aria-label="Previous image"
@@ -165,12 +179,12 @@ export default function GallerySection() {
         <Lightbox images={images} index={lightboxIndex} onClose={closeLightbox} onPrev={prevImage} onNext={nextImage} />
       )}
 
-      <section id="gallery" ref={ref} className="py-32 px-6 bg-bg" aria-labelledby="gallery-heading">
+      <section id="gallery" ref={ref} className="py-32 px-6" style={{ background: D3.bg }} aria-labelledby="gallery-heading">
         <div className="mx-auto max-w-6xl">
           <SectionHeader id="gallery-heading" badge="The Space" title="A Vision in the Making"
             subtitle="Concept renderings of Cider & Spice — opening Q1–Q2 2027 in downtown Las Cruces, NM." />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-cream/[0.06]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(245,236,215,0.06)' }}>
             {images.map(({ src, alt, caption, disclaimer, portrait }, i) => {
               const isHero    = i === 0;
               const aspectCls = isHero ? 'aspect-[16/9]' : portrait ? 'aspect-[3/4]' : 'aspect-[4/3]';
@@ -189,8 +203,8 @@ export default function GallerySection() {
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
                   </div>
                   <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-bg/80 to-transparent sm:translate-y-2 sm:opacity-0 group-hover:sm:opacity-100 group-hover:sm:translate-y-0 transition-all duration-400">
-                    <p className="font-label text-[9px] tracking-[0.25em] uppercase text-gold mb-0.5">{caption}</p>
-                    {disclaimer && <p className="font-sans text-[10px] text-cream/50">Illustrative concept &middot; Not a confirmed tenant</p>}
+                    <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '9px', letterSpacing: '0.25em', textTransform: 'uppercase', color: D3.gold, marginBottom: '2px' }}>{caption}</p>
+                    {disclaimer && <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '10px', color: `${D3.parchment}70` }}>Illustrative concept &middot; Not a confirmed tenant</p>}
                   </div>
                 </button>
               );

@@ -48,7 +48,7 @@ const steps = [
   {
     number: '06',
     title: 'Graduate to Your Own Space',
-    body: 'Our alumni network, Las Cruces SBDC connections, and SBA lending partnerships help you secure financing when you're ready for a permanent location.',
+    body: 'Our alumni network, Las Cruces SBDC connections, and SBA lending partnerships help you secure financing when you\'re ready for a permanent location.',
   },
 ];
 
