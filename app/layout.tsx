@@ -30,7 +30,7 @@ const cormorantGaramond = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: 'Las Cruces Culinary Innovation Hub | Food Hall, Craft Cider Bar & Culinary Incubator — Downtown Las Cruces, NM',
   description:
-    "Las Cruces Culinary Innovation Hub — Southern New Mexico's only food hall, craft cider bar, and culinary incubator. 10–13 global concepts, 20–25 rotating cider taps, and a launchpad for NM food entrepreneurs. Opening Q1–Q2 2027 in downtown Las Cruces.",
+    "Las Cruces Culinary Innovation Hub — Southern New Mexico\'s only food hall, craft cider bar, and culinary incubator. 10–13 global concepts, 20–25 rotating cider taps, and a launchpad for NM food entrepreneurs. Opening Q1–Q2 2027 in downtown Las Cruces.",
   metadataBase: new URL('https://www.lccullinaryhub.com'),
   alternates: { canonical: '/' },
   robots: { index: true, follow: true },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     url:         'https://www.lccullinaryhub.com/',
     siteName:    'Las Cruces Culinary Innovation Hub',
     title:       'Las Cruces Culinary Innovation Hub | Food Hall & Craft Cider Bar',
-    description: "Southern NM's first food hall, craft cider bar, and culinary incubator. 10–13 global concepts. Opening Q1–Q2 2027 in downtown Las Cruces.",
+    description: "Southern NM\'s first food hall, craft cider bar, and culinary incubator. 10–13 global concepts. Opening Q1–Q2 2027 in downtown Las Cruces.",
     images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
     locale: 'en_US',
   },
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card:        'summary_large_image',
     site:        '@LCCulinaryHub',
     title:       'Las Cruces Culinary Innovation Hub',
-    description: "Southern NM's first food hall, craft cider bar & culinary incubator. Opening 2027 in downtown Las Cruces.",
+    description: "Southern NM\'s first food hall, craft cider bar & culinary incubator. Opening 2027 in downtown Las Cruces.",
     images:      ['/opengraph-image'],
   },
   other: {
@@ -102,7 +102,7 @@ export default function RootLayout({
                   name: 'Las Cruces Culinary Innovation Hub',
                   alternateName: ['LC Culinary Hub', 'Cider & Spice'],
                   description:
-                    "Southern New Mexico's premier food hall, craft cider bar, and culinary incubator. Features 10–13 global food concepts, 20–25 rotating cider taps, a shared commissary kitchen, and a structured pathway for food entrepreneurs.",
+                    "Southern New Mexico\'s premier food hall, craft cider bar, and culinary incubator. Features 10–13 global food concepts, 20–25 rotating cider taps, a shared commissary kitchen, and a structured pathway for food entrepreneurs.",
                   url: 'https://www.lccullinaryhub.com',
                   email: 'info@lccullinaryhub.com',
                   address: {

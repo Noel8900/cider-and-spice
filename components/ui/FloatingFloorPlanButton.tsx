@@ -18,7 +18,7 @@ export default function FloatingFloorPlanButton() {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  // Don't render on the floor-plan page itself
+  // Don\'t render on the floor-plan page itself
   if (pathname?.startsWith('/floor-plan')) return null;
 
   return (

@@ -122,7 +122,7 @@ export const EVENTS: Event[] = [
     category:    'cider-tasting',
     tags:        ['Cider Club', 'Members Only', 'Exclusive'],
     description: 'Members-only preview of the summer tap rotation with the cidery producers in attendance.',
-    story:       'Cider Club members get first access to the summer tap rotation before it opens to the public. Six cidery producers will be in attendance to walk through their process, this season's apple and pear sources, and what makes each expression unique. Flight pours included with membership. Guest tickets available for one guest per member at $25.',
+    story:       'Cider Club members get first access to the summer tap rotation before it opens to the public. Six cidery producers will be in attendance to walk through their process, this season\'s apple and pear sources, and what makes each expression unique. Flight pours included with membership. Guest tickets available for one guest per member at $25.',
     ticketUrl:   '/cider-club',
     price:       'Members Free / Guest $25',
     capacity:    60,

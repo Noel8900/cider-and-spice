@@ -12,7 +12,7 @@ const schema = {
       url: 'https://www.lccullinaryhub.com/cider-club',
       name: 'Cider Club Membership — Las Cruces Culinary Innovation Hub',
       description:
-        'Pre-register for the Cider Club — three founding-member tiers (Taster $25/mo, Enthusiast $45/mo, Founding Member $85/mo) with tasting flights, pour discounts, and exclusive events at Southern New Mexico’s first specialty cider bar.',
+        'Pre-register for the Cider Club — three founding-member tiers (Taster $25/mo, Enthusiast $45/mo, Founding Member $85/mo) with tasting flights, pour discounts, and exclusive events at Southern New Mexico\'s first specialty cider bar.',
       inLanguage: 'en-US',
       isPartOf: {
         '@type': 'WebSite',

@@ -22,7 +22,7 @@ const D3 = {
 const faqs = [
   {
     question: 'When does the Hub open?',
-    answer: 'We’re targeting a Grand Opening in Q1–Q2 2027 in downtown Las Cruces, New Mexico. Pre-register for the Cider Club or sign up for our newsletter to be the first to know when we announce the exact date.',
+    answer: 'We\'re targeting a Grand Opening in Q1–Q2 2027 in downtown Las Cruces, New Mexico. Pre-register for the Cider Club or sign up for our newsletter to be the first to know when we announce the exact date.',
   },
   {
     question: 'What cuisines will be available?',

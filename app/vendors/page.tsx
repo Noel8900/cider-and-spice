@@ -277,7 +277,7 @@ export default function VendorsPage() {
               hint={`${form.description.length} / ${DESC_MAX} characters`}>
               <textarea id="description" name="description" required rows={5}
                 value={form.description} onChange={handleChange} disabled={submitting}
-                placeholder="Tell us about your food concept, your experience in the industry, and why you'd be a great fit for the Hub…"
+                placeholder="Tell us about your food concept, your experience in the industry, and why you\'d be a great fit for the Hub…"
                 className={`${inputCls} resize-y`} />
             </Field>
 

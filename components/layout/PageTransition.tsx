@@ -2,7 +2,7 @@
 // PageTransition — wraps app children for route-change overlay.
 // Fix: overlay now starts at opacity: 0.85 on route change (visible flash in),
 // then fades to 0 over 0.55s. On first mount fades body in from opacity 0.
-// z-index 9997 — sits below PageLoader (9998) so they don't fight.
+// z-index 9997 — sits below PageLoader (9998) so they don\'t fight.
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';

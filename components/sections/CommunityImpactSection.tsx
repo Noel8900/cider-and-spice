@@ -86,7 +86,7 @@ const partners = [
 ];
 
 const events = [
-  { glyph: '◈', title: 'Chile Harvest Festival',     cadence: 'Annual · September',      body: "A celebration of New Mexico's iconic Hatch chile season — local vendors, roasting demos, live music, and family programming." },
+  { glyph: '◈', title: 'Chile Harvest Festival',     cadence: 'Annual · September',      body: "A celebration of New Mexico\'s iconic Hatch chile season — local vendors, roasting demos, live music, and family programming." },
   { glyph: '◉', title: 'Live Music Fridays',         cadence: 'Weekly · Year-Round',     body: 'Every Friday evening, local Borderland artists take the stage — from flamenco and norteño to indie and jazz.' },
   { glyph: '◆', title: 'International Food Nights',  cadence: 'Monthly · Rotating',      body: 'Deep dives into the cuisines our vendors grew up with — from Oaxacan mole to Korean barbecue and beyond.' },
   { glyph: '◇', title: 'Farmers Market Crossover',   cadence: 'Biweekly · Spring–Fall', body: 'Partnering with local producers to bring fresh regional ingredients directly into the Hub.' },

@@ -62,7 +62,7 @@ const MILESTONES: { label: string; date: string; detail: string; status: Milesto
   {
     label: 'Grand Opening',
     date: 'Q2 2027',
-    detail: "Public grand opening of Cider & Spice — Southern New Mexico's first food hall and craft cider bar.",
+    detail: "Public grand opening of Cider & Spice — Southern New Mexico\'s first food hall and craft cider bar.",
     status: 'upcoming',
   },
 ];
@@ -147,7 +147,7 @@ export default function MilestoneTimeline() {
             <span style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: D3.terracotta }}>Project Roadmap</span>
           </div>
           <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, lineHeight: 1.1, marginBottom: '0.5rem' }}>The Path to Opening</h2>
-          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>From site selection to grand opening — here's where we are and what comes next.</p>
+          <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '480px', lineHeight: 1.75 }}>From site selection to grand opening — here\'s where we are and what comes next.</p>
         </div>
 
         {/* Animated progress bar */}

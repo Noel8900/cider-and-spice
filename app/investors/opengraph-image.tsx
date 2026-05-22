@@ -25,7 +25,7 @@ export default function InvestorsOGImage() {
           A Once-in-a-City<br />Opportunity
         </div>
         <div style={{ color: 'rgba(232,211,165,0.50)', fontSize: 26, fontWeight: 300, maxWidth: 640 }}>
-          Southern NM's first food hall and culinary incubator. 8,000 sq ft · 13 concepts · Opening Q1–Q2 2027
+          Southern NM\'s first food hall and culinary incubator. 8,000 sq ft · 13 concepts · Opening Q1–Q2 2027
         </div>
         <div style={{
           position: 'absolute', bottom: 60, right: 80,

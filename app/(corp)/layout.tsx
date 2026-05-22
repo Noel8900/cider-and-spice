@@ -1,5 +1,5 @@
 // Corporate route group layout — Nexus Capital Group
-// Renders corp navbar + footer; root layout's ConditionalCulinaryUI
+// Renders corp navbar + footer; root layout\'s ConditionalCulinaryUI
 // returns null on /home, /about, /services so no culinary chrome appears here.
 
 import type { Metadata } from 'next';

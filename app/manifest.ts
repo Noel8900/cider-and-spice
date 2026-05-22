@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Las Cruces Culinary Innovation Hub',
     short_name: 'Cider & Spice',
-    description: "Southern NM's first food hall, craft cider bar, and culinary incubator. Opening Q1–Q2 2027 in downtown Las Cruces.",
+    description: "Southern NM\'s first food hall, craft cider bar, and culinary incubator. Opening Q1–Q2 2027 in downtown Las Cruces.",
     start_url: '/',
     display: 'standalone',
     background_color: '#1C1209',

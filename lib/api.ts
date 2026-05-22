@@ -9,7 +9,7 @@
  *   NEXT_PUBLIC_NCB_BASE_URL  – https://app.nocodebackend.com
  *   NCB_API_KEY               – secret key (server-side only; no NEXT_PUBLIC_ prefix)
  *
- * NEXT_PUBLIC_NCB_BASE_URL is safe to expose in the browser (it's just a URL).
+ * NEXT_PUBLIC_NCB_BASE_URL is safe to expose in the browser (it\'s just a URL).
  * NCB_API_KEY must only be used in Server Components, Route Handlers, or
  * Server Actions — never in client components.
  *
@@ -129,7 +129,7 @@ async function ncbFetch<T>(
       if (body?.message) message = body.message
       else if (body?.error) message = body.error
     } catch {
-      // Body wasn't JSON — keep the status-line message
+      // Body wasn\'t JSON — keep the status-line message
     }
     throw { ok: false, status: response.status, message } satisfies NcbError
   }

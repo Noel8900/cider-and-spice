@@ -89,7 +89,7 @@ const STALLS: Stall[] = [
     x:276, y:450, w:120, h:80,
     description:'8×15 ft · Centre-south · expanded space with extra storage.',
     conceptType:'Open — Expanded Format',
-    story:'The largest south-row stall at 8×15 ft with extra cold storage access. Ideal for a concept with higher ingredient volume — sushi, a full BBQ operation, or a multicultural tasting menu format. The extra depth also supports a small chef’s counter for visibility.',
+    story:'The largest south-row stall at 8×15 ft with extra cold storage access. Ideal for a concept with higher ingredient volume — sushi, a full BBQ operation, or a multicultural tasting menu format. The extra depth also supports a small chef\'s counter for visibility.',
   },
   {
     id:'S10', label:'Stall 10', sqft:96,  rent:'~$800/mo',   status:'reserved',  zone:'vendor',
@@ -110,14 +110,14 @@ const STALLS: Stall[] = [
     x:728, y:60,  w:152, h:280,
     description:'Cider & Spice Bar · 20–25 rotating taps · 480 sq ft · bar-top seating for 14.',
     conceptType:'Hub Anchor — Craft Cider',
-    story:'The 480 sq ft Cider & Spice Bar is the anchor experience of the Hub — Southern New Mexico’s only dedicated craft cider bar. 20–25 rotating taps featuring 8–10 NM cideries. Bar-top seating for 14. Cider Club membership tiers from $25/mo. Food pairing menus rotate monthly with vendor concepts.',
+    story:'The 480 sq ft Cider & Spice Bar is the anchor experience of the Hub — Southern New Mexico\'s only dedicated craft cider bar. 20–25 rotating taps featuring 8–10 NM cideries. Bar-top seating for 14. Cider Club membership tiers from $25/mo. Food pairing menus rotate monthly with vendor concepts.',
   },
   {
     id:'CK',  label:'Kitchen',   sqft:320, rent:'Shared',    status:'anchor',    zone:'kitchen',
     x:60,  y:180, w:152, h:200,
     description:'Shared commissary kitchen · 320 sq ft · licensed · available for vendor prep and private bookings.',
     conceptType:'Hub Anchor — Commissary',
-    story:'The 320 sq ft shared commissary kitchen is licensed and available to all vendors for prep work outside peak service hours. Also available for external food entrepreneurs, catering operators, and NMSU/DACC culinary students at $25–35/hr. A core piece of the Hub’s incubator mission.',
+    story:'The 320 sq ft shared commissary kitchen is licensed and available to all vendors for prep work outside peak service hours. Also available for external food entrepreneurs, catering operators, and NMSU/DACC culinary students at $25–35/hr. A core piece of the Hub\'s incubator mission.',
   },
   {
     id:'EV',  label:'Stage',     sqft:200, rent:'Rentable',  status:'available', zone:'seating',
@@ -460,7 +460,7 @@ export default function FloorPlanClient() {
       const newX   = mouseX - ratio * (mouseX - prev.x);
       const newY   = mouseY - ratio * (mouseY - prev.y);
       transformRef.current = { scale: next, x: newX, y: newY };
-      // Wheel events also throttled via rAF so rapid scroll-zooming doesn’t
+      // Wheel events also throttled via rAF so rapid scroll-zooming doesn\'t
       // queue more React renders than frames available to paint.
       scheduleTransformFlush();
     };

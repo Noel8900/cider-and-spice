@@ -81,7 +81,7 @@ const WHY_NOW = [
   { glyph: '◈', title: '6 Grant Categories',            body: 'The Hub is structured to qualify for CDBG, NM MainStreet, USDA RBDG, EDA, SBA 7(a), and Opportunity Zone funding — reducing investor risk and extending runway.' },
   { glyph: '◉', title: 'Multiple Revenue Streams',      body: 'Stall rents, commissary kitchen fees, cider bar revenue, event rentals, and market vendor fees provide diversified cash flow — not single-tenant dependency.' },
   { glyph: '◇', title: 'Incubator Mission = Tax Edge',  body: 'As a culinary incubator, the Hub aligns with NMEDA and federal programs that provide meaningful tax credit eligibility for qualifying investors.' },
-  { glyph: '✦', title: 'City & State Alignment',        body: "Endorsed by Elevate Las Cruces, Visit Las Cruces, and aligned with the city's East Lohman Development Plan and W. Picacho MRA redevelopment initiative." },
+  { glyph: '✦', title: 'City & State Alignment',        body: "Endorsed by Elevate Las Cruces, Visit Las Cruces, and aligned with the city\'s East Lohman Development Plan and W. Picacho MRA redevelopment initiative." },
   { glyph: '◇', title: 'Conservative Underwriting',     body: 'The Appendix F model uses conservative Year 1 projections. Breakeven at month 18–20. The 17–20% IRR is illustrative based on base-case assumptions.' },
 ];
 
@@ -207,7 +207,7 @@ function InvestorFooter() {
           <div>
             <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', color: D3.parchment, marginBottom: '0.5rem' }}>Cider <em style={{ fontStyle: 'italic', color: D3.terracotta }}>&</em> Spice</div>
             <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: D3.wheat, opacity: 0.45, marginBottom: '1rem' }}>Las Cruces Food Hall · Culinary Collective</div>
-            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.8rem', color: D3.wheat, opacity: 0.45, lineHeight: 1.7 }}>Southern New Mexico's first culinary incubator and food hall. Opening 2026.</p>
+            <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.8rem', color: D3.wheat, opacity: 0.45, lineHeight: 1.7 }}>Southern New Mexico\'s first culinary incubator and food hall. Opening 2026.</p>
           </div>
           <div>
             <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '1.25rem' }}>Investor Contact</div>
@@ -525,7 +525,7 @@ export default function InvestorsPage() {
                     </select>
                   </FormField>
                   <FormField id="inv-msg" label="Message" hint="Optional — questions, timeline, or context">
-                    <textarea id="inv-msg" name="message" rows={4} value={form.message} onChange={handleChange} disabled={submitting} placeholder="I'm interested in…" style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }} />
+                    <textarea id="inv-msg" name="message" rows={4} value={form.message} onChange={handleChange} disabled={submitting} placeholder="I\'m interested in…" style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }} />
                   </FormField>
                   {error && (
                     <div role="alert" style={{ display: 'flex', gap: '0.75rem', padding: '0.875rem 1rem', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', borderRadius: '2px' }}>

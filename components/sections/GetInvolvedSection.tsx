@@ -21,10 +21,10 @@ const D3 = {
 } as const;
 
 const paths = [
-  { glyph: '◈', title: 'Apply as a Vendor',   body: 'Have a food concept? We’d love to hear from you. Applications are open for our founding cohort of 10–13 stall vendors launching Q1–Q2 2027.', cta: 'Start Your Application', href: '/vendors',                    external: false, featured: true  },
+  { glyph: '◈', title: 'Apply as a Vendor',   body: 'Have a food concept? We\'d love to hear from you. Applications are open for our founding cohort of 10–13 stall vendors launching Q1–Q2 2027.', cta: 'Start Your Application', href: '/vendors',                    external: false, featured: true  },
   { glyph: '◉', title: 'Join the Cider Club',  body: 'Get early access, exclusive event invitations, and member pricing at the craft cider bar. Three tiers available — from Taster to Founding Member.',               cta: 'Explore Membership',      href: '/cider-club',                external: false, featured: false },
   { glyph: '✦', title: 'Invest in the Hub',    body: 'The Hub is seeking $1.5M in total capital — qualifying for six grant categories with a 17–20% illustrative projected IRR and Month 18–20 cash-flow breakeven.',    cta: 'View Investor Overview',  href: '/investors',                 external: false, featured: false },
-  { glyph: '◆', title: 'Partner or Sponsor',   body: 'We’re actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to help build this together.',                       cta: 'Get in Touch',            href: 'mailto:info@lccullinaryhub.com', external: true, featured: false },
+  { glyph: '◆', title: 'Partner or Sponsor',   body: 'We\'re actively seeking local farmers, artisan producers, cultural organizations, and community sponsors to help build this together.',                       cta: 'Get in Touch',            href: 'mailto:info@lccullinaryhub.com', external: true, featured: false },
 ];
 
 function triggerRipple(e: React.PointerEvent<HTMLButtonElement>) {
@@ -106,7 +106,7 @@ export default function GetInvolvedSection() {
           </div>
           <h2 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300, color: D3.parchment, marginBottom: '0.5rem', lineHeight: 1.15 }}>Join the Movement</h2>
           <p style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.9rem', color: D3.wheat, opacity: 0.55, maxWidth: '520px', lineHeight: 1.75 }}>
-            Las Cruces is ready for something like this. Here’s how to be part of it from the very beginning.
+            Las Cruces is ready for something like this. Here\'s how to be part of it from the very beginning.
           </p>
         </div>
 
@@ -154,7 +154,7 @@ export default function GetInvolvedSection() {
 
           {status === 'done' ? (
             <div role="status" style={{ border: '1px solid rgba(192,98,42,0.3)', background: 'rgba(192,98,42,0.07)', padding: '1.25rem 2rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.875rem', color: D3.wheat, opacity: 0.85 }}>
-              You’re on the list — we’ll be in touch soon.
+              You\'re on the list — we\'ll be in touch soon.
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>

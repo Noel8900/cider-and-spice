@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/events' },
   openGraph: {
     title:       'Events — LC Culinary Hub',
-    description: 'Live music, cider tastings, cooking classes, and more. See what's on at the Hub.',
+    description: 'Live music, cider tastings, cooking classes, and more. See what\'s on at the Hub.',
     url:         'https://www.lccullinaryhub.com/events',
   },
 };

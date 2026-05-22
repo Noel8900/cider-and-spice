@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: 'Vendor Application | Las Cruces Culinary Innovation Hub',
   description:
     "Apply to bring your food concept to the LC Culinary Hub. " +
-    "We're curating 10-13 distinctive food concepts for our Q1-Q2 2027 " +
+    "We\'re curating 10-13 distinctive food concepts for our Q1-Q2 2027 " +
     "grand opening in downtown Las Cruces, NM.",
   alternates: { canonical: '/vendors' },
   openGraph: {
