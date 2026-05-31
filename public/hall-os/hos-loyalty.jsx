@@ -70,9 +70,50 @@ function LoyaltyScreen() {
           );
         })}
       </div>
+      <LoyaltyFeatureStack />
       <div style={{ textAlign: 'center', fontFamily: HF.m, fontSize: 10.5, color: HOS.wheat, opacity: 0.4, marginTop: 16, padding: '0 30px', lineHeight: 1.5 }}>Demo membership · no payment processed. Discount applies instantly at checkout.</div>
     </div>
   );
 }
 
-Object.assign(window, { LoyaltyScreen });
+function LoyaltyFeatureStack() {
+  return (
+    <>
+      <div style={{ padding: '18px 18px 0', fontFamily: HF.l, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.5 }}>Rewards OS</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, padding: '12px 18px 0' }}>
+        {LOYALTY_PROGRAMS.map(p => (
+          <div key={p.label} style={{ background: HOS.panel, border: `1px solid ${HOS.bord}`, borderRadius: 14, padding: 13 }}>
+            <div style={{ fontFamily: HF.d, fontSize: 21, color: HOS.gold, lineHeight: 1 }}>{p.value}</div>
+            <div style={{ fontFamily: HF.b, fontSize: 12.5, color: HOS.parch, marginTop: 5 }}>{p.label}</div>
+            <div style={{ fontFamily: HF.b, fontSize: 10.8, color: HOS.wheat, opacity: 0.58, lineHeight: 1.45, marginTop: 5 }}>{p.detail}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: '18px 18px 0', fontFamily: HF.l, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.5 }}>Promotions + gift cards</div>
+      <div style={{ padding: '12px 18px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {PROMOTIONS.map(p => (
+          <div key={p.code} style={{ background: HOS.panel, border: `1px solid ${p.status === 'Live' ? 'rgba(107,140,107,0.35)' : HOS.bord}`, borderRadius: 14, padding: 13, display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.gold }}>{p.code}</div>
+              <div style={{ fontFamily: HF.b, fontSize: 13, color: HOS.parch, marginTop: 3 }}>{p.name}</div>
+              <div style={{ fontFamily: HF.b, fontSize: 11, color: HOS.wheat, opacity: 0.55, marginTop: 2 }}>{p.type}</div>
+            </div>
+            <Pill tone={p.status === 'Live' ? 'green' : 'gold'}>{p.status}</Pill>
+          </div>
+        ))}
+        {GIFT_CARDS.map(card => (
+          <div key={card.id} style={{ background: `linear-gradient(135deg, ${HOS.surf}, ${HOS.panel})`, border: `1px solid ${HOS.bordM}`, borderRadius: 14, padding: 13, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 40, height: 28, borderRadius: 8, background: HOS.gold, color: HOS.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: HF.m, fontSize: 10, fontWeight: 700 }}>GC</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: HF.b, fontSize: 13, color: HOS.parch }}>{card.holder}</div>
+              <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.wheat, opacity: 0.52 }}>{card.id} - {card.status}</div>
+            </div>
+            <div style={{ fontFamily: HF.d, fontSize: 20, color: HOS.gold }}>{money(card.balance)}</div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+Object.assign(window, { LoyaltyScreen, LoyaltyFeatureStack });

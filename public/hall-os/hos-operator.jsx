@@ -75,6 +75,8 @@ function OperatorConsole() {
       {/* AI operating briefing */}
       <HallAnalyst />
 
+      <OperatorMarketplacePanel feed={feed} />
+
       {/* KPI grid */}
       <div style={{ fontFamily: HF.l, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.5, marginBottom: 12 }}>9 Operating KPIs · Incubator Playbook</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 22 }}>
@@ -147,4 +149,92 @@ function OperatorConsole() {
   );
 }
 
-Object.assign(window, { OperatorConsole, KpiCard });
+function OperatorMarketplacePanel({ feed }) {
+  const summary = inventorySummary();
+  const ready = VENDOR_PAYOUTS.filter(p => p.stage === 'Ready for remittance').length;
+  const gross = VENDOR_PAYOUTS.reduce((sum, p) => sum + p.sales, 0);
+  const net = VENDOR_PAYOUTS.reduce((sum, p) => sum + p.payout, 0);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 22 }}>
+      <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
+        <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Unified Inventory Command</span>
+          <Pill tone="green">Live API sync</Pill>
+          <button onClick={() => actions.importInventoryDemo()} style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Bulk Excel Import</button>
+        </div>
+        <div style={{ padding: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
+            {[['Central stock', summary.total], ['Reserved', summary.reserved], ['Low items', summary.low], ['Auto flags', summary.flagged]].map(([l, v]) => (
+              <div key={l} style={{ background: HOS.surf, border: `1px solid ${HOS.bordS}`, borderRadius: 10, padding: '10px 12px' }}>
+                <div style={{ fontFamily: HF.d, fontSize: 23, color: HOS.parch, lineHeight: 1 }}>{v}</div>
+                <div style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {CHANNELS.map(ch => (
+              <div key={ch.id} style={{ padding: '10px 12px', borderRadius: 10, border: `1px solid ${HOS.bordS}`, background: 'rgba(107,140,107,0.08)' }}>
+                <div style={{ fontFamily: HF.b, fontSize: 12.5, color: HOS.parch }}>{ch.name}</div>
+                <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.greenLt, marginTop: 3 }}>{ch.status}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 12, fontFamily: HF.b, fontSize: 12, color: HOS.wheat, opacity: 0.72, lineHeight: 1.5 }}>
+            Sales from every online and offline channel reserve against the same stock table, preventing oversells and pushing instant changes to vendor panels, POS, kiosk, and marketplace domains.
+          </div>
+        </div>
+      </DeskCard>
+
+      <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
+        <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Marketplace Payouts</span>
+          <Pill tone="gold">Tier 3</Pill>
+          <Pill tone="green">{ready} ready</Pill>
+        </div>
+        <div style={{ padding: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+            {[['Gross sales', money0(gross)], ['Net remittance', money0(net)]].map(([l, v]) => (
+              <div key={l} style={{ background: HOS.surf, border: `1px solid ${HOS.bordS}`, borderRadius: 10, padding: 12 }}>
+                <div style={{ fontFamily: HF.d, fontSize: 24, color: HOS.gold, lineHeight: 1 }}>{v}</div>
+                <div style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ maxHeight: 180, overflowY: 'auto' }}>
+            {VENDOR_PAYOUTS.map(p => {
+              const v = vendorById(p.vendor);
+              return (
+                <div key={p.vendor} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 10, padding: '9px 0', borderBottom: `1px solid ${HOS.bordS}` }}>
+                  <div>
+                    <div style={{ fontFamily: HF.b, fontSize: 12.5, color: HOS.parch }}>{v.name}</div>
+                    <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.wheat, opacity: 0.5 }}>{p.orders} orders - {p.stage}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', fontFamily: HF.m, fontSize: 11, color: HOS.gold }}>{money(p.payout)}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </DeskCard>
+
+      <DeskCard style={{ gridColumn: '1 / -1', padding: 0, overflow: 'hidden' }}>
+        <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Complete Order Timeline</span>
+          <Pill tone="ter">Payment to fulfillment</Pill>
+          <span style={{ marginLeft: 'auto', fontFamily: HF.m, fontSize: 10.5, color: HOS.wheat, opacity: 0.5 }}>Latest #{feed[0] && feed[0].id}</span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
+          {ORDER_TIMELINE.map((step, i) => (
+            <div key={step.label} style={{ padding: 16, borderRight: i < ORDER_TIMELINE.length - 1 ? `1px solid ${HOS.bordS}` : 'none' }}>
+              <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.gold }}>{step.time}</div>
+              <div style={{ fontFamily: HF.b, fontSize: 13.5, color: HOS.parch, marginTop: 5 }}>{step.label}</div>
+              <div style={{ fontFamily: HF.b, fontSize: 11.5, color: HOS.wheat, opacity: 0.62, lineHeight: 1.45, marginTop: 5 }}>{step.detail}</div>
+            </div>
+          ))}
+        </div>
+      </DeskCard>
+    </div>
+  );
+}
+
+Object.assign(window, { OperatorConsole, KpiCard, OperatorMarketplacePanel });

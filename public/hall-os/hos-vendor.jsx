@@ -86,6 +86,11 @@ function VendorDashboard() {
       {/* AI stall coach */}
       <StallCoach key={vendor.id} vendor={vendor} queue={active} stats={stats} />
 
+      <div style={{ display: 'grid', gridTemplateColumns: '1.35fr 1fr', gap: 16, marginBottom: 16 }}>
+        <VendorInventoryPanel vendor={vendor} />
+        <VendorPayoutPanel vendor={vendor} />
+      </div>
+
       {/* Main grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 16 }}>
         {/* Order queue */}
@@ -143,4 +148,74 @@ function VendorDashboard() {
   );
 }
 
-Object.assign(window, { VendorDashboard, Sparkline, DeskCard });
+function VendorInventoryPanel({ vendor }) {
+  const rows = inventoryForVendor(vendor.id);
+  const summary = inventorySummary(rows);
+  return (
+    <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
+      <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Real-Time Inventory Sync</span>
+        <Pill tone="green">Central DB</Pill>
+        <Pill tone={summary.flagged ? 'red' : 'green'}>{summary.flagged} flags</Pill>
+        <button onClick={() => actions.importInventoryDemo()} style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Import Excel</button>
+      </div>
+      <div style={{ padding: '12px 18px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, borderBottom: `1px solid ${HOS.bordS}` }}>
+        {[['On hand', summary.total], ['Reserved', summary.reserved], ['Low stock', summary.low], ['API channels', CHANNELS.length]].map(([l, v]) => (
+          <div key={l} style={{ background: HOS.surf, border: `1px solid ${HOS.bordS}`, borderRadius: 10, padding: '10px 12px' }}>
+            <div style={{ fontFamily: HF.d, fontSize: 22, color: HOS.parch, lineHeight: 1 }}>{v}</div>
+            <div style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: '8px 18px 14px' }}>
+        {rows.map(row => {
+          const available = stockAvailable(row);
+          const low = available <= row.reorder;
+          return (
+            <div key={row.itemId} style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.7fr 0.7fr auto', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: `1px solid ${HOS.bordS}` }}>
+              <div>
+                <div style={{ fontFamily: HF.b, fontSize: 13, color: HOS.parch }}>{inventoryItemName(row)}</div>
+                <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.wheat, opacity: 0.45 }}>{row.sku} - last update: {row.lastChannel}</div>
+                {row.discrepancy && <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.red, marginTop: 3 }}>{row.discrepancy}</div>}
+              </div>
+              <Pill tone={low ? 'red' : 'green'}>{available} sellable</Pill>
+              <div style={{ fontFamily: HF.m, fontSize: 11, color: HOS.wheat, opacity: 0.65 }}>+{row.incoming} inbound</div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <button onClick={() => actions.restock(row.itemId, 12)} style={{ background: HOS.green, color: '#fff', border: 'none', borderRadius: 8, padding: '7px 10px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Restock</button>
+                {row.discrepancy && <button onClick={() => actions.resolveDiscrepancy(row.itemId)} style={{ background: HOS.red, color: '#fff', border: 'none', borderRadius: 8, padding: '7px 10px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Fix</button>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </DeskCard>
+  );
+}
+
+function VendorPayoutPanel({ vendor }) {
+  const payout = VENDOR_PAYOUTS.find(p => p.vendor === vendor.id) || VENDOR_PAYOUTS[0];
+  return (
+    <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
+      <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}` }}>
+        <div style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Vendor Panel</div>
+        <div style={{ fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 3 }}>Products, sales, payout, domain</div>
+      </div>
+      <div style={{ padding: 18 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+          {[['Sales', money0(payout.sales)], ['Orders', payout.orders], ['Auto rent/fees', money(payout.fees + payout.rent)], ['Net payout', money(payout.payout)]].map(([l, v]) => (
+            <div key={l} style={{ background: HOS.surf, border: `1px solid ${HOS.bordS}`, borderRadius: 10, padding: 12 }}>
+              <div style={{ fontFamily: HF.d, fontSize: 22, color: HOS.gold, lineHeight: 1 }}>{v}</div>
+              <div style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ padding: 12, borderRadius: 10, background: 'rgba(107,140,107,0.10)', border: `1px solid rgba(107,140,107,0.28)`, fontFamily: HF.b, fontSize: 12.5, color: HOS.wheat, lineHeight: 1.5 }}>
+          Automated tenant remittance: {payout.stage}. Rent and license fees are deducted from real-time sales before payout.
+        </div>
+        <div style={{ marginTop: 12, fontFamily: HF.m, fontSize: 10.5, color: HOS.wheat, opacity: 0.55 }}>Domain: {payout.domain}</div>
+      </div>
+    </DeskCard>
+  );
+}
+
+Object.assign(window, { VendorDashboard, Sparkline, DeskCard, VendorInventoryPanel, VendorPayoutPanel });

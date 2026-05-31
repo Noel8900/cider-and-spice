@@ -206,6 +206,83 @@ const STALLS = [
   { id: 'Bar',vendor: 'cider',  state: 'busy' },
 ];
 
+const CHANNELS = [
+  { id: 'pos', name: 'Counter POS', status: 'Synced 4s ago' },
+  { id: 'app', name: 'Online Ordering', status: 'API live' },
+  { id: 'kiosk', name: 'Hall Kiosk', status: 'Synced 7s ago' },
+  { id: 'market', name: 'Marketplace Domain', status: 'Webhook live' },
+];
+
+const INVENTORY_SEED = [
+  { itemId: 'y1', vendor: 'yazzie', sku: 'YAZ-HKB', onHand: 42, reserved: 6, reorder: 18, incoming: 30, lastChannel: 'app', discrepancy: null },
+  { itemId: 'y2', vendor: 'yazzie', sku: 'YAZ-CCD', onHand: 31, reserved: 4, reorder: 14, incoming: 20, lastChannel: 'pos', discrepancy: null },
+  { itemId: 'y4', vendor: 'yazzie', sku: 'YAZ-SANDO', onHand: 13, reserved: 3, reorder: 16, incoming: 24, lastChannel: 'kiosk', discrepancy: 'Count variance: POS 13 vs shelf 15' },
+  { itemId: 's1', vendor: 'seoul', sku: 'SEO-WINGS', onHand: 58, reserved: 9, reorder: 22, incoming: 40, lastChannel: 'app', discrepancy: null },
+  { itemId: 's2', vendor: 'seoul', sku: 'SEO-FIRE', onHand: 24, reserved: 4, reorder: 18, incoming: 24, lastChannel: 'pos', discrepancy: null },
+  { itemId: 'k1', vendor: 'sticky', sku: 'STK-TRIO', onHand: 36, reserved: 5, reorder: 15, incoming: 24, lastChannel: 'app', discrepancy: null },
+  { itemId: 'k5', vendor: 'sticky', sku: 'STK-JAM', onHand: 9, reserved: 2, reorder: 18, incoming: 48, lastChannel: 'market', discrepancy: 'Auto-flagged after online sale exceeded shelf count' },
+  { itemId: 'r1', vendor: 'rio', sku: 'RIO-XMAS', onHand: 47, reserved: 7, reorder: 20, incoming: 35, lastChannel: 'pos', discrepancy: null },
+  { itemId: 'l1', vendor: 'levant', sku: 'LEV-SHAW', onHand: 28, reserved: 4, reorder: 14, incoming: 20, lastChannel: 'app', discrepancy: null },
+  { itemId: 'c1', vendor: 'cider', sku: 'BAR-FLIGHT', onHand: 76, reserved: 12, reorder: 30, incoming: 60, lastChannel: 'app', discrepancy: null },
+  { itemId: 'c3', vendor: 'cider', sku: 'BAR-PEAR', onHand: 18, reserved: 4, reorder: 24, incoming: 36, lastChannel: 'pos', discrepancy: 'Low keg reading reconciled with tap meter' },
+];
+
+const LOYALTY_PROGRAMS = [
+  { label: 'Customer club rewards', value: '184 active', detail: 'Points, tier perks, birthday rewards, and repeat-order bonuses are built in.' },
+  { label: 'Gamification', value: '7 badges', detail: 'Taste trails, vendor passport stamps, streaks, and event challenges.' },
+  { label: 'Cashback wallet', value: '3-8%', detail: 'Native cashback accrues to the guest wallet after eligible orders.' },
+  { label: 'Discount engine', value: '12 rules', detail: 'Configurable offers by vendor, time window, channel, tier, and cart contents.' },
+  { label: 'Gift cards', value: '$18.4k open', detail: 'Stored value works across the hall without third-party plugins.' },
+  { label: 'Retention incentives', value: '28% lift', detail: 'Win-back offers, milestone coupons, and VIP event access.' },
+];
+
+const PROMOTIONS = [
+  { code: 'HALLPASS20', name: 'Opening Week Hall Pass', type: '20% off multi-vendor orders', status: 'Live', redemptions: 96 },
+  { code: 'LUNCHSTREAK', name: '3-Day Lunch Streak', type: '$5 cashback after three weekday orders', status: 'Live', redemptions: 42 },
+  { code: 'GIFTCARD10', name: 'Gift Card Bonus', type: '$10 bonus on $75 gift card purchase', status: 'Scheduled', redemptions: 18 },
+];
+
+const GIFT_CARDS = [
+  { id: 'GC-2048', holder: 'Dana P.', balance: 84.50, issued: 100, status: 'Active' },
+  { id: 'GC-2091', holder: 'Marcus R.', balance: 32.25, issued: 50, status: 'Active' },
+  { id: 'GC-2112', holder: 'Company Catering', balance: 420.00, issued: 500, status: 'Bulk' },
+];
+
+const VENDOR_PAYOUTS = [
+  { vendor: 'yazzie', sales: 2140, orders: 78, fees: 342.40, rent: 182.00, payout: 1615.60, stage: 'Ready for remittance', domain: 'yazzie.lchub-pos.netlify.app' },
+  { vendor: 'seoul', sales: 2385, orders: 84, fees: 381.60, rent: 205.00, payout: 1798.40, stage: 'Payment clearing', domain: 'seoulfire.lchub-pos.netlify.app' },
+  { vendor: 'sticky', sales: 1510, orders: 53, fees: 241.60, rent: 128.00, payout: 1140.40, stage: 'Fulfillment audit', domain: 'stickystack.lchub-pos.netlify.app' },
+  { vendor: 'rio', sales: 1325, orders: 47, fees: 212.00, rent: 113.00, payout: 1000.00, stage: 'Ready for remittance', domain: 'rio.lchub-pos.netlify.app' },
+  { vendor: 'levant', sales: 1180, orders: 39, fees: 188.80, rent: 101.00, payout: 890.20, stage: 'Ready for remittance', domain: 'levant.lchub-pos.netlify.app' },
+];
+
+const ORDER_TIMELINE = [
+  { label: 'Payment authorized', time: '12:21:03', detail: 'Card token approved; gift card and cashback rules checked.' },
+  { label: 'Inventory reserved', time: '12:21:04', detail: 'Central stock decremented across POS, app, kiosk, and vendor panel.' },
+  { label: 'Vendor accepted', time: '12:21:11', detail: 'Kitchen queue acknowledged order and SLA timer started.' },
+  { label: 'Fulfillment complete', time: '12:30:40', detail: 'Pickup handoff closes payout eligibility and rent/fee accrual.' },
+];
+
+function inventoryForVendor(vendorId) {
+  return hallStore.get().inventory.filter(row => row.vendor === vendorId);
+}
+function inventoryItemName(row) {
+  const found = itemById(row.itemId);
+  return found ? found.item.name : row.sku;
+}
+function stockAvailable(row) {
+  return Math.max(0, row.onHand - row.reserved);
+}
+function inventorySummary(rows) {
+  const list = rows || hallStore.get().inventory;
+  return {
+    total: list.reduce((sum, r) => sum + r.onHand, 0),
+    low: list.filter(r => stockAvailable(r) <= r.reorder).length,
+    flagged: list.filter(r => r.discrepancy).length,
+    reserved: list.reduce((sum, r) => sum + r.reserved, 0),
+  };
+}
+
 // ════════════════════════════════════════════════════════════════════════════
 //  GLOBAL STORE  (tiny observable; shared across all babel modules via window)
 // ════════════════════════════════════════════════════════════════════════════
@@ -232,6 +309,7 @@ const hallStore = createStore({
   orders: [],                   // placed customer orders
   member: null,                 // active Cider Club tier id
   vendorScope: 'yazzie',        // which stall the vendor dashboard shows
+  inventory: INVENTORY_SEED,
   toast: null,
 });
 
@@ -266,6 +344,12 @@ const actions = {
     const q = qty || 1;
     const cart = hallStore.get().cart.slice();
     const existing = cart.find(l => l.itemId === item.id);
+    const row = hallStore.get().inventory.find(r => r.itemId === item.id);
+    const inCart = cart.filter(l => l.itemId === item.id).reduce((sum, l) => sum + l.qty, 0);
+    if (row && inCart + q > stockAvailable(row)) {
+      actions.toast('Central inventory prevented oversell');
+      return;
+    }
     if (existing) { existing.qty += q; }
     else {
       cart.push({ lineId: _lineSeq++, vendorId: vendor.id, itemId: item.id, name: item.name, price: item.price, qty: q, vendorName: vendor.name, vendorColor: vendor.color });
@@ -293,8 +377,47 @@ const actions = {
       meta: meta || {},
       tracks: vendorIds.map(vid => ({ vendorId: vid, status: 'received' })),
     };
-    hallStore.set({ orders: [order, ...hallStore.get().orders], cart: [], screen: 'tracking', activeOrder: order.id });
+    const inventory = hallStore.get().inventory.map(row => {
+      const sold = cart.filter(line => line.itemId === row.itemId).reduce((sum, line) => sum + line.qty, 0);
+      if (!sold) return row;
+      const nextOnHand = Math.max(0, row.onHand - sold);
+      const oversold = row.onHand - sold < 0;
+      return Object.assign({}, row, {
+        onHand: nextOnHand,
+        reserved: Math.max(0, row.reserved - sold),
+        lastChannel: (meta && meta.channel) || 'app',
+        discrepancy: oversold ? 'Oversell prevented: order quantity exceeded central stock' : row.discrepancy,
+      });
+    });
+    hallStore.set({ orders: [order, ...hallStore.get().orders], inventory, cart: [], screen: 'tracking', activeOrder: order.id });
     return order;
+  },
+  restock(itemId, qty) {
+    const amount = qty || 12;
+    hallStore.set({ inventory: hallStore.get().inventory.map(row => row.itemId === itemId ? Object.assign({}, row, {
+      onHand: row.onHand + amount,
+      incoming: Math.max(0, row.incoming - amount),
+      discrepancy: null,
+      lastChannel: 'restock',
+    }) : row) });
+    actions.toast('Restock validated and synced');
+  },
+  resolveDiscrepancy(itemId) {
+    hallStore.set({ inventory: hallStore.get().inventory.map(row => row.itemId === itemId ? Object.assign({}, row, {
+      discrepancy: null,
+      onHand: Math.max(row.onHand, row.reserved + row.reorder),
+      lastChannel: 'correction',
+    }) : row) });
+    actions.toast('Inventory discrepancy resolved');
+  },
+  importInventoryDemo() {
+    hallStore.set({ inventory: hallStore.get().inventory.map((row, i) => i < 4 ? Object.assign({}, row, {
+      onHand: row.onHand + 18,
+      incoming: Math.max(0, row.incoming - 18),
+      discrepancy: null,
+      lastChannel: 'excel',
+    }) : row) });
+    actions.toast('Excel inventory import applied');
   },
   join(tierId) { hallStore.set({ member: tierId }); actions.toast('Welcome to the Cider Club'); },
   leave() { hallStore.set({ member: null }); },
@@ -320,5 +443,7 @@ function cartTotals(cart, memberId) {
 
 Object.assign(window, {
   VENDORS, vendorById, itemById, CONCIERGE_PROMPTS, CLUB_TIERS, EVENTS, KPIS,
-  SEED_ORDERS, STALLS, hallStore, useHall, actions, cartTotals, memberDiscount,
+  SEED_ORDERS, STALLS, CHANNELS, INVENTORY_SEED, LOYALTY_PROGRAMS, PROMOTIONS, GIFT_CARDS,
+  VENDOR_PAYOUTS, ORDER_TIMELINE, hallStore, useHall, actions, cartTotals, memberDiscount,
+  inventoryForVendor, inventoryItemName, stockAvailable, inventorySummary,
 });
