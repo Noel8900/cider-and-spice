@@ -23,6 +23,18 @@ function POSTerminal() {
   const count = ticket.reduce((s, l) => s + l.q, 0);
 
   const cats = [...new Set(vendor.menu.map(m => m.cat))];
+  const chargeTicket = () => {
+    actions.placeOrderFromLines(ticket.map(l => ({
+      itemId: l.id,
+      vendorId: vendor.id,
+      name: l.name,
+      price: l.price,
+      qty: l.q,
+      vendorName: vendor.name,
+      vendorColor: vendor.color,
+    })), { channel: 'pos', pickup: 'counter' }, false);
+    setCharged(true);
+  };
 
   return (
     <div style={{ maxWidth: 1400, margin: '0 auto', padding: '22px 28px 40px', display: 'grid', gridTemplateColumns: '1fr 380px', gap: 18, alignItems: 'start' }}>
@@ -97,7 +109,7 @@ function POSTerminal() {
               <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Total</span>
               <span style={{ fontFamily: HF.d, fontSize: 24, color: HOS.gold, fontWeight: 500 }}>{money(total)}</span>
             </div>
-            <button onClick={() => setCharged(true)} style={{ width: '100%', background: HOS.ter, color: '#fff', border: 'none', borderRadius: 12, padding: 15, fontFamily: HF.l, fontSize: 13, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, cursor: 'pointer', boxShadow: '0 8px 22px rgba(192,98,42,0.4)' }}>Charge {money(total)}</button>
+            <button onClick={chargeTicket} style={{ width: '100%', background: HOS.ter, color: '#fff', border: 'none', borderRadius: 12, padding: 15, fontFamily: HF.l, fontSize: 13, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, cursor: 'pointer', boxShadow: '0 8px 22px rgba(192,98,42,0.4)' }}>Charge {money(total)}</button>
           </div>
         )}
         {charged && (

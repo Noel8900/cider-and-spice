@@ -150,10 +150,14 @@ function OperatorConsole() {
 }
 
 function OperatorMarketplacePanel({ feed }) {
+  const s = useHall();
   const summary = inventorySummary();
-  const ready = VENDOR_PAYOUTS.filter(p => p.stage === 'Ready for remittance').length;
-  const gross = VENDOR_PAYOUTS.reduce((sum, p) => sum + p.sales, 0);
-  const net = VENDOR_PAYOUTS.reduce((sum, p) => sum + p.payout, 0);
+  const payouts = s.vendorPayouts || VENDOR_PAYOUTS;
+  const channels = s.channels || CHANNELS;
+  const timeline = s.orderTimeline || ORDER_TIMELINE;
+  const ready = payouts.filter(p => p.stage === 'Ready for remittance').length;
+  const gross = payouts.reduce((sum, p) => sum + p.sales, 0);
+  const net = payouts.reduce((sum, p) => sum + p.payout, 0);
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 22 }}>
       <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
@@ -175,7 +179,7 @@ function OperatorMarketplacePanel({ feed }) {
             ))}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {CHANNELS.map(ch => (
+            {channels.map(ch => (
               <div key={ch.id} style={{ padding: '10px 12px', borderRadius: 10, border: `1px solid ${HOS.bordS}`, background: 'rgba(107,140,107,0.08)' }}>
                 <div style={{ fontFamily: HF.b, fontSize: 12.5, color: HOS.parch }}>{ch.name}</div>
                 <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.greenLt, marginTop: 3 }}>{ch.status}</div>
@@ -205,7 +209,7 @@ function OperatorMarketplacePanel({ feed }) {
             ))}
           </div>
           <div style={{ maxHeight: 180, overflowY: 'auto' }}>
-            {VENDOR_PAYOUTS.map(p => {
+            {payouts.map(p => {
               const v = vendorById(p.vendor);
               return (
                 <div key={p.vendor} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 10, padding: '9px 0', borderBottom: `1px solid ${HOS.bordS}` }}>
@@ -228,8 +232,8 @@ function OperatorMarketplacePanel({ feed }) {
           <span style={{ marginLeft: 'auto', fontFamily: HF.m, fontSize: 10.5, color: HOS.wheat, opacity: 0.5 }}>Latest #{feed[0] && feed[0].id}</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
-          {ORDER_TIMELINE.map((step, i) => (
-            <div key={step.label} style={{ padding: 16, borderRight: i < ORDER_TIMELINE.length - 1 ? `1px solid ${HOS.bordS}` : 'none' }}>
+          {timeline.map((step, i) => (
+            <div key={step.label} style={{ padding: 16, borderRight: i < timeline.length - 1 ? `1px solid ${HOS.bordS}` : 'none' }}>
               <div style={{ fontFamily: HF.m, fontSize: 10, color: HOS.gold }}>{step.time}</div>
               <div style={{ fontFamily: HF.b, fontSize: 13.5, color: HOS.parch, marginTop: 5 }}>{step.label}</div>
               <div style={{ fontFamily: HF.b, fontSize: 11.5, color: HOS.wheat, opacity: 0.62, lineHeight: 1.45, marginTop: 5 }}>{step.detail}</div>

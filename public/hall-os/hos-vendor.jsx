@@ -149,8 +149,10 @@ function VendorDashboard() {
 }
 
 function VendorInventoryPanel({ vendor }) {
+  const s = useHall();
   const rows = inventoryForVendor(vendor.id);
   const summary = inventorySummary(rows);
+  const channels = s.channels || CHANNELS;
   return (
     <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
       <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -163,7 +165,7 @@ function VendorInventoryPanel({ vendor }) {
         </label>
       </div>
       <div style={{ padding: '12px 18px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, borderBottom: `1px solid ${HOS.bordS}` }}>
-        {[['On hand', summary.total], ['Reserved', summary.reserved], ['Low stock', summary.low], ['API channels', CHANNELS.length]].map(([l, v]) => (
+        {[['On hand', summary.total], ['Reserved', summary.reserved], ['Low stock', summary.low], ['API channels', channels.length]].map(([l, v]) => (
           <div key={l} style={{ background: HOS.surf, border: `1px solid ${HOS.bordS}`, borderRadius: 10, padding: '10px 12px' }}>
             <div style={{ fontFamily: HF.d, fontSize: 22, color: HOS.parch, lineHeight: 1 }}>{v}</div>
             <div style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>{l}</div>
@@ -213,7 +215,9 @@ function SyncEventList({ limit }) {
 }
 
 function VendorPayoutPanel({ vendor }) {
-  const payout = VENDOR_PAYOUTS.find(p => p.vendor === vendor.id) || VENDOR_PAYOUTS[0];
+  const s = useHall();
+  const payouts = s.vendorPayouts || VENDOR_PAYOUTS;
+  const payout = payouts.find(p => p.vendor === vendor.id) || payouts[0];
   return (
     <DeskCard style={{ padding: 0, overflow: 'hidden' }}>
       <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}` }}>

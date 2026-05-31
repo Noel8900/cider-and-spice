@@ -352,6 +352,46 @@ function persistCentralState(state) {
   } catch (_) {}
 }
 
+function applyBackendState(state) {
+  if (!state) return;
+  hallStore.set({
+    inventory: state.inventory || hallStore.get().inventory,
+    orders: state.orders || hallStore.get().orders,
+    syncEvents: state.syncEvents || hallStore.get().syncEvents,
+    loyaltyPrograms: state.loyaltyPrograms || hallStore.get().loyaltyPrograms,
+    promotions: state.promotions || hallStore.get().promotions,
+    giftCards: state.giftCards || hallStore.get().giftCards,
+    vendorPayouts: state.vendorPayouts || hallStore.get().vendorPayouts,
+    orderTimeline: state.orderTimeline || hallStore.get().orderTimeline,
+    channels: state.channels || hallStore.get().channels,
+    backendReady: true,
+    backendError: null,
+  });
+}
+
+async function apiJson(path, options) {
+  const res = await fetch(path, Object.assign({
+    headers: { 'Content-Type': 'application/json' },
+  }, options || {}));
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(data.error || data.message || 'API request failed');
+    err.status = res.status;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+async function hydrateHallBackend() {
+  try {
+    const state = await apiJson('/api/hall-os/state');
+    applyBackendState(state);
+  } catch (err) {
+    hallStore.set({ backendReady: false, backendError: err.message || 'Live backend unavailable' });
+  }
+}
+
 // ════════════════════════════════════════════════════════════════════════════
 //  GLOBAL STORE  (tiny observable; shared across all babel modules via window)
 // ════════════════════════════════════════════════════════════════════════════
@@ -381,8 +421,18 @@ const hallStore = createStore({
   vendorScope: 'yazzie',        // which stall the vendor dashboard shows
   inventory: readCentralJson(CENTRAL_DB_KEY, INVENTORY_SEED),
   syncEvents: readCentralJson(CENTRAL_SYNC_KEY, SYNC_EVENTS),
+  loyaltyPrograms: LOYALTY_PROGRAMS,
+  promotions: PROMOTIONS,
+  giftCards: GIFT_CARDS,
+  vendorPayouts: VENDOR_PAYOUTS,
+  orderTimeline: ORDER_TIMELINE,
+  channels: CHANNELS,
+  backendReady: false,
+  backendError: null,
   toast: null,
 });
+
+hydrateHallBackend();
 
 // Re-render hook: subscribes a component to ALL store changes (fine for a prototype)
 function useHall() {
@@ -401,6 +451,38 @@ function logSyncEvent(channel, label, detail) {
       detail,
     }, ...hallStore.get().syncEvents].slice(0, 12),
   });
+}
+
+function localOrderFromLines(lines, meta, clearCart) {
+  const vendorIds = [...new Set(lines.map(l => l.vendorId))];
+  const order = {
+    id: ++_orderSeq,
+    lines,
+    vendorIds,
+    total: cartTotals(lines, hallStore.get().member).total,
+    placed: Date.now(),
+    meta: meta || {},
+    tracks: vendorIds.map(vid => ({ vendorId: vid, status: 'received' })),
+  };
+  const inventory = hallStore.get().inventory.map(row => {
+    const sold = lines.filter(line => line.itemId === row.itemId).reduce((sum, line) => sum + line.qty, 0);
+    if (!sold) return row;
+    return Object.assign({}, row, {
+      onHand: Math.max(0, row.onHand - sold),
+      reserved: Math.max(0, row.reserved - sold),
+      lastChannel: (meta && meta.channel) || 'app',
+      discrepancy: row.discrepancy,
+    });
+  });
+  hallStore.set({
+    orders: [order, ...hallStore.get().orders],
+    inventory,
+    cart: clearCart ? [] : hallStore.get().cart,
+    screen: clearCart ? 'tracking' : hallStore.get().screen,
+    activeOrder: order.id,
+  });
+  logSyncEvent((meta && meta.channel) || 'app', 'Sale adjusted central stock', `${lines.reduce((sum, line) => sum + line.qty, 0)} units synced across POS, online, kiosk, and vendor panels`);
+  return order;
 }
 
 // ── Cart + nav actions ────────────────────────────────────────────────────────
@@ -451,34 +533,42 @@ const actions = {
   placeOrder(meta) {
     const cart = hallStore.get().cart;
     if (!cart.length) return null;
-    const vendorIds = [...new Set(cart.map(l => l.vendorId))];
-    const order = {
-      id: ++_orderSeq,
-      lines: cart,
-      vendorIds,
-      total: cartTotals(cart, hallStore.get().member).total,
-      placed: Date.now(),
-      meta: meta || {},
-      tracks: vendorIds.map(vid => ({ vendorId: vid, status: 'received' })),
-    };
-    const inventory = hallStore.get().inventory.map(row => {
-      const sold = cart.filter(line => line.itemId === row.itemId).reduce((sum, line) => sum + line.qty, 0);
-      if (!sold) return row;
-      const nextOnHand = Math.max(0, row.onHand - sold);
-      const oversold = row.onHand - sold < 0;
-      return Object.assign({}, row, {
-        onHand: nextOnHand,
-        reserved: Math.max(0, row.reserved - sold),
-        lastChannel: (meta && meta.channel) || 'app',
-        discrepancy: oversold ? 'Oversell prevented: order quantity exceeded central stock' : row.discrepancy,
-      });
+    return actions.placeOrderFromLines(cart, Object.assign({ channel: 'app' }, meta || {}), true);
+  },
+  placeOrderFromLines(lines, meta, clearCart) {
+    if (!lines || !lines.length) return null;
+    const snapshot = lines.map(line => Object.assign({}, line));
+    actions.toast('Syncing order to central inventory');
+    apiJson('/api/hall-os/orders', {
+      method: 'POST',
+      body: JSON.stringify({ lines: snapshot, channel: (meta && meta.channel) || 'app', pickup: meta && meta.pickup, meta: meta || {} }),
+    }).then(data => {
+      applyBackendState(data.state);
+      if (clearCart) hallStore.set({ cart: [], screen: 'tracking', activeOrder: data.order.id });
+      actions.toast('Order synced to central inventory');
+    }).catch(err => {
+      if (err.status === 409) {
+        actions.toast('Central inventory prevented oversell');
+        hydrateHallBackend();
+        return;
+      }
+      hallStore.set({ backendError: err.message || 'Live backend unavailable' });
+      localOrderFromLines(snapshot, meta || {}, clearCart);
+      actions.toast('Order saved locally; live sync will retry later');
     });
-    hallStore.set({ orders: [order, ...hallStore.get().orders], inventory, cart: [], screen: 'tracking', activeOrder: order.id });
-    logSyncEvent((meta && meta.channel) || 'app', 'Sale adjusted central stock', `${cart.reduce((sum, line) => sum + line.qty, 0)} units synced across POS, online, kiosk, and vendor panels`);
-    return order;
+    return null;
   },
   restock(itemId, qty) {
     const amount = qty || 12;
+    apiJson('/api/hall-os/inventory/restock', {
+      method: 'POST',
+      body: JSON.stringify({ itemId, qty: amount }),
+    }).then(data => {
+      applyBackendState(data.state);
+      actions.toast('Restock validated and synced');
+    }).catch(err => {
+      hallStore.set({ backendError: err.message || 'Live backend unavailable' });
+    });
     hallStore.set({ inventory: hallStore.get().inventory.map(row => row.itemId === itemId ? Object.assign({}, row, {
       onHand: row.onHand + amount,
       incoming: Math.max(0, row.incoming - amount),
@@ -489,6 +579,15 @@ const actions = {
     actions.toast('Restock validated and synced');
   },
   resolveDiscrepancy(itemId) {
+    apiJson('/api/hall-os/inventory/correct', {
+      method: 'POST',
+      body: JSON.stringify({ itemId }),
+    }).then(data => {
+      applyBackendState(data.state);
+      actions.toast('Inventory discrepancy resolved');
+    }).catch(err => {
+      hallStore.set({ backendError: err.message || 'Live backend unavailable' });
+    });
     hallStore.set({ inventory: hallStore.get().inventory.map(row => row.itemId === itemId ? Object.assign({}, row, {
       discrepancy: null,
       onHand: Math.max(row.onHand, row.reserved + row.reorder),
@@ -506,6 +605,20 @@ const actions = {
     }) : row) });
     logSyncEvent('excel', 'Demo Excel inventory import applied', 'First four rows updated from sample workbook flow');
     actions.toast('Excel inventory import applied');
+  },
+  importInventoryRows(imported, sourceName) {
+    apiJson('/api/hall-os/inventory/import', {
+      method: 'POST',
+      body: JSON.stringify({ rows: imported, source: sourceName }),
+    }).then(data => {
+      applyBackendState(data.state);
+      actions.toast(`${data.imported} inventory rows imported`);
+    }).catch(err => {
+      hallStore.set({ backendError: err.message || 'Live backend unavailable' });
+    });
+    hallStore.set({ inventory: mergeInventoryRows(imported) });
+    logSyncEvent('excel', 'Inventory file imported', `${imported.length} rows from ${sourceName || 'workbook'} updated central stock`);
+    actions.toast(`${imported.length} inventory rows imported`);
   },
   triggerInventoryImport() {
     const input = document.createElement('input');
@@ -537,9 +650,7 @@ const actions = {
           actions.toast('No inventory rows found');
           return;
         }
-        hallStore.set({ inventory: mergeInventoryRows(imported) });
-        logSyncEvent('excel', 'Inventory file imported', `${imported.length} rows from ${file.name} updated central stock`);
-        actions.toast(`${imported.length} inventory rows imported`);
+        actions.importInventoryRows(imported, file.name);
       } catch (err) {
         actions.toast('Inventory import failed');
         logSyncEvent('correction', 'Inventory import error', err.message || 'Could not parse workbook');
