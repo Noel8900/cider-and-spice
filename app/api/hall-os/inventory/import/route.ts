@@ -12,7 +12,13 @@ export async function POST(request: Request) {
     const byKey = new Map(state.inventory.map(row => [row.sku || row.itemId, row]));
     let imported = 0;
     let rejected = 0;
+    let removed = 0;
     for (const raw of rows) {
+      if (raw.remove || raw.delete) {
+        const key = String(raw.sku || raw.itemId || "");
+        if (key && byKey.delete(key)) removed += 1;
+        continue;
+      }
       const existing = state.inventory.find(row => (raw.sku && row.sku === raw.sku) || (raw.itemId && row.itemId === raw.itemId));
       const row = normalizeInventoryRow(raw, existing);
       if (!row) {
@@ -23,9 +29,9 @@ export async function POST(request: Request) {
       imported += 1;
     }
     state.inventory = Array.from(byKey.values());
-    appendSyncEvent(state, "excel", "Inventory file imported", `${imported} rows updated central stock${body.source ? ` from ${body.source}` : ""}`);
+    appendSyncEvent(state, "excel", "Inventory file imported", `${imported} rows updated central stock${removed ? `, ${removed} removed` : ""}${body.source ? ` from ${body.source}` : ""}`);
     await saveHallState(state);
-    return NextResponse.json({ imported, rejected, state });
+    return NextResponse.json({ imported, rejected, removed, state });
   } catch (error) {
     return NextResponse.json({ error: "IMPORT_FAILED", message: error instanceof Error ? error.message : "Unable to import inventory" }, { status: 500 });
   }
