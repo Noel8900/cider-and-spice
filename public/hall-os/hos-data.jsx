@@ -263,12 +263,18 @@ const ORDER_TIMELINE = [
   { label: 'Fulfillment complete', time: '12:30:40', detail: 'Pickup handoff closes payout eligibility and rent/fee accrual.' },
 ];
 
+const SYNC_EVENTS = [
+  { id: 1, time: '12:21:04', channel: 'app', label: 'Online order reserved central stock', detail: 'Hatch Katsu Bowl -2, synced to POS, kiosk, vendor panel' },
+  { id: 2, time: '12:22:17', channel: 'pos', label: 'Counter sale adjusted stock', detail: 'Sticky Stack Trio -1, online channel updated instantly' },
+  { id: 3, time: '12:24:03', channel: 'correction', label: 'Discrepancy flag opened', detail: 'Jam Jar count mismatch routed to operator review' },
+];
+
 function inventoryForVendor(vendorId) {
   return hallStore.get().inventory.filter(row => row.vendor === vendorId);
 }
 function inventoryItemName(row) {
   const found = itemById(row.itemId);
-  return found ? found.item.name : row.sku;
+  return found ? found.item.name : (row.name || row.sku);
 }
 function stockAvailable(row) {
   return Math.max(0, row.onHand - row.reserved);
@@ -281,6 +287,69 @@ function inventorySummary(rows) {
     flagged: list.filter(r => r.discrepancy).length,
     reserved: list.reduce((sum, r) => sum + r.reserved, 0),
   };
+}
+function syncStamp() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+function readImportField(row, names) {
+  for (const name of names) {
+    const found = Object.keys(row).find(k => k.trim().toLowerCase() === name);
+    if (found !== undefined && row[found] !== undefined && row[found] !== '') return row[found];
+  }
+  return undefined;
+}
+function numField(value, fallback) {
+  const n = Number(String(value === undefined ? '' : value).replace(/[$,\s]/g, ''));
+  return Number.isFinite(n) ? n : fallback;
+}
+function parseDelimitedInventory(text, delimiter) {
+  const rows = text.trim().split(/\r?\n/).filter(Boolean).map(line => line.split(delimiter).map(v => v.trim()));
+  const headers = rows.shift() || [];
+  return rows.map(cols => Object.fromEntries(headers.map((h, i) => [h, cols[i] || ''])));
+}
+function normalizeInventoryRows(rows) {
+  return rows.map(raw => {
+    const sku = String(readImportField(raw, ['sku', 'item sku', 'product sku']) || '').trim();
+    const itemId = String(readImportField(raw, ['itemid', 'item id', 'id', 'product id']) || '').trim();
+    const existing = hallStore.get().inventory.find(r => (sku && r.sku === sku) || (itemId && r.itemId === itemId));
+    const vendor = String(readImportField(raw, ['vendor', 'vendorid', 'vendor id', 'stall']) || (existing && existing.vendor) || '').trim();
+    if (!sku && !itemId) return null;
+    return {
+      itemId: itemId || (existing && existing.itemId) || sku,
+      vendor: vendor || (existing && existing.vendor) || 'unassigned',
+      sku: sku || (existing && existing.sku) || itemId,
+      name: String(readImportField(raw, ['name', 'item', 'product', 'product name']) || (existing && existing.name) || '').trim(),
+      onHand: numField(readImportField(raw, ['onhand', 'on hand', 'stock', 'quantity', 'qty']), existing ? existing.onHand : 0),
+      reserved: numField(readImportField(raw, ['reserved', 'committed']), existing ? existing.reserved : 0),
+      reorder: numField(readImportField(raw, ['reorder', 'reorder point', 'par']), existing ? existing.reorder : 10),
+      incoming: numField(readImportField(raw, ['incoming', 'restock', 'inbound']), existing ? existing.incoming : 0),
+      lastChannel: 'excel',
+      discrepancy: null,
+    };
+  }).filter(Boolean);
+}
+function mergeInventoryRows(imported) {
+  const byKey = new Map(hallStore.get().inventory.map(row => [row.sku || row.itemId, row]));
+  imported.forEach(row => byKey.set(row.sku || row.itemId, Object.assign({}, byKey.get(row.sku || row.itemId), row)));
+  return Array.from(byKey.values());
+}
+
+const CENTRAL_DB_KEY = 'hall-os-central-inventory-v2';
+const CENTRAL_SYNC_KEY = 'hall-os-sync-events-v2';
+function readCentralJson(key, fallback) {
+  try {
+    const raw = window.localStorage && window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (_) {
+    return fallback;
+  }
+}
+function persistCentralState(state) {
+  try {
+    if (!window.localStorage) return;
+    window.localStorage.setItem(CENTRAL_DB_KEY, JSON.stringify(state.inventory));
+    window.localStorage.setItem(CENTRAL_SYNC_KEY, JSON.stringify(state.syncEvents));
+  } catch (_) {}
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -295,6 +364,7 @@ function createStore(initial) {
     set(patch) {
       const next = typeof patch === 'function' ? patch(state) : patch;
       state = Object.assign({}, state, next);
+      persistCentralState(state);
       listeners.forEach(l => l());
     },
     subscribe(l) { listeners.add(l); return () => listeners.delete(l); },
@@ -309,7 +379,8 @@ const hallStore = createStore({
   orders: [],                   // placed customer orders
   member: null,                 // active Cider Club tier id
   vendorScope: 'yazzie',        // which stall the vendor dashboard shows
-  inventory: INVENTORY_SEED,
+  inventory: readCentralJson(CENTRAL_DB_KEY, INVENTORY_SEED),
+  syncEvents: readCentralJson(CENTRAL_SYNC_KEY, SYNC_EVENTS),
   toast: null,
 });
 
@@ -318,6 +389,18 @@ function useHall() {
   const [, force] = React.useReducer(x => x + 1, 0);
   React.useEffect(() => hallStore.subscribe(force), []);
   return hallStore.get();
+}
+
+function logSyncEvent(channel, label, detail) {
+  hallStore.set({
+    syncEvents: [{
+      id: Date.now(),
+      time: syncStamp(),
+      channel,
+      label,
+      detail,
+    }, ...hallStore.get().syncEvents].slice(0, 12),
+  });
 }
 
 // ── Cart + nav actions ────────────────────────────────────────────────────────
@@ -346,10 +429,11 @@ const actions = {
     const existing = cart.find(l => l.itemId === item.id);
     const row = hallStore.get().inventory.find(r => r.itemId === item.id);
     const inCart = cart.filter(l => l.itemId === item.id).reduce((sum, l) => sum + l.qty, 0);
-    if (row && inCart + q > stockAvailable(row)) {
-      actions.toast('Central inventory prevented oversell');
-      return;
-    }
+      if (row && inCart + q > stockAvailable(row)) {
+        actions.toast('Central inventory prevented oversell');
+        logSyncEvent('correction', 'Oversell blocked', `${item.name} request exceeded ${stockAvailable(row)} sellable units`);
+        return;
+      }
     if (existing) { existing.qty += q; }
     else {
       cart.push({ lineId: _lineSeq++, vendorId: vendor.id, itemId: item.id, name: item.name, price: item.price, qty: q, vendorName: vendor.name, vendorColor: vendor.color });
@@ -390,6 +474,7 @@ const actions = {
       });
     });
     hallStore.set({ orders: [order, ...hallStore.get().orders], inventory, cart: [], screen: 'tracking', activeOrder: order.id });
+    logSyncEvent((meta && meta.channel) || 'app', 'Sale adjusted central stock', `${cart.reduce((sum, line) => sum + line.qty, 0)} units synced across POS, online, kiosk, and vendor panels`);
     return order;
   },
   restock(itemId, qty) {
@@ -400,6 +485,7 @@ const actions = {
       discrepancy: null,
       lastChannel: 'restock',
     }) : row) });
+    logSyncEvent('restock', 'Restock validated', `${amount} units added to ${itemId} and published to every channel`);
     actions.toast('Restock validated and synced');
   },
   resolveDiscrepancy(itemId) {
@@ -408,6 +494,7 @@ const actions = {
       onHand: Math.max(row.onHand, row.reserved + row.reorder),
       lastChannel: 'correction',
     }) : row) });
+    logSyncEvent('correction', 'Inventory discrepancy resolved', `${itemId} reconciled and audit flag cleared`);
     actions.toast('Inventory discrepancy resolved');
   },
   importInventoryDemo() {
@@ -417,7 +504,49 @@ const actions = {
       discrepancy: null,
       lastChannel: 'excel',
     }) : row) });
+    logSyncEvent('excel', 'Demo Excel inventory import applied', 'First four rows updated from sample workbook flow');
     actions.toast('Excel inventory import applied');
+  },
+  triggerInventoryImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.xls,.csv,.tsv';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      if (file) actions.importInventoryFile(file);
+    };
+    input.click();
+  },
+  importInventoryFile(file) {
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    const reader = new FileReader();
+    reader.onerror = () => actions.toast('Inventory import failed');
+    reader.onload = () => {
+      try {
+        let rawRows = [];
+        if ((ext === 'xlsx' || ext === 'xls') && window.XLSX) {
+          const workbook = XLSX.read(new Uint8Array(reader.result), { type: 'array' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          rawRows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        } else {
+          const text = String(reader.result || '');
+          rawRows = parseDelimitedInventory(text, ext === 'tsv' ? '\t' : ',');
+        }
+        const imported = normalizeInventoryRows(rawRows);
+        if (!imported.length) {
+          actions.toast('No inventory rows found');
+          return;
+        }
+        hallStore.set({ inventory: mergeInventoryRows(imported) });
+        logSyncEvent('excel', 'Inventory file imported', `${imported.length} rows from ${file.name} updated central stock`);
+        actions.toast(`${imported.length} inventory rows imported`);
+      } catch (err) {
+        actions.toast('Inventory import failed');
+        logSyncEvent('correction', 'Inventory import error', err.message || 'Could not parse workbook');
+      }
+    };
+    if (ext === 'xlsx' || ext === 'xls') reader.readAsArrayBuffer(file);
+    else reader.readAsText(file);
   },
   join(tierId) { hallStore.set({ member: tierId }); actions.toast('Welcome to the Cider Club'); },
   leave() { hallStore.set({ member: null }); },
@@ -443,7 +572,7 @@ function cartTotals(cart, memberId) {
 
 Object.assign(window, {
   VENDORS, vendorById, itemById, CONCIERGE_PROMPTS, CLUB_TIERS, EVENTS, KPIS,
-  SEED_ORDERS, STALLS, CHANNELS, INVENTORY_SEED, LOYALTY_PROGRAMS, PROMOTIONS, GIFT_CARDS,
+  SEED_ORDERS, STALLS, CHANNELS, INVENTORY_SEED, SYNC_EVENTS, LOYALTY_PROGRAMS, PROMOTIONS, GIFT_CARDS,
   VENDOR_PAYOUTS, ORDER_TIMELINE, hallStore, useHall, actions, cartTotals, memberDiscount,
-  inventoryForVendor, inventoryItemName, stockAvailable, inventorySummary,
+  inventoryForVendor, inventoryItemName, stockAvailable, inventorySummary, logSyncEvent,
 });

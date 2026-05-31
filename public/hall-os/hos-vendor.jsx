@@ -157,7 +157,10 @@ function VendorInventoryPanel({ vendor }) {
         <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Real-Time Inventory Sync</span>
         <Pill tone="green">Central DB</Pill>
         <Pill tone={summary.flagged ? 'red' : 'green'}>{summary.flagged} flags</Pill>
-        <button onClick={() => actions.importInventoryDemo()} style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Import Excel</button>
+        <label style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+          Import Excel
+          <input type="file" accept=".xlsx,.xls,.csv,.tsv" onChange={(e) => e.target.files[0] && actions.importInventoryFile(e.target.files[0])} style={{ display: 'none' }} />
+        </label>
       </div>
       <div style={{ padding: '12px 18px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, borderBottom: `1px solid ${HOS.bordS}` }}>
         {[['On hand', summary.total], ['Reserved', summary.reserved], ['Low stock', summary.low], ['API channels', CHANNELS.length]].map(([l, v]) => (
@@ -188,7 +191,24 @@ function VendorInventoryPanel({ vendor }) {
           );
         })}
       </div>
+      <SyncEventList limit={4} />
     </DeskCard>
+  );
+}
+
+function SyncEventList({ limit }) {
+  const events = hallStore.get().syncEvents.slice(0, limit || 5);
+  return (
+    <div style={{ padding: '12px 18px 16px', borderTop: `1px solid ${HOS.bordS}`, background: 'rgba(107,136,168,0.07)' }}>
+      <div style={{ fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: HOS.blue, marginBottom: 8 }}>API sync event stream</div>
+      {events.map(e => (
+        <div key={e.id} style={{ display: 'grid', gridTemplateColumns: '58px 82px 1fr', gap: 8, alignItems: 'baseline', padding: '5px 0', borderBottom: `1px solid ${HOS.bordS}` }}>
+          <span style={{ fontFamily: HF.m, fontSize: 9.5, color: HOS.wheat, opacity: 0.45 }}>{e.time}</span>
+          <span style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: HOS.gold }}>{e.channel}</span>
+          <span style={{ fontFamily: HF.b, fontSize: 11.5, color: HOS.wheat, opacity: 0.72 }}>{e.label}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -218,4 +238,4 @@ function VendorPayoutPanel({ vendor }) {
   );
 }
 
-Object.assign(window, { VendorDashboard, Sparkline, DeskCard, VendorInventoryPanel, VendorPayoutPanel });
+Object.assign(window, { VendorDashboard, Sparkline, DeskCard, VendorInventoryPanel, VendorPayoutPanel, SyncEventList });

@@ -160,7 +160,10 @@ function OperatorMarketplacePanel({ feed }) {
         <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Unified Inventory Command</span>
           <Pill tone="green">Live API sync</Pill>
-          <button onClick={() => actions.importInventoryDemo()} style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Bulk Excel Import</button>
+          <label style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+            Bulk Excel Import
+            <input type="file" accept=".xlsx,.xls,.csv,.tsv" onChange={(e) => e.target.files[0] && actions.importInventoryFile(e.target.files[0])} style={{ display: 'none' }} />
+          </label>
         </div>
         <div style={{ padding: 18 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
@@ -182,6 +185,7 @@ function OperatorMarketplacePanel({ feed }) {
           <div style={{ marginTop: 12, fontFamily: HF.b, fontSize: 12, color: HOS.wheat, opacity: 0.72, lineHeight: 1.5 }}>
             Sales from every online and offline channel reserve against the same stock table, preventing oversells and pushing instant changes to vendor panels, POS, kiosk, and marketplace domains.
           </div>
+          <SyncEventList limit={5} />
         </div>
       </DeskCard>
 
