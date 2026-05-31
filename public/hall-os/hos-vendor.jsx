@@ -36,15 +36,23 @@ function VendorDashboard() {
 
   React.useEffect(() => { setAvail(Object.fromEntries(vendor.menu.map(m => [m.id, true]))); setQueue(VENDOR_QUEUE_SEED); }, [s.vendorScope]);
 
-  const bump = (id) => setQueue(q => q.map(o => o.id === id ? { ...o, status: NEXT_STATUS[o.status] || o.status } : o).filter(o => o.status !== 'collected'));
-  const active = queue.filter(o => o.status !== 'collected');
+  const liveQueue = vendorOrdersFromBackend(vendor.id);
+  const shownQueue = liveQueue.length ? liveQueue : queue;
+  const bump = (order) => {
+    const next = NEXT_STATUS[order.status] || order.status;
+    if (order.backend) actions.updateOrderStatus(order.id, vendor.id, next);
+    else setQueue(q => q.map(o => o.id === order.id ? { ...o, status: next } : o).filter(o => o.status !== 'collected'));
+  };
+  const active = shownQueue.filter(o => o.status !== 'collected');
   const cooking = active.filter(o => o.status === 'cooking').length;
   const waiting = active.filter(o => o.status === 'queued').length;
 
+  const payout = (s.vendorPayouts || VENDOR_PAYOUTS).find(p => p.vendor === vendor.id);
+  const avgTicket = payout && payout.orders ? payout.sales / payout.orders : 13.4;
   const stats = [
-    { label: 'Sales Today', value: '$2,140', spark: [1500,1700,1650,1820,1900,2050,2140], color: HOS.gold },
-    { label: 'Orders', value: '78', spark: [52,58,61,66,70,74,78], color: HOS.ter },
-    { label: 'Avg Ticket', value: '$13.40', spark: [12.1,12.5,12.8,13,13.1,13.3,13.4], color: HOS.greenLt },
+    { label: 'Sales Today', value: payout ? money0(payout.sales) : '$2,140', spark: [1500,1700,1650,1820,1900,2050,payout ? payout.sales : 2140], color: HOS.gold },
+    { label: 'Orders', value: payout ? String(payout.orders) : '78', spark: [52,58,61,66,70,74,payout ? payout.orders : 78], color: HOS.ter },
+    { label: 'Avg Ticket', value: money(avgTicket), spark: [12.1,12.5,12.8,13,13.1,13.3,avgTicket], color: HOS.greenLt },
     { label: 'Rating', value: vendor.rating.toFixed(1), spark: [4.5,4.6,4.6,4.7,4.7,4.8,vendor.rating], color: HOS.gold },
   ];
 
@@ -99,7 +107,8 @@ function VendorDashboard() {
             <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Live Order Queue</span>
             <Pill tone="ter">{waiting} waiting</Pill>
             <Pill tone="gold">{cooking} cooking</Pill>
-            <span style={{ marginLeft: 'auto', fontFamily: HF.m, fontSize: 10.5, color: HOS.green }}>● Live</span>
+            <span style={{ marginLeft: 'auto', fontFamily: HF.m, fontSize: 10.5, color: s.backendReady ? HOS.green : HOS.red }}>{s.backendReady ? 'Synced' : 'Local'}</span>
+            <button onClick={actions.refreshBackend} style={{ background: HOS.surf, color: HOS.wheat, border: `1px solid ${HOS.bordM}`, borderRadius: 8, padding: '6px 9px', fontFamily: HF.l, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Refresh</button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {active.length === 0 && <div style={{ padding: 40, textAlign: 'center', fontFamily: HF.b, fontSize: 13, color: HOS.wheat, opacity: 0.5 }}>All caught up — no active orders.</div>}
@@ -114,7 +123,7 @@ function VendorDashboard() {
                   <div style={{ fontFamily: HF.m, fontSize: 11, color: HOS.wheat, opacity: 0.5, marginTop: 2 }}>{o.customer} · {money(o.total)} · {o.ago === 0 ? 'just now' : o.ago + 'm ago'}</div>
                 </div>
                 <Pill tone={o.status === 'ready' ? 'green' : o.status === 'cooking' ? 'gold' : 'dim'}>{o.status}</Pill>
-                <button onClick={() => bump(o.id)} style={{ flexShrink: 0, background: o.status === 'ready' ? HOS.green : HOS.ter, color: '#fff', border: 'none', borderRadius: 9, padding: '9px 16px', fontFamily: HF.l, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>{STATUS_LABEL[o.status]}</button>
+                <button onClick={() => bump(o)} style={{ flexShrink: 0, background: o.status === 'ready' ? HOS.green : HOS.ter, color: '#fff', border: 'none', borderRadius: 9, padding: '9px 16px', fontFamily: HF.l, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>{STATUS_LABEL[o.status]}</button>
               </div>
             ))}
           </div>
@@ -159,6 +168,7 @@ function VendorInventoryPanel({ vendor }) {
         <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Real-Time Inventory Sync</span>
         <Pill tone="green">Central DB</Pill>
         <Pill tone={summary.flagged ? 'red' : 'green'}>{summary.flagged} flags</Pill>
+        <Pill tone={s.backendReady ? 'green' : 'red'}>{s.backendReady ? `Synced ${s.lastSyncedAt || ''}` : 'Local fallback'}</Pill>
         <label style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
           Import Excel
           <input type="file" accept=".xlsx,.xls,.csv,.tsv" onChange={(e) => e.target.files[0] && actions.importInventoryFile(e.target.files[0])} style={{ display: 'none' }} />

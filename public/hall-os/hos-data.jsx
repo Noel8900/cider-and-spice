@@ -366,6 +366,7 @@ function applyBackendState(state) {
     channels: state.channels || hallStore.get().channels,
     backendReady: true,
     backendError: null,
+    lastSyncedAt: syncStamp(),
   });
 }
 
@@ -390,6 +391,15 @@ async function hydrateHallBackend() {
   } catch (err) {
     hallStore.set({ backendReady: false, backendError: err.message || 'Live backend unavailable' });
   }
+}
+
+function startHallBackendPolling() {
+  if (window.__hallBackendPolling) return;
+  window.__hallBackendPolling = setInterval(() => {
+    const s = hallStore.get();
+    if (s.persona === 'customer' && s.screen !== 'tracking') return;
+    hydrateHallBackend();
+  }, 8000);
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -429,10 +439,12 @@ const hallStore = createStore({
   channels: CHANNELS,
   backendReady: false,
   backendError: null,
+  lastSyncedAt: null,
   toast: null,
 });
 
 hydrateHallBackend();
+startHallBackendPolling();
 
 // Re-render hook: subscribes a component to ALL store changes (fine for a prototype)
 function useHall() {
@@ -485,6 +497,59 @@ function localOrderFromLines(lines, meta, clearCart) {
   return order;
 }
 
+function orderStatusForVendor(order, vendorId) {
+  const track = (order.tracks || []).find(t => t.vendorId === vendorId);
+  const status = (track && track.status) || 'queued';
+  return status === 'received' ? 'queued' : status;
+}
+
+function minutesAgo(ts) {
+  return Math.max(0, Math.round((Date.now() - Number(ts || Date.now())) / 60000));
+}
+
+function vendorOrdersFromBackend(vendorId) {
+  return (hallStore.get().orders || [])
+    .filter(order => (order.vendorIds || []).includes(vendorId))
+    .map(order => {
+      const lines = (order.lines || []).filter(line => line.vendorId === vendorId);
+      return {
+        id: order.id,
+        backend: true,
+        vendor: vendorId,
+        items: lines.map(line => ({ n: line.name, q: line.qty })),
+        total: lines.reduce((sum, line) => sum + line.price * line.qty, 0),
+        status: orderStatusForVendor(order, vendorId),
+        customer: (order.meta && order.meta.customer) || ((order.meta && order.meta.channel) === 'pos' ? 'Walk-in' : 'Online guest'),
+        channel: (order.meta && order.meta.channel) || 'app',
+        ago: minutesAgo(order.placed),
+      };
+    })
+    .filter(order => order.status !== 'collected');
+}
+
+function orderFeedFromBackend() {
+  const feed = [];
+  (hallStore.get().orders || []).forEach(order => {
+    const linesByVendor = {};
+    (order.lines || []).forEach(line => { (linesByVendor[line.vendorId] = linesByVendor[line.vendorId] || []).push(line); });
+    Object.keys(linesByVendor).forEach(vendorId => {
+      const lines = linesByVendor[vendorId];
+      feed.push({
+        id: order.id,
+        vendor: vendorId,
+        items: lines.map(line => `${line.qty}x ${line.name}`),
+        total: lines.reduce((sum, line) => sum + line.price * line.qty, 0),
+        status: orderStatusForVendor(order, vendorId),
+        mins: minutesAgo(order.placed),
+        customer: (order.meta && order.meta.customer) || ((order.meta && order.meta.channel) === 'pos' ? 'Walk-in' : 'Online guest'),
+        channel: (order.meta && order.meta.channel) || 'app',
+        backend: true,
+      });
+    });
+  });
+  return feed.sort((a, b) => b.id - a.id);
+}
+
 // ── Cart + nav actions ────────────────────────────────────────────────────────
 
 let _lineSeq = 1;
@@ -530,6 +595,10 @@ const actions = {
     hallStore.set({ cart });
   },
   clearCart() { hallStore.set({ cart: [] }); },
+  refreshBackend() {
+    hydrateHallBackend();
+    actions.toast('Refreshing central database');
+  },
   placeOrder(meta) {
     const cart = hallStore.get().cart;
     if (!cart.length) return null;
@@ -659,6 +728,23 @@ const actions = {
     if (ext === 'xlsx' || ext === 'xls') reader.readAsArrayBuffer(file);
     else reader.readAsText(file);
   },
+  updateOrderStatus(orderId, vendorId, status) {
+    apiJson('/api/hall-os/orders/status', {
+      method: 'POST',
+      body: JSON.stringify({ orderId, vendorId, status }),
+    }).then(data => {
+      applyBackendState(data.state);
+      actions.toast(`Order #${orderId} moved to ${status}`);
+    }).catch(err => {
+      hallStore.set({ backendError: err.message || 'Live backend unavailable' });
+      actions.toast('Status saved locally');
+    });
+    hallStore.set({
+      orders: (hallStore.get().orders || []).map(order => order.id === orderId ? Object.assign({}, order, {
+        tracks: (order.tracks || []).map(track => track.vendorId === vendorId ? Object.assign({}, track, { status }) : track),
+      }) : order),
+    });
+  },
   join(tierId) { hallStore.set({ member: tierId }); actions.toast('Welcome to the Cider Club'); },
   leave() { hallStore.set({ member: null }); },
 };
@@ -686,4 +772,5 @@ Object.assign(window, {
   SEED_ORDERS, STALLS, CHANNELS, INVENTORY_SEED, SYNC_EVENTS, LOYALTY_PROGRAMS, PROMOTIONS, GIFT_CARDS,
   VENDOR_PAYOUTS, ORDER_TIMELINE, hallStore, useHall, actions, cartTotals, memberDiscount,
   inventoryForVendor, inventoryItemName, stockAvailable, inventorySummary, logSyncEvent,
+  vendorOrdersFromBackend, orderFeedFromBackend,
 });

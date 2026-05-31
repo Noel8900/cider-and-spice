@@ -53,6 +53,10 @@ function OperatorConsole() {
 
   const stateColor = { busy: HOS.ter, open: HOS.green, incubator: HOS.gold, vacant: HOS.surf2 };
   const stateLabel = { busy: 'Busy', open: 'Open', incubator: 'Incubator', vacant: 'Vacant' };
+  const liveFeed = orderFeedFromBackend();
+  const combinedFeed = liveFeed.length ? liveFeed.concat(feed).slice(0, 9) : feed;
+  const liveRevenue = (s.vendorPayouts || VENDOR_PAYOUTS).reduce((sum, p) => sum + p.sales, 0);
+  const liveOrderCount = (s.vendorPayouts || VENDOR_PAYOUTS).reduce((sum, p) => sum + p.orders, 0);
 
   return (
     <div style={{ maxWidth: 1400, margin: '0 auto', padding: '22px 28px 60px' }}>
@@ -60,10 +64,10 @@ function OperatorConsole() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
         <div>
           <div style={{ fontFamily: HF.d, fontSize: 27, color: HOS.parch, lineHeight: 1 }}>Hall Console</div>
-          <div style={{ fontFamily: HF.l, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>Friday · Jun 6 · 12:34 PM · Live</div>
+          <div style={{ fontFamily: HF.l, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 4 }}>{s.backendReady ? `Central database synced ${s.lastSyncedAt || ''}` : 'Local fallback mode'}</div>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          {[['Today\'s Revenue', '$11,840'], ['Orders', '312'], ['Avg Wait', '11m'], ['Active Members', '184']].map(([l, v]) => (
+          {[['Today\'s Revenue', money0(liveRevenue)], ['Orders', liveOrderCount], ['Avg Wait', '11m'], ['Active Members', '184']].map(([l, v]) => (
             <DeskCard key={l} style={{ padding: '10px 18px', textAlign: 'center' }}>
               <div style={{ fontFamily: HF.d, fontSize: 22, fontWeight: 500, color: HOS.ter, lineHeight: 1 }}>{v}</div>
               <div style={{ fontFamily: HF.l, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.45, marginTop: 3 }}>{l}</div>
@@ -75,7 +79,7 @@ function OperatorConsole() {
       {/* AI operating briefing */}
       <HallAnalyst />
 
-      <OperatorMarketplacePanel feed={feed} />
+      <OperatorMarketplacePanel feed={combinedFeed} />
 
       {/* KPI grid */}
       <div style={{ fontFamily: HF.l, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: HOS.wheat, opacity: 0.5, marginBottom: 12 }}>9 Operating KPIs · Incubator Playbook</div>
@@ -126,7 +130,7 @@ function OperatorConsole() {
             <span style={{ marginLeft: 'auto', fontFamily: HF.m, fontSize: 10.5, color: HOS.green }}>● Streaming</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', maxHeight: 460, overflowY: 'auto' }}>
-            {feed.map((o, i) => {
+            {combinedFeed.map((o, i) => {
               const v = vendorById(o.vendor);
               return (
                 <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', borderBottom: `1px solid ${HOS.bordS}`, animation: i === 0 ? 'hosSlideIn 0.4s ease' : 'none' }}>
@@ -164,10 +168,12 @@ function OperatorMarketplacePanel({ feed }) {
         <div style={{ padding: '15px 18px', borderBottom: `1px solid ${HOS.bord}`, display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontFamily: HF.d, fontSize: 19, color: HOS.parch }}>Unified Inventory Command</span>
           <Pill tone="green">Live API sync</Pill>
+          <Pill tone={s.backendReady ? 'green' : 'red'}>{s.backendReady ? `Synced ${s.lastSyncedAt || ''}` : 'Local fallback'}</Pill>
           <label style={{ marginLeft: 'auto', background: HOS.surf, color: HOS.gold, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
             Bulk Excel Import
             <input type="file" accept=".xlsx,.xls,.csv,.tsv" onChange={(e) => e.target.files[0] && actions.importInventoryFile(e.target.files[0])} style={{ display: 'none' }} />
           </label>
+          <button onClick={actions.refreshBackend} style={{ background: HOS.surf, color: HOS.wheat, border: `1px solid ${HOS.bordM}`, borderRadius: 9, padding: '8px 12px', fontFamily: HF.l, fontSize: 9.5, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>Refresh</button>
         </div>
         <div style={{ padding: 18 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
