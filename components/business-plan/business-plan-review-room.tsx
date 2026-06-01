@@ -47,6 +47,15 @@ const STARTER_QUESTION_GROUPS = [
   },
 ];
 
+type AskScopeId = "all" | "business-plan" | "incubator-playbook" | "commercial-kitchen-manual";
+
+const ASK_SCOPES: { id: AskScopeId; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "business-plan", label: "Plan" },
+  { id: "incubator-playbook", label: "Incubator" },
+  { id: "commercial-kitchen-manual", label: "Kitchen" },
+];
+
 const LOCATION_CONCEPTS = [
   {
     name: "West Picacho / Motel Boulevard MRA corridor",
@@ -304,6 +313,7 @@ function LockScreen({
 function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) => void }) {
   const [input, setInput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [askScope, setAskScope] = useState<AskScopeId>("all");
   const { messages, sendMessage, setMessages, status, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/business-plan-chat" }),
   });
@@ -328,7 +338,7 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
 
   function ask(text: string) {
     if (!text.trim()) return;
-    sendMessage({ text: text.trim() });
+    sendMessage({ text: text.trim() }, { body: { documentId: askScope } });
     setInput("");
     setCopied(false);
   }
@@ -358,6 +368,21 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
       <div className="assistant-disclaimer">
         Answers are limited to the business plan, incubator playbook, and kitchen manual. If the
         library does not specify an answer, the assistant should say so.
+      </div>
+      <div className="ask-scope" aria-label="Ask AI source scope">
+        {ASK_SCOPES.map((scope) => (
+          <button
+            className={askScope === scope.id ? "active" : ""}
+            key={scope.id}
+            onClick={() => {
+              setAskScope(scope.id);
+              setCopied(false);
+            }}
+            type="button"
+          >
+            {scope.label}
+          </button>
+        ))}
       </div>
       <div className="assistant-tools" aria-label="Assistant actions">
         <button disabled={!latestAssistantText} onClick={copyLatestAnswer} type="button">

@@ -1,6 +1,8 @@
 import { businessPlan } from "./data";
 import type { BusinessPlanChunk } from "./types";
 
+const DOCUMENT_IDS = new Set(businessPlan.documents.map((document) => document.id));
+
 const STOP_WORDS = new Set([
   "about",
   "after",
@@ -169,11 +171,15 @@ function scoreChunk(chunk: BusinessPlanChunk, queryTokens: string[]) {
   return score;
 }
 
-export function retrieveRelevantChunks(question: string, limit = 12) {
+export function retrieveRelevantChunks(question: string, limit = 12, documentId = "all") {
   const queryTokens = expandQueryTokens(question, Array.from(new Set(tokenize(question))));
   if (queryTokens.length === 0) return [];
 
-  const matches = businessPlan.chunks
+  const searchableChunks = DOCUMENT_IDS.has(documentId)
+    ? businessPlan.chunks.filter((chunk) => chunk.documentId === documentId)
+    : businessPlan.chunks;
+
+  const matches = searchableChunks
     .map((chunk) => ({ chunk, score: scoreChunk(chunk, queryTokens) }))
     .filter((result) => result.score > 0)
     .sort((a, b) => b.score - a.score || a.chunk.order - b.chunk.order)

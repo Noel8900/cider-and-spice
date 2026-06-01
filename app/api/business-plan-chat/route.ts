@@ -11,6 +11,13 @@ import { formatChunksForPrompt, retrieveRelevantChunks } from "@/lib/business-pl
 
 export const maxDuration = 60;
 
+const VALID_DOCUMENT_IDS = new Set([
+  "all",
+  "business-plan",
+  "incubator-playbook",
+  "commercial-kitchen-manual",
+]);
+
 function getLatestUserQuestion(messages: UIMessage[]) {
   const latest = [...messages].reverse().find((message) => message.role === "user");
   if (!latest) return "";
@@ -50,9 +57,13 @@ export async function POST(req: Request) {
     return new Response("Unauthorized.", { status: 401 });
   }
 
-  const { messages } = (await req.json()) as { messages: UIMessage[] };
+  const { messages, documentId } = (await req.json()) as {
+    messages: UIMessage[];
+    documentId?: string;
+  };
   const question = getLatestUserQuestion(messages || []);
-  const chunks = retrieveRelevantChunks(question);
+  const activeDocumentId = documentId && VALID_DOCUMENT_IDS.has(documentId) ? documentId : "all";
+  const chunks = retrieveRelevantChunks(question, 12, activeDocumentId);
   const context = chunks.length
     ? formatChunksForPrompt(chunks)
     : "NO_RELEVANT_CONTEXT: No relevant diligence library sections were retrieved for this question.";

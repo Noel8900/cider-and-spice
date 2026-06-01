@@ -118,12 +118,24 @@ const CHECKS = [
     required: ["incubator", "pathway", "citation"],
   },
   {
+    question: "How does the incubator graduation pathway work?",
+    documentId: "incubator-playbook",
+    required: ["incubator", "citation"],
+    requiredCitation: "#incubator-playbook",
+  },
+  {
     question: "What are the shared commercial kitchen rules?",
     required: ["kitchen", "compliance", "storage", "citation"],
   },
   {
     question: "What food safety controls are in the kitchen manual?",
     required: ["food safety", "sanitation", "inspection", "citation"],
+  },
+  {
+    question: "What food safety controls are in the kitchen manual?",
+    documentId: "commercial-kitchen-manual",
+    required: ["food safety", "sanitation", "citation"],
+    requiredCitation: "#commercial-kitchen-manual",
   },
   {
     question: "How do the incubator and kitchen support the investment case?",
@@ -225,11 +237,14 @@ function scoreChunk(chunk, queryTokens) {
   return score;
 }
 
-function retrieve(question, limit = 12) {
+function retrieve(question, limit = 12, documentId = "all") {
   const queryTokens = expandQueryTokens(question, Array.from(new Set(tokenize(question))));
   if (queryTokens.length === 0) return [];
 
-  const ranked = corpus.chunks
+  const searchableChunks =
+    documentId === "all" ? corpus.chunks : corpus.chunks.filter((chunk) => chunk.documentId === documentId);
+
+  const ranked = searchableChunks
     .map((chunk) => ({ chunk, score: scoreChunk(chunk, queryTokens) }))
     .filter((result) => result.score > 0)
     .sort((a, b) => b.score - a.score || a.chunk.order - b.chunk.order)
@@ -355,9 +370,9 @@ function createAnswer(question, chunks) {
 let failed = false;
 
 for (const check of CHECKS) {
-  const answer = createAnswer(check.question, retrieve(check.question));
+  const answer = createAnswer(check.question, retrieve(check.question, 12, check.documentId || "all"));
   const lowerAnswer = answer.toLowerCase();
-  console.log(`\n${check.question}`);
+  console.log(`\n${check.documentId ? `[${check.documentId}] ` : ""}${check.question}`);
   console.log(answer);
 
   if (check.unsupported) {
@@ -374,6 +389,11 @@ for (const check of CHECKS) {
       failed = true;
       console.error(`Missing expected answer term: ${required}`);
     }
+  }
+
+  if (check.requiredCitation && !answer.includes(check.requiredCitation)) {
+    failed = true;
+    console.error(`Missing expected scoped citation: ${check.requiredCitation}`);
   }
 }
 
