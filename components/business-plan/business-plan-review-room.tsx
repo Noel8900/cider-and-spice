@@ -13,6 +13,7 @@ import {
   LogOut,
   MapPin,
   Menu,
+  RotateCcw,
   Search,
   Send,
   ShieldCheck,
@@ -22,12 +23,28 @@ import {
 import { MessageResponse } from "@/components/ai-elements/message";
 import type { BusinessPlanData, BusinessPlanSection } from "@/lib/business-plan/types";
 
-const STARTER_QUESTIONS = [
-  "What is the investment case?",
-  "How does the incubator graduation pathway work?",
-  "What are the shared commercial kitchen rules?",
-  "What food safety controls are in the kitchen manual?",
-  "How do the incubator and kitchen support the investment case?",
+const STARTER_QUESTION_GROUPS = [
+  {
+    label: "Investment",
+    questions: [
+      "What is the investment case?",
+      "How do the incubator and kitchen support the investment case?",
+    ],
+  },
+  {
+    label: "Incubator",
+    questions: [
+      "How does the incubator graduation pathway work?",
+      "What support does a vendor receive before graduation?",
+    ],
+  },
+  {
+    label: "Kitchen",
+    questions: [
+      "What are the shared commercial kitchen rules?",
+      "What food safety controls are in the kitchen manual?",
+    ],
+  },
 ];
 
 const LOCATION_CONCEPTS = [
@@ -286,11 +303,21 @@ function LockScreen({
 
 function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) => void }) {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, status, error } = useChat({
+  const [copied, setCopied] = useState(false);
+  const { messages, sendMessage, setMessages, status, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/business-plan-chat" }),
   });
   const isBusy = status === "submitted" || status === "streaming";
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const latestAssistantText = useMemo(() => {
+    const latestAssistant = [...messages].reverse().find((message) => message.role === "assistant");
+    if (!latestAssistant) return "";
+
+    return latestAssistant.parts
+      .map((part) => (part.type === "text" ? part.text : ""))
+      .join("\n")
+      .trim();
+  }, [messages]);
 
   useEffect(() => {
     scrollerRef.current?.scrollTo({
@@ -303,6 +330,20 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
     if (!text.trim()) return;
     sendMessage({ text: text.trim() });
     setInput("");
+    setCopied(false);
+  }
+
+  function clearChat() {
+    setMessages([]);
+    setInput("");
+    setCopied(false);
+  }
+
+  async function copyLatestAnswer() {
+    if (!latestAssistantText) return;
+    await navigator.clipboard.writeText(latestAssistantText);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
   }
 
   return (
@@ -318,6 +359,16 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
         Answers are limited to the business plan, incubator playbook, and kitchen manual. If the
         library does not specify an answer, the assistant should say so.
       </div>
+      <div className="assistant-tools" aria-label="Assistant actions">
+        <button disabled={!latestAssistantText} onClick={copyLatestAnswer} type="button">
+          <ClipboardCheck size={15} />
+          {copied ? "Copied" : "Copy answer"}
+        </button>
+        <button disabled={messages.length === 0} onClick={clearChat} type="button">
+          <RotateCcw size={15} />
+          Clear
+        </button>
+      </div>
       <div
         ref={scrollerRef}
         className="messages"
@@ -332,14 +383,19 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
       >
         {messages.length === 0 ? (
           <div className="empty-chat">
-            <p>Start with a focused question, or use one of these prompts.</p>
-            <div className="starter-grid">
-              {STARTER_QUESTIONS.map((question) => (
-                <button key={question} onClick={() => ask(question)} type="button">
-                  {question}
-                </button>
-              ))}
-            </div>
+            <p>Start with a focused diligence question, or use one of these prompts.</p>
+            {STARTER_QUESTION_GROUPS.map((group) => (
+              <div className="starter-group" key={group.label}>
+                <span>{group.label}</span>
+                <div className="starter-grid">
+                  {group.questions.map((question) => (
+                    <button key={question} onClick={() => ask(question)} type="button">
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           messages.map((message) => (
@@ -358,8 +414,8 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
         )}
         {error ? (
           <div className="error-box">
-            The AI service is unavailable right now. Confirm Vercel AI Gateway credentials are
-            configured, then try again.
+            The review room could not answer that request. Try a more specific question about the
+            business plan, incubator, kitchen, funding, compliance, or implementation details.
           </div>
         ) : null}
       </div>
@@ -373,12 +429,19 @@ function ChatPanel({ onCitationClick }: { onCitationClick: (sectionId: string) =
         <textarea
           value={input}
           onChange={(event) => setInput(event.target.value)}
+          onKeyDown={(event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+              event.preventDefault();
+              ask(input);
+            }
+          }}
           placeholder="Ask about funding, incubator cohorts, kitchen rules, food safety, risks, or implementation..."
           rows={3}
         />
         <button disabled={isBusy || !input.trim()} type="submit" aria-label="Send question">
           <Send size={18} />
         </button>
+        <p className="assistant-hint">Use Ctrl+Enter to send. Citations jump to source sections.</p>
       </form>
     </aside>
   );
