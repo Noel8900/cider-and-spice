@@ -1,16 +1,16 @@
-import { isPasscodeConfigured, hasBusinessPlanAccess } from "@/lib/business-plan/auth";
-import { BusinessPlanReviewRoom } from "@/components/business-plan/business-plan-review-room";
+import type { Metadata } from 'next';
 
-export default async function BusinessPlanPage() {
-  const [authorized, passcodeConfigured] = await Promise.all([
-    hasBusinessPlanAccess(),
-    Promise.resolve(isPasscodeConfigured()),
-  ]);
+export const metadata: Metadata = {
+  title: 'Business Plan | Cider & Spice',
+  robots: { index: false, follow: false },
+};
 
+export default function BusinessPlanPage() {
   return (
-    <BusinessPlanReviewRoom
-      initialAuthorized={authorized}
-      passcodeConfigured={passcodeConfigured}
-    />
+    <main style={{ minHeight: '100vh', background: '#1C1209', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <p style={{ fontFamily: 'Georgia, serif', color: 'rgba(245,236,215,0.4)', fontSize: '1rem' }}>
+        Business plan review — coming soon.
+      </p>
+    </main>
   );
 }
