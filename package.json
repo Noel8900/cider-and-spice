@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "generate:business-plan-corpus": "node scripts/generate-business-plan-corpus.mjs",
-    "check:business-plan-ai": "node scripts/check-business-plan-retrieval.mjs"
+    "check:business-plan-ai": "node scripts/check-business-plan-retrieval.mjs && node scripts/check-business-plan-answer-quality.mjs"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.195",

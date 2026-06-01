@@ -5,9 +5,9 @@ import {
   type UIMessage,
   type UIMessageChunk,
 } from "ai";
+import { createGroundedAnswer } from "@/lib/business-plan/answer";
 import { hasBusinessPlanAccess } from "@/lib/business-plan/auth";
 import { formatChunksForPrompt, retrieveRelevantChunks } from "@/lib/business-plan/retrieval";
-import type { BusinessPlanChunk } from "@/lib/business-plan/types";
 
 export const maxDuration = 60;
 
@@ -29,86 +29,6 @@ function hasConfiguredModelAccess() {
     process.env.BUSINESS_PLAN_AI_GATEWAY_ENABLED === "true" &&
     Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN)
   );
-}
-
-function toCitation(chunk: BusinessPlanChunk) {
-  return `[${chunk.documentTitle} - ${chunk.sectionTitle}](#${chunk.sectionId})`;
-}
-
-function getQuestionTerms(question: string) {
-  const stopWords = new Set([
-    "about",
-    "and",
-    "are",
-    "does",
-    "from",
-    "how",
-    "into",
-    "manual",
-    "plan",
-    "question",
-    "the",
-    "this",
-    "what",
-    "with",
-  ]);
-
-  return question
-    .toLowerCase()
-    .replace(/[^a-z0-9 -]+/g, " ")
-    .split(/\s+/)
-    .map((term) => term.trim())
-    .filter((term) => term.length > 2 && !stopWords.has(term));
-}
-
-function trimEvidence(text: string, maxLength = 420) {
-  const normalized = text.replace(/\s+/g, " ").trim();
-  if (normalized.length <= maxLength) return normalized;
-
-  const sentenceEnd = normalized.slice(0, maxLength).lastIndexOf(". ");
-  return `${normalized.slice(0, sentenceEnd > 180 ? sentenceEnd + 1 : maxLength).trim()}...`;
-}
-
-function selectEvidence(question: string, chunk: BusinessPlanChunk) {
-  const terms = getQuestionTerms(question);
-  const candidates = chunk.text
-    .split(/(?<=[.!?])\s+|\n+/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > 40);
-
-  const ranked = candidates
-    .map((line) => {
-      const lowerLine = line.toLowerCase();
-      const score = terms.reduce((total, term) => total + (lowerLine.includes(term) ? 1 : 0), 0);
-      return { line, score };
-    })
-    .filter((candidate) => candidate.score > 0)
-    .sort((a, b) => b.score - a.score);
-
-  const selected = ranked.length ? ranked[0].line : chunk.text;
-  return trimEvidence(selected);
-}
-
-function createGroundedFallbackAnswer(question: string, chunks: BusinessPlanChunk[]) {
-  if (!question || chunks.length === 0) {
-    return "The business plan does not specify that. Try asking about funding, incubator operations, kitchen operations, or implementation details.";
-  }
-
-  const uniqueChunks = chunks
-    .filter((chunk, index, all) => all.findIndex((candidate) => candidate.sectionId === chunk.sectionId) === index)
-    .slice(0, 4);
-
-  const sourceLines = uniqueChunks.map(
-    (chunk) => `- ${selectEvidence(question, chunk)} ${toCitation(chunk)}`,
-  );
-
-  return [
-    "Based on the available diligence library:",
-    "",
-    ...sourceLines,
-    "",
-    "The diligence library does not specify details beyond the cited sections.",
-  ].join("\n");
 }
 
 function createFallbackResponse(answer: string) {
@@ -138,7 +58,7 @@ export async function POST(req: Request) {
     : "NO_RELEVANT_CONTEXT: No relevant diligence library sections were retrieved for this question.";
 
   if (!hasConfiguredModelAccess()) {
-    return createFallbackResponse(createGroundedFallbackAnswer(question, chunks));
+    return createFallbackResponse(createGroundedAnswer(question, chunks));
   }
 
   const result = streamText({

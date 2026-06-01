@@ -52,6 +52,11 @@ const TOPIC_BOOSTS: Record<string, string[]> = {
     "graduate",
     "semilla",
     "mariposa",
+    "pathway",
+    "vendor journey",
+    "application",
+    "academy",
+    "optimization",
   ],
   kitchen: [
     "kitchen",
@@ -67,6 +72,15 @@ const TOPIC_BOOSTS: Record<string, string[]> = {
     "sop",
     "cleaning",
     "inspection",
+    "rule",
+    "rules",
+    "policy",
+    "policies",
+    "storage",
+    "scheduling",
+    "training",
+    "corrective action",
+    "inspection readiness",
   ],
   investor: [
     "investment",
@@ -78,7 +92,25 @@ const TOPIC_BOOSTS: Record<string, string[]> = {
     "sba",
     "risk",
     "return",
+    "investment case",
+    "capital stack",
+    "cash flow",
+    "vendor pipeline",
+    "revenue stream",
   ],
+};
+
+const QUERY_EXPANSIONS: Record<string, string[]> = {
+  graduation: ["graduate", "optimization", "vendor journey", "stage", "milestone"],
+  pathway: ["journey", "stage", "application", "academy", "graduation"],
+  rules: ["policy", "requirements", "compliance", "sanitation", "storage", "training"],
+  rule: ["policy", "requirements", "compliance", "sanitation", "storage", "training"],
+  "shared kitchen": ["commercial kitchen", "commissary", "shared-use", "scheduling", "storage"],
+  "commercial kitchen": ["commissary", "shared-use", "kitchen", "sanitation", "inspection"],
+  "food safety": ["nmed", "servsafe", "cfpm", "sanitation", "corrective action", "inspection readiness"],
+  controls: ["requirements", "records", "policy", "sanitation", "corrective action"],
+  investment: ["capital", "revenue", "ebitda", "risk", "grant", "return"],
+  support: ["revenue", "risk", "pipeline", "grant", "capital"],
 };
 
 function tokenize(value: string) {
@@ -92,6 +124,23 @@ function tokenize(value: string) {
   return Array.from(
     new Set(tokens.flatMap((token) => (token.endsWith("s") ? [token, token.slice(0, -1)] : [token]))),
   );
+}
+
+function expandQueryTokens(question: string, tokens: string[]) {
+  const lowerQuestion = question.toLowerCase();
+  const expanded = new Set(tokens);
+
+  for (const [trigger, additions] of Object.entries(QUERY_EXPANSIONS)) {
+    if (lowerQuestion.includes(trigger) || tokens.includes(trigger)) {
+      for (const addition of additions) {
+        for (const token of tokenize(addition)) {
+          expanded.add(token);
+        }
+      }
+    }
+  }
+
+  return Array.from(expanded);
 }
 
 function scoreChunk(chunk: BusinessPlanChunk, queryTokens: string[]) {
@@ -121,7 +170,7 @@ function scoreChunk(chunk: BusinessPlanChunk, queryTokens: string[]) {
 }
 
 export function retrieveRelevantChunks(question: string, limit = 12) {
-  const queryTokens = Array.from(new Set(tokenize(question)));
+  const queryTokens = expandQueryTokens(question, Array.from(new Set(tokenize(question))));
   if (queryTokens.length === 0) return [];
 
   const matches = businessPlan.chunks
