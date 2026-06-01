@@ -96,6 +96,13 @@ export default function GetInvolvedSection() {
           box-shadow: 0 0 0 3px rgba(192,98,42,0.15);
           outline: none;
         }
+        .gi-newsletter-box { padding: 3.5rem; }
+        .gi-form { display: flex; flex-direction: row; gap: 0; }
+        @media (max-width: 640px) {
+          .gi-newsletter-box { padding: 2rem 1.5rem; }
+          .gi-form { flex-direction: column; gap: 0.75rem; }
+          .gi-submit { width: 100%; justify-content: center; padding: 14px 20px !important; }
+        }
       `}</style>
 
       <div style={{ maxWidth: '75rem', margin: '0 auto' }}>
@@ -137,8 +144,8 @@ export default function GetInvolvedSection() {
           ))}
         </div>
 
-        <div className="inv-newsletter"
-          style={{ border: '1px solid rgba(232,193,141,0.1)', background: 'rgba(92,74,48,0.2)', padding: '3.5rem', maxWidth: '48rem', margin: '0 auto', textAlign: 'center', transition: 'border-color 0.4s' }}
+        <div className="inv-newsletter gi-newsletter-box"
+          style={{ border: '1px solid rgba(232,193,141,0.1)', background: 'rgba(92,74,48,0.2)', maxWidth: '48rem', margin: '0 auto', textAlign: 'center', transition: 'border-color 0.4s' }}
           onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.22)')}
           onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(232,193,141,0.1)')}
         >
@@ -157,7 +164,7 @@ export default function GetInvolvedSection() {
               You're on the list — we'll be in touch soon.
             </div>
           ) : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
+            <form onSubmit={handleSubmit} className="gi-form">
               <input
                 type="email" required placeholder="your@email.com"
                 value={email} onChange={e => setEmail(e.target.value)}

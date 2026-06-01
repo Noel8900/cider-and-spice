@@ -85,16 +85,34 @@ const socialLinks = [
 export default function SiteFooter() {
   return (
     <footer id="contact" style={{ background: D3.walnut, borderTop: `1px solid rgba(232,193,141,0.1)` }}>
+      <style>{`
+        .footer-main-grid  { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2rem; margin-bottom: 4rem; }
+        .footer-brand-col  { grid-column: span 4; }
+        .footer-links-col  { grid-column: span 8; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        @media (max-width: 768px) {
+          .footer-main-grid  { grid-template-columns: 1fr; }
+          .footer-brand-col  { grid-column: span 1; }
+          .footer-links-col  { grid-column: span 1; grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+          .footer-links-col  { grid-template-columns: 1fr; }
+        }
+        .footer-pre-footer-pad { padding: 6rem 1.5rem; }
+        .footer-body-pad       { padding: 5rem 1.5rem; }
+        @media (max-width: 640px) {
+          .footer-pre-footer-pad { padding: 4rem 1.25rem; }
+          .footer-body-pad       { padding: 3.5rem 1.25rem; }
+        }
+      `}</style>
 
       {/* ── Pre-footer editorial band ──────────────────────────────────────── */}
       <div
-        className="grain"
+        className="grain footer-pre-footer-pad"
         style={{
           position: 'relative',
           overflow: 'hidden',
           background: `linear-gradient(135deg, #1a1108 0%, #2c2416 45%, #1e1409 100%)`,
           borderBottom: '1px solid rgba(232,193,141,0.08)',
-          padding: '6rem 1.5rem',
           textAlign: 'center',
         }}
       >
@@ -195,13 +213,13 @@ export default function SiteFooter() {
       {/* Terracotta top rule */}
       <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${D3.terracotta}, transparent)`, opacity: 0.45 }} />
 
-      <div style={{ maxWidth: '75rem', margin: '0 auto', padding: '5rem 1.5rem' }}>
+      <div style={{ maxWidth: '75rem', margin: '0 auto' }} className="footer-body-pad">
 
         {/* Main grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '2rem', marginBottom: '4rem' }}>
+        <div className="footer-main-grid">
 
           {/* Brand column */}
-          <div style={{ gridColumn: 'span 4' }}>
+          <div className="footer-brand-col">
             <Link href="/" style={{ display: 'inline-block', marginBottom: '0.75rem', textDecoration: 'none' }}>
               <p
                 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.85rem', fontWeight: 300, color: D3.parchment, transition: 'color 0.3s', lineHeight: 1.1 }}
@@ -282,7 +300,7 @@ export default function SiteFooter() {
           </div>
 
           {/* Link columns */}
-          <div style={{ gridColumn: 'span 8', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
+          <div className="footer-links-col">
             {footerColumns.map(({ heading, links }) => (
               <div key={heading}>
                 <p style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: D3.terracotta, marginBottom: '1.5rem' }}>

@@ -122,6 +122,16 @@ export default function HeroSection() {
         .hero-scroll-indicator:hover .hero-scroll-chevron {
           animation-play-state: paused;
         }
+        .hero-content-pad { padding: 6rem 1.5rem 4rem; }
+        .hero-actions-wrap { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 3.5rem; }
+        .hero-action-btn   { display: inline-block; text-decoration: none; }
+        .hero-stats-grid   { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, auto)); gap: 0.75rem; max-width: 560px; }
+        @media (max-width: 640px) {
+          .hero-content-pad { padding: 5.5rem 1.25rem 3rem; }
+          .hero-actions-wrap { flex-direction: column; }
+          .hero-action-btn   { text-align: center; width: 100%; box-sizing: border-box; }
+          .hero-stats-grid   { grid-template-columns: repeat(3, 1fr); max-width: 100%; gap: 0.5rem; }
+        }
       `}</style>
 
       {/* Background */}
@@ -141,7 +151,7 @@ export default function HeroSection() {
       </div>
 
       {/* Content */}
-      <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '80rem', margin: '0 auto', padding: '6rem 1.5rem 4rem' }}>
+      <div className="hero-content-pad" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '80rem', margin: '0 auto' }}>
 
         {/* Eyebrow */}
         <div className="hero-eyebrow" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
@@ -184,10 +194,11 @@ export default function HeroSection() {
         </p>
 
         {/* CTAs */}
-        <div className="hero-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '3.5rem' }}>
+        <div className="hero-actions hero-actions-wrap">
           <Link href="#opportunity"
+            className="hero-action-btn"
             style={{
-              display: 'inline-block', background: D3.terracotta, color: D3.parchment,
+              background: D3.terracotta, color: D3.parchment,
               padding: '14px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
               fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
               textDecoration: 'none', fontWeight: 600,
@@ -203,14 +214,16 @@ export default function HeroSection() {
             }}
           >See the Opportunity</Link>
 
-          <Link href="/investors" style={{
-            display: 'inline-block', border: '1px solid rgba(247,243,236,0.2)',
-            color: `${D3.wheat}bb`, padding: '13px 36px',
-            fontFamily: 'var(--font-josefin), system-ui, sans-serif',
-            fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
-            textDecoration: 'none',
-            transition: `border-color ${DURATION.fast}s ${EASE.smooth}, color ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
-          }}
+          <Link href="/investors"
+            className="hero-action-btn"
+            style={{
+              border: '1px solid rgba(247,243,236,0.2)',
+              color: `${D3.wheat}bb`, padding: '13px 36px',
+              fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+              fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+              textDecoration: 'none',
+              transition: `border-color ${DURATION.fast}s ${EASE.smooth}, color ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
+            }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)';
               (e.currentTarget as HTMLAnchorElement).style.color       = D3.parchment;
@@ -223,14 +236,16 @@ export default function HeroSection() {
             }}
           >Investor Overview</Link>
 
-          <Link href="/floor-plan/" style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-            border: '1px solid rgba(247,243,236,0.2)', color: `${D3.wheat}bb`,
-            padding: '13px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
-            fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
-            textDecoration: 'none',
-            transition: `border-color ${DURATION.fast}s ${EASE.smooth}, color ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
-          }}
+          <Link href="/floor-plan/"
+            className="hero-action-btn"
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+              border: '1px solid rgba(247,243,236,0.2)', color: `${D3.wheat}bb`,
+              padding: '13px 36px', fontFamily: 'var(--font-josefin), system-ui, sans-serif',
+              fontSize: '0.67rem', letterSpacing: '0.25em', textTransform: 'uppercase',
+              textDecoration: 'none',
+              transition: `border-color ${DURATION.fast}s ${EASE.smooth}, color ${DURATION.fast}s ${EASE.smooth}, transform ${DURATION.fast}s ${EASE.smooth}`,
+            }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,98,42,0.6)';
               (e.currentTarget as HTMLAnchorElement).style.color       = D3.parchment;
@@ -248,7 +263,7 @@ export default function HeroSection() {
         </div>
 
         {/* Stat badges */}
-        <div className="hero-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, auto))', gap: '0.75rem', maxWidth: '560px' }}>
+        <div className="hero-stats hero-stats-grid">
           <StatBadge target={8000} suffix=" sq ft" label="Indoor Venue" />
           <StatBadge target={13}   suffix=""        label="Global Concepts" prefix="Up to " />
           <StatBadge target={25}   suffix=" taps"   label="Rotating Cider"  prefix="Up to " />
