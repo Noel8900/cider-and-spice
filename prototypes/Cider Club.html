@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cider Club — Cider &amp; Spice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; color-scheme: dark; -webkit-font-smoothing: antialiased; }
+    body { background: #1C1209; color: #F5ECD7; font-family: Inter, system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: #0e0c09; } ::-webkit-scrollbar-thumb { background: rgba(212,168,75,.22); border-radius: 3px; }
+    ::selection { background: rgba(196,98,45,.3); color: #F7F3EC; }
+    input, select, textarea { font-family: inherit; }
+    input:focus, select:focus, textarea:focus { outline: 1px solid rgba(196,98,45,.5); }
+    @keyframes cc-fade-up { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+    @keyframes cc-kenburns { from { transform:scale(1.07); } to { transform:scale(1); } }
+    @keyframes cc-shimmer { 0%,100% { opacity:.5; } 50% { opacity:1; } }
+    @media (max-width:900px) { .cc-tiers-grid { grid-template-columns: 1fr !important; } }
+    @media (max-width:640px) { .cc-perks-grid { grid-template-columns: 1fr !important; } }
+  </style>
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="80" fill="#1C1209"/>
+      <circle cx="60" cy="34" r="18" fill="none" stroke="#D4A84B" stroke-width=".8" opacity=".5"/>
+      <circle cx="60" cy="34" r="12" fill="rgba(196,98,45,.15)" stroke="#C4622D" stroke-width=".6"/>
+      <text x="60" y="38" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#D4A84B">◉</text>
+      <text x="60" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-style="italic" fill="#F5ECD7" opacity=".5">Cider Club</text>
+    </svg>
+  </template>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const CC = {
+  bg:        '#1C1209', bgDeep: '#100E0A', bgSurf: 'rgba(255,255,255,.022)',
+  cream:     '#F5ECD7', parchment: '#F7F3EC', wheat: '#E8C18D',
+  terracotta:'#C4622D', gold: '#D4A84B',
+  border:    'rgba(245,236,215,.08)', borderMid: 'rgba(245,236,215,.14)',
+};
+const BAR_IMG = 'https://lc-culinary-hub.vercel.app/images/cider-spice-bar-craft-cider-tap-pour-concept-rendering.png';
+const GRAIN   = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`;
+
+const TIERS = [
+  {
+    id: 'taster', name: 'Taster', price: 25, unit: '/mo',
+    tagline: 'Explore the Pour',
+    color: CC.wheat,
+    desc: 'The perfect introduction to the world of craft cider — curated flights every visit, exclusive discounts, and early event access.',
+    perks: [
+      '2 tasting flights per visit (4 oz each)',
+      '10% off all bar purchases',
+      'Priority access to ticketed events',
+      'Monthly member newsletter',
+      'Digital member card',
+    ],
+  },
+  {
+    id: 'enthusiast', name: 'Enthusiast', price: 45, unit: '/mo',
+    tagline: 'Go Deeper',
+    color: CC.terracotta,
+    hot: true,
+    desc: 'For the cider lover who wants to go deeper — full pours, reserved seating on event nights, and invitations to producer meet-and-greets.',
+    perks: [
+      'Everything in Taster',
+      '1 full pour (12 oz) per visit',
+      'Reserved bar-top seating on live music nights',
+      'Quarterly producer meet-and-greet invitations',
+      '15% off all bar purchases',
+      'Annual member gift (branded glassware)',
+    ],
+  },
+  {
+    id: 'founding', name: 'Founding Member', price: 85, unit: '/mo',
+    tagline: 'Be Part of the Origin',
+    color: CC.gold,
+    desc: 'The top tier — unlimited pours, a private-label seasonal bottle with your name on it, and a seat at our quarterly founding pairing dinners.',
+    perks: [
+      'Everything in Enthusiast',
+      'Unlimited tasting flights, all visits',
+      'Private-label seasonal bottle (quarterly)',
+      'Quarterly Founding Member pairing dinner',
+      '20% off all bar + food purchases',
+      'Name in the Hub\'s permanent founding wall',
+      'Exclusive access to new tap release events',
+    ],
+    badge: 'Most Exclusive',
+  },
+];
+
+const FAQS_CC = [
+  { q:'When does the Cider Club launch?',   a:'The Cider Club launches with the Hub — targeting Q1–Q2 2027. Pre-registration is open now and founding members will be confirmed before the public launch.' },
+  { q:'What is craft cider?',               a:'Craft cider is a fermented beverage made from fresh-pressed apple juice — closer to wine than beer in production. The best craft cideries express terroir, use heritage apple varieties, and avoid mass-production additives. Our bar focuses on small-batch NM and Southwest producers.' },
+  { q:'Can I pause or cancel my membership?', a:'Yes — all membership tiers are month-to-month. Founding Member status (including naming rights on the wall) is retained even after pausing, as long as you reactivate before the Hub\'s first anniversary.' },
+  { q:'Do I need a membership to visit the bar?', a:'No — the bar is open to everyone. Memberships give you discounts, reservations, and exclusive events, but every guest can order at the bar without a membership.' },
+  { q:'How many taps will be available?',   a:'We\'re opening with 20–25 rotating taps. Roughly 8–10 will be dedicated to NM and Southwest cideries. The remaining taps will rotate nationally and seasonally.' },
+];
+
+// Hooks
+function useInViewCC(threshold = 0.12) {
+  const ref = React.useRef(null);
+  const [inView, setInView] = React.useState(false);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return [ref, inView];
+}
+
+function FadeUp({ children, delay = 0, style = {} }) {
+  const [ref, inView] = useInViewCC();
+  return (
+    <div ref={ref} style={{ opacity: inView ? 1 : 0, transform: inView ? 'none' : 'translateY(18px)', transition: `opacity .7s ease ${delay}s, transform .7s ease ${delay}s`, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+// Nav
+function CCNav() {
+  const [scrolled, setScrolled] = React.useState(false);
+  React.useEffect(() => { const fn = () => setScrolled(window.scrollY > 60); window.addEventListener('scroll', fn, { passive: true }); return () => window.removeEventListener('scroll', fn); }, []);
+  return (
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 clamp(20px,4vw,56px)', background: scrolled ? 'rgba(22,14,7,.96)' : 'transparent', backdropFilter: scrolled ? 'blur(14px)' : 'none', borderBottom: `1px solid ${scrolled ? CC.border : 'transparent'}`, transition: 'all .4s' }}>
+      <a href="Cider & Spice — Homepage.html" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(245,236,215,.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+        <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8.5, letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(245,236,215,.4)' }}>Back to Hub</span>
+      </a>
+      <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 19, fontWeight: 300, color: CC.cream, letterSpacing: '-.01em' }}>
+        Cider <em style={{ fontStyle: 'italic', color: CC.terracotta }}>&amp;</em> Spice
+      </div>
+      <a href="#join" style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8.5, letterSpacing: '.22em', textTransform: 'uppercase', background: CC.terracotta, color: CC.parchment, textDecoration: 'none', padding: '9px 20px', fontWeight: 600 }}>
+        Join Now
+      </a>
+    </nav>
+  );
+}
+
+// Hero
+function CCHero() {
+  return (
+    <section style={{ position: 'relative', minHeight: '70svh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', background: CC.bg, paddingTop: 64 }}>
+      <img src={BAR_IMG} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', animation: 'cc-kenburns 16s ease-out both' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg,rgba(28,18,9,1) 0%,rgba(28,18,9,.75) 38%,rgba(28,18,9,.25) 100%)' }} />
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: GRAIN, opacity: .03, backgroundSize: '180px' }} />
+      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1200, margin: '0 auto', padding: '0 clamp(24px,5vw,72px) clamp(52px,7vw,80px)' }}>
+        <div style={{ animation: 'cc-fade-up .8s ease .2s both', display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
+          <div style={{ width: 32, height: 1, background: CC.terracotta }} />
+          <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: CC.terracotta }}>Founding Membership · Opening Q1–Q2 2027</span>
+        </div>
+        <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(52px,9vw,100px)', fontWeight: 300, lineHeight: .88, letterSpacing: '-.022em', color: CC.parchment, marginBottom: 28, animation: 'cc-fade-up .9s ease .36s both' }}>
+          The Cider Club<br /><em style={{ fontStyle: 'italic', color: CC.terracotta }}>is Now Open</em>
+        </h1>
+        <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 'clamp(13px,1.5vw,15px)', lineHeight: 1.82, color: CC.wheat, opacity: .62, maxWidth: 480, marginBottom: 40, animation: 'cc-fade-up .8s ease .52s both' }}>
+          25 rotating taps. 8–10 New Mexico cideries. Three membership tiers designed around how deep you want to go.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, animation: 'cc-fade-up .8s ease .66s both' }}>
+          <a href="#tiers" style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', background: CC.terracotta, color: CC.parchment, textDecoration: 'none', padding: '14px 36px', fontWeight: 600 }}>See Membership Tiers</a>
+          <a href="#join" style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', border: `1px solid rgba(245,236,215,.18)`, color: `${CC.wheat}a0`, textDecoration: 'none', padding: '14px 36px' }}>Pre-Register Free</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Tiers
+function CCTiers() {
+  const [selected, setSelected] = React.useState('enthusiast');
+  return (
+    <section id="tiers" style={{ background: CC.bgDeep, borderTop: `1px solid ${CC.border}`, padding: 'clamp(72px,9vw,104px) clamp(24px,5vw,72px)' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <FadeUp style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 14 }}>
+            <div style={{ width: 24, height: 1, background: CC.terracotta }} />
+            <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: CC.terracotta }}>Membership Tiers</span>
+            <div style={{ width: 24, height: 1, background: CC.terracotta }} />
+          </div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,52px)', fontWeight: 300, color: CC.cream, marginBottom: 12 }}>Choose Your Pour</h2>
+          <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 14, color: CC.wheat, opacity: .50, maxWidth: 480, margin: '0 auto' }}>All memberships are month-to-month — no contracts, no franchise fees. Cancel anytime.</p>
+        </FadeUp>
+
+        <div className="cc-tiers-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 3 }}>
+          {TIERS.map((tier, i) => {
+            const active = selected === tier.id;
+            return (
+              <FadeUp key={tier.id} delay={i * 0.08}>
+                <div onClick={() => setSelected(tier.id)}
+                  style={{ position: 'relative', padding: '36px 28px', background: active ? `rgba(${tier.id==='taster'?'232,193,141':tier.id==='enthusiast'?'196,98,45':'212,168,75'},.07)` : CC.bgSurf, border: `1px solid ${active ? `${tier.color}44` : CC.border}`, cursor: 'pointer', transition: 'all .3s ease', height: '100%', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                  {/* Top accent */}
+                  {active && <div style={{ position: 'absolute', top: -1, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${tier.color},transparent)` }} />}
+                  {/* Badge */}
+                  {tier.badge && <div style={{ position: 'absolute', top: 16, right: 16, fontFamily: "'Josefin Sans',sans-serif", fontSize: 7, letterSpacing: '.2em', textTransform: 'uppercase', color: tier.color, border: `1px solid ${tier.color}44`, padding: '3px 8px', background: `${tier.color}0e` }}>{tier.badge}</div>}
+                  {tier.hot && <div style={{ position: 'absolute', top: 16, right: 16, fontFamily: "'Josefin Sans',sans-serif", fontSize: 7, letterSpacing: '.2em', textTransform: 'uppercase', color: tier.color, border: `1px solid ${tier.color}44`, padding: '3px 8px', background: `${tier.color}0e` }}>Most Popular</div>}
+                  {/* Tier name */}
+                  <div>
+                    <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.28em', textTransform: 'uppercase', color: active ? tier.color : `${tier.color}70`, marginBottom: 8, transition: 'color .3s' }}>{tier.tagline}</div>
+                    <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: active ? CC.cream : `${CC.cream}88`, transition: 'color .3s' }}>{tier.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 8 }}>
+                      <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 40, fontWeight: 300, color: tier.color, lineHeight: 1 }}>${tier.price}</span>
+                      <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.18em', color: `${CC.cream}38` }}>{tier.unit}</span>
+                    </div>
+                  </div>
+                  {/* Desc */}
+                  <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.75, color: CC.wheat, opacity: active ? .60 : .38, flex: 1, transition: 'opacity .3s' }}>{tier.desc}</p>
+                  {/* Perks */}
+                  <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 9 }}>
+                    {tier.perks.map(p => (
+                      <li key={p} style={{ fontFamily: 'Inter,sans-serif', fontSize: 12.5, color: CC.wheat, opacity: active ? .55 : .30, display: 'flex', gap: 10, lineHeight: 1.45, transition: 'opacity .3s' }}>
+                        <span style={{ color: active ? tier.color : `${tier.color}50`, flexShrink: 0, transition: 'color .3s' }}>◈</span>{p}
+                      </li>
+                    ))}
+                  </ul>
+                  {/* CTA */}
+                  <a href="#join" style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.22em', textTransform: 'uppercase', textDecoration: 'none', padding: '13px 24px', textAlign: 'center', background: active ? tier.color : 'transparent', color: active ? (tier.id==='taster'?'#1C1209':CC.parchment) : `${CC.cream}38`, border: active ? 'none' : `1px solid ${CC.border}`, transition: 'all .3s', fontWeight: active ? 600 : 400 }}>
+                    {active ? `Join ${tier.name} →` : 'Select'}
+                  </a>
+                </div>
+              </FadeUp>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Perks comparison
+const ALL_PERKS = [
+  { label: 'Tasting flights', taster: '2 / visit', enthusiast: '2 / visit', founding: 'Unlimited' },
+  { label: 'Full pours (12 oz)', taster: '—', enthusiast: '1 / visit', founding: 'Unlimited' },
+  { label: 'Bar discount', taster: '10%', enthusiast: '15%', founding: '20%' },
+  { label: 'Food discount', taster: '—', enthusiast: '—', founding: '20%' },
+  { label: 'Priority event access', taster: '✓', enthusiast: '✓', founding: '✓' },
+  { label: 'Reserved seating — live music', taster: '—', enthusiast: '✓', founding: '✓' },
+  { label: 'Producer meet-and-greets', taster: '—', enthusiast: 'Quarterly', founding: 'All events' },
+  { label: 'Annual member gift', taster: '—', enthusiast: 'Glassware', founding: 'Glassware + Bottle' },
+  { label: 'Private-label seasonal bottle', taster: '—', enthusiast: '—', founding: 'Quarterly' },
+  { label: 'Founding Member pairing dinners', taster: '—', enthusiast: '—', founding: 'Quarterly' },
+  { label: 'Name on founding wall', taster: '—', enthusiast: '—', founding: '✓' },
+  { label: 'New tap release events', taster: '—', enthusiast: '—', founding: 'Exclusive access' },
+];
+
+function CCCompare() {
+  return (
+    <section style={{ background: CC.bg, padding: 'clamp(72px,9vw,104px) clamp(24px,5vw,72px)', borderTop: `1px solid ${CC.border}` }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        <FadeUp style={{ textAlign: 'center', marginBottom: 44 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 14 }}>
+            <div style={{ width: 24, height: 1, background: CC.terracotta }} />
+            <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: CC.terracotta }}>Compare</span>
+            <div style={{ width: 24, height: 1, background: CC.terracotta }} />
+          </div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4.5vw,48px)', fontWeight: 300, color: CC.cream }}>Side-by-Side</h2>
+        </FadeUp>
+        <FadeUp delay={0.1}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 500 }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', padding: '14px 16px', fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.22em', textTransform: 'uppercase', color: `${CC.cream}35`, borderBottom: `1px solid ${CC.border}`, fontWeight: 400 }}>Perk</th>
+                  {TIERS.map(t => (
+                    <th key={t.id} style={{ padding: '14px 16px', fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 300, color: t.color, borderBottom: `1px solid ${CC.border}`, textAlign: 'center', whiteSpace: 'nowrap' }}>{t.name}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {ALL_PERKS.map((row, i) => (
+                  <tr key={row.label} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,.018)' }}>
+                    <td style={{ padding: '12px 16px', fontFamily: 'Inter,sans-serif', fontSize: 13, color: `${CC.cream}55`, borderBottom: `1px solid rgba(245,236,215,.04)` }}>{row.label}</td>
+                    {['taster','enthusiast','founding'].map(k => (
+                      <td key={k} style={{ padding: '12px 16px', textAlign: 'center', fontFamily: 'Inter,sans-serif', fontSize: 13, color: row[k] === '—' ? `${CC.cream}22` : row[k] === '✓' ? CC.terracotta : CC.wheat, borderBottom: `1px solid rgba(245,236,215,.04)`, opacity: row[k]==='—'?1:.85 }}>{row[k]}</td>
+                    ))}
+                  </tr>
+                ))}
+                <tr>
+                  <td style={{ padding: '18px 16px', borderTop: `1px solid ${CC.border}` }} />
+                  {TIERS.map(t => (
+                    <td key={t.id} style={{ padding: '18px 16px', textAlign: 'center', borderTop: `1px solid ${CC.border}` }}>
+                      <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: t.color }}>${t.price}<span style={{ fontFamily: 'Inter,sans-serif', fontSize: 11, color: `${CC.cream}35` }}>/mo</span></div>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+// FAQ
+function CCFaq() {
+  const [open, setOpen] = React.useState(null);
+  return (
+    <section style={{ background: CC.bgDeep, borderTop: `1px solid ${CC.border}`, padding: 'clamp(72px,9vw,104px) clamp(24px,5vw,72px)' }}>
+      <div style={{ maxWidth: 760, margin: '0 auto' }}>
+        <FadeUp style={{ textAlign: 'center', marginBottom: 44 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 14 }}>
+            <div style={{ width: 24, height: 1, background: CC.terracotta }} />
+            <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: CC.terracotta }}>FAQ</span>
+            <div style={{ width: 24, height: 1, background: CC.terracotta }} />
+          </div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4.5vw,48px)', fontWeight: 300, color: CC.cream }}>Good Questions</h2>
+        </FadeUp>
+        {FAQS_CC.map((faq, i) => {
+          const isOpen = open === i;
+          return (
+            <FadeUp key={i} delay={i * 0.05}>
+              <div style={{ borderTop: `1px solid ${isOpen ? 'rgba(196,98,45,.22)' : CC.border}`, transition: 'border-color .3s' }}>
+                <button onClick={() => setOpen(isOpen ? null : i)} style={{ width:'100%', background:'none', border:'none', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center', padding:'22px 0', gap:20, textAlign:'left' }}>
+                  <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:300, color: isOpen?CC.cream:`${CC.cream}cc`, lineHeight:1.2, transition:'color .25s' }}>{faq.q}</span>
+                  <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, color:isOpen?CC.terracotta:`${CC.cream}28`, lineHeight:1, flexShrink:0, transition:'all .3s ease', transform:isOpen?'rotate(45deg)':'rotate(0)', display:'block' }}>+</span>
+                </button>
+                <div style={{ overflow:'hidden', maxHeight:isOpen?300:0, opacity:isOpen?1:0, transition:'max-height .4s ease, opacity .3s ease' }}>
+                  <p style={{ fontFamily:'Inter,sans-serif', fontSize:14, lineHeight:1.82, color:CC.wheat, opacity:.56, paddingBottom:26 }}>{faq.a}</p>
+                </div>
+              </div>
+            </FadeUp>
+          );
+        })}
+        <div style={{ borderTop: `1px solid ${CC.border}` }} />
+      </div>
+    </section>
+  );
+}
+
+// Join form
+function CCJoin() {
+  const [tier, setTier]       = React.useState('enthusiast');
+  const [name, setName]       = React.useState('');
+  const [email, setEmail]     = React.useState('');
+  const [submitted, setSubmit] = React.useState(false);
+
+  const t = TIERS.find(t => t.id === tier);
+
+  const inputSt = { width: '100%', background: 'rgba(255,255,255,.04)', border: `1px solid ${CC.border}`, padding: '13px 16px', fontFamily: 'Inter,sans-serif', fontSize: 14, color: CC.cream, display: 'block' };
+
+  return (
+    <section id="join" style={{ background: CC.bg, borderTop: `1px solid ${CC.border}`, padding: 'clamp(72px,9vw,104px) clamp(24px,5vw,72px)' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 'clamp(40px,6vw,80px)', alignItems: 'start' }}>
+        {/* Left: persuasion */}
+        <FadeUp>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+            <div style={{ width: 28, height: 1, background: CC.terracotta }} />
+            <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: CC.terracotta }}>Pre-Register</span>
+          </div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,54px)', fontWeight: 300, color: CC.cream, lineHeight: .95, marginBottom: 22 }}>
+            Reserve Your<br /><em style={{ fontStyle: 'italic', color: CC.terracotta }}>Founding Spot</em>
+          </h2>
+          <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 14, lineHeight: 1.8, color: CC.wheat, opacity: .55, marginBottom: 36, maxWidth: 400 }}>
+            Pre-registration is free and holds your tier. No payment is collected until the Hub opens. Founding Members are confirmed on a first-come, first-served basis — we expect the Founding tier to sell out before the public launch.
+          </p>
+          {/* Trust signals */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {[['◈','Free to pre-register — no card required'],['◉','Cancel or change tier anytime before launch'],['✦','Founding Members are named permanently in the Hub']].map(([icon, txt]) => (
+              <div key={txt} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <span style={{ color: CC.terracotta, fontFamily: "'Cormorant Garamond',serif", fontSize: 16, flexShrink: 0, marginTop: 1 }}>{icon}</span>
+                <span style={{ fontFamily: 'Inter,sans-serif', fontSize: 13.5, color: CC.wheat, opacity: .55, lineHeight: 1.5 }}>{txt}</span>
+              </div>
+            ))}
+          </div>
+        </FadeUp>
+
+        {/* Right: form */}
+        <FadeUp delay={0.15}>
+          {submitted ? (
+            <div style={{ padding: '48px 36px', border: `1px solid rgba(196,98,45,.3)`, background: 'rgba(196,98,45,.06)', textAlign: 'center' }}>
+              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 300, color: CC.terracotta, marginBottom: 12 }}>✓</div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 300, color: CC.cream, marginBottom: 10 }}>You're on the list</h3>
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: CC.wheat, opacity: .55 }}>We'll email you before the public launch with your Founding Member confirmation. Welcome to the Club.</p>
+            </div>
+          ) : (
+            <form onSubmit={e => { e.preventDefault(); if (name && email) setSubmit(true); }}
+              style={{ padding: 'clamp(28px,4vw,40px)', background: 'rgba(255,255,255,.022)', border: `1px solid ${CC.border}`, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: CC.cream, marginBottom: 4 }}>Join the Cider Club</div>
+              {/* Tier selector */}
+              <div>
+                <label style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.24em', textTransform: 'uppercase', color: `${CC.cream}45`, display: 'block', marginBottom: 10 }}>Select Tier</label>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  {TIERS.map(tr => (
+                    <button key={tr.id} type="button" onClick={() => setTier(tr.id)}
+                      style={{ flex: 1, padding: '10px 8px', fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.15em', textTransform: 'uppercase', cursor: 'pointer', border: `1px solid ${tier===tr.id?`${tr.color}55`:CC.border}`, background: tier===tr.id?`${tr.color}0d`:'transparent', color: tier===tr.id?tr.color:`${CC.cream}45`, transition: 'all .25s' }}>
+                      {tr.name.split(' ')[0]}<br />
+                      <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, fontWeight: 300 }}>${tr.price}</span>
+                    </button>
+                  ))}
+                </div>
+                <div style={{ fontFamily: 'Inter,sans-serif', fontSize: 11.5, color: `${CC.cream}30`, marginTop: 8 }}>
+                  {t.desc}
+                </div>
+              </div>
+              {/* Fields */}
+              <div>
+                <label style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.24em', textTransform: 'uppercase', color: `${CC.cream}45`, display: 'block', marginBottom: 6 }}>Full Name</label>
+                <input type="text" required placeholder="Your name" value={name} onChange={e => setName(e.target.value)} style={inputSt} />
+              </div>
+              <div>
+                <label style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.24em', textTransform: 'uppercase', color: `${CC.cream}45`, display: 'block', marginBottom: 6 }}>Email Address</label>
+                <input type="email" required placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} style={inputSt} />
+              </div>
+              <button type="submit" style={{ background: CC.terracotta, color: CC.parchment, border: 'none', padding: '15px 24px', fontFamily: "'Josefin Sans',sans-serif", fontSize: 9.5, letterSpacing: '.24em', textTransform: 'uppercase', cursor: 'pointer', fontWeight: 600, transition: 'background .25s' }}
+                onMouseEnter={e => e.currentTarget.style.background='#a8521f'} onMouseLeave={e => e.currentTarget.style.background=CC.terracotta}
+              >Pre-Register as {t.name} →</button>
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 11, color: `${CC.cream}28`, textAlign: 'center', lineHeight: 1.5 }}>No payment collected until opening. Unsubscribe anytime.</p>
+            </form>
+          )}
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+// Footer
+function CCFooter() {
+  return (
+    <footer style={{ background: CC.bgDeep, borderTop: `1px solid ${CC.border}`, padding: '32px clamp(24px,5vw,72px)' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
+        <span style={{ fontFamily: 'Inter,sans-serif', fontSize: 11.5, color: `${CC.cream}28` }}>© 2026 Cider &amp; Spice LLC · Las Cruces, New Mexico</span>
+        <div style={{ display: 'flex', gap: 24 }}>
+          {[['Homepage','Cider & Spice — Homepage.html'],['Floor Plan','Floor Plan.html']].map(([l,h]) => (
+            <a key={l} href={h} style={{ fontFamily: 'Inter,sans-serif', fontSize: 12, color: `${CC.cream}38`, textDecoration: 'none', transition: 'color .2s' }}
+              onMouseEnter={e=>e.currentTarget.style.color=CC.cream} onMouseLeave={e=>e.currentTarget.style.color=`${CC.cream}38`}
+            >{l}</a>
+          ))}
+        </div>
+        <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.25em', textTransform: 'uppercase', color: `${CC.gold}30` }}>✦ Opening Q1–Q2 2027 ✦</span>
+      </div>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <React.Fragment>
+      <CCNav />
+      <CCHero />
+      <CCTiers />
+      <CCCompare />
+      <CCFaq />
+      <CCJoin />
+      <CCFooter />
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

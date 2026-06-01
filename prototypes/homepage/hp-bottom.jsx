@@ -64,7 +64,6 @@ function HPStats() {
                 <div>
                   <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 7.5, letterSpacing: '.28em', textTransform: 'uppercase', color: hot ? HP.terracotta : `${HP.cream}35`, marginBottom: 6 }}>{hot ? '★ Most Inquired' : '\u00A0'}</div>
                   <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: HP.cream, marginBottom: 4 }}>{tier}</div>
-                  <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.18em', color: HP.gold }}>{range}</div>
                 </div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
                   {perks.map(p => (
@@ -87,49 +86,93 @@ function HPStats() {
 }
 
 // ── Milestone Timeline ──────────────────────────────────────────────────────
-const MILESTONES = [
-  { q:'Q3 2024', title:'Site Identified',                   done:true,  detail:'East Lohman Ave corridor selected — 8,000 sq ft anchor space confirmed within the West Picacho MRA redevelopment zone.' },
-  { q:'Q1 2025', title:'Business Plan Complete',            done:true,  detail:'Full financial model, market analysis, grant eligibility assessment, and capital stack structured.' },
-  { q:'Q2–Q3 2025', title:'Community & Partner Outreach',   done:true,  detail:'Endorsed by Elevate Las Cruces, Visit Las Cruces, WESST NM, SCORE, NMSU/DACC, and the Las Cruces SBDC.' },
-  { q:'Q3–Q4 2026', title:'Capital Raise & Vendor Selection', done:false, active:true, detail:'Investor inquiries are now open. Founding cohort of 10–13 vendors selected. Grant applications submitted.' },
-  { q:'Q4 2026–Q1 2027', title:'Permitting & Build-Out',   done:false, detail:'City permits, contractor selection, stall build-out, kitchen equipment installation, and pre-opening inspections.' },
-  { q:'Q1 2027', title:'Soft Open',                         done:false, detail:'Founding vendors, Cider Club members, and press preview — limited-capacity soft launch.' },
-  { q:'Q2 2027', title:'Grand Opening',                     done:false, detail:'Public grand opening of Cider & Spice — Southern New Mexico\'s first food hall and craft cider bar.' },
+const ROAD_PHASES = [
+  {
+    num: '01', name: 'The Foundation', status: 'complete', badge: '✓ Complete',
+    items: [
+      { title: 'Operational Blueprint', body: 'With our business plan and financial modeling complete, we have established a robust framework for financial sustainability, market success, and grant eligibility.' },
+      { title: 'Site Secured',          body: 'We identified our home in the East Lohman Ave corridor, anchoring the West Picacho MRA redevelopment.' },
+      { title: 'Building Partnerships', body: 'We have cultivated a strong network of support, including key regional organizations like WESST, SCORE, NMSU/DACC, the Las Cruces SBDC, Elevate Las Cruces, and Visit Las Cruces.' },
+    ],
+  },
+  {
+    num: '02', name: 'Building Momentum', status: 'active', badge: 'In Progress',
+    items: [
+      { title: 'Scaling Up',     body: 'We are currently in the midst of our capital raise and are curating an exceptional founding cohort of 10–13 local vendors.' },
+      { title: 'The Build-Out',  body: 'Moving from plans to physical space, we will begin permitting and construction, transforming our site into a state-of-the-art culinary destination.' },
+      { title: 'The Big Reveal', body: 'Following a private soft-launch for our closest partners and supporters, we will open our doors to the public for our Grand Opening.' },
+    ],
+  },
 ];
+
+function RoadPhaseBlock({ phase, delay }) {
+  const complete = phase.status === 'complete';
+  const active = phase.status === 'active';
+  const accent = complete ? HP.terracotta : HP.gold;
+  return (
+    <FadeIn delay={delay} style={{ height: '100%' }}>
+      <div style={{
+        position: 'relative', height: '100%', display: 'flex', flexDirection: 'column',
+        padding: 'clamp(32px,3.5vw,48px)',
+        background: active ? 'linear-gradient(165deg, rgba(212,168,75,.06) 0%, rgba(196,98,45,.03) 100%)' : 'rgba(255,255,255,.018)',
+        border: `1px solid ${active ? 'rgba(212,168,75,.28)' : HP.border}`,
+        borderTop: `2px solid ${accent}`,
+      }}>
+        {/* Phase header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, marginBottom: 28, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 16 }}>
+            <span aria-hidden="true" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(48px,6vw,72px)', fontWeight: 200, fontStyle: 'italic', color: accent, lineHeight: .85, letterSpacing: '-.02em', opacity: complete ? 1 : .9 }}>{phase.num}</span>
+            <div>
+              <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.32em', textTransform: 'uppercase', color: `${accent}cc`, marginBottom: 6 }}>Phase {phase.num}</div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(26px,3vw,34px)', fontWeight: 300, color: HP.cream, lineHeight: 1.05, letterSpacing: '-.01em' }}>{phase.name}</h3>
+            </div>
+          </div>
+          <span style={{
+            fontFamily: "'Josefin Sans',sans-serif", fontSize: 7.5, letterSpacing: '.24em', textTransform: 'uppercase', color: accent,
+            border: `1px solid ${accent}55`, background: `${accent}10`, padding: '5px 12px', whiteSpace: 'nowrap', marginTop: 18,
+          }}>{phase.badge}</span>
+        </div>
+
+        {/* Items */}
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          {/* Vertical connector */}
+          <div aria-hidden="true" style={{ position: 'absolute', left: 6, top: 16, bottom: 16, width: 1, background: `linear-gradient(180deg, ${accent}80 0%, ${accent}25 80%, transparent)` }} />
+          {phase.items.map((item, i) => (
+            <li key={i} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 16, padding: '14px 0', alignItems: 'flex-start' }}>
+              {/* Dot */}
+              <div style={{ display: 'flex', justifyContent: 'flex-start', paddingTop: 8 }}>
+                <span aria-hidden="true" style={{
+                  width: 13, height: 13, borderRadius: '50%',
+                  border: `1.5px solid ${accent}`,
+                  background: complete ? accent : (active && i === 0 ? `${accent}30` : 'transparent'),
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: active && i === 0 ? `0 0 0 4px ${accent}18` : 'none',
+                }}>
+                  {complete && <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke={HP.parchment} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                </span>
+              </div>
+              {/* Content */}
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 19, fontWeight: 400, color: HP.cream, lineHeight: 1.25, marginBottom: 6, letterSpacing: '-.003em' }}>{item.title}</div>
+                <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13.5, lineHeight: 1.72, color: HP.wheat, opacity: .58, margin: 0 }}>{item.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </FadeIn>
+  );
+}
 
 function HPTimeline() {
   return (
     <section id="timeline" style={{ background: HP.bg, padding: 'clamp(80px,10vw,112px) clamp(24px,5vw,72px)', borderTop: `1px solid ${HP.border}` }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <SectionEyebrow badge="Project Roadmap" title="The Path to Opening" subtitle="From site selection to grand opening — here's where we are and what comes next." />
-        <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative' }}>
-          {/* Vertical line */}
-          <div style={{ position: 'absolute', left: 11, top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg,${HP.terracotta},rgba(212,168,75,.2) 60%,transparent)` }} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            {MILESTONES.map(({ q, title, done, active, detail }, i) => (
-              <FadeIn key={title} delay={i * 0.06}>
-                <div style={{ display: 'flex', gap: 28, paddingBottom: 32 }}>
-                  {/* Dot */}
-                  <div style={{ flexShrink: 0, width: 23, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 2 }}>
-                    <div style={{ width: 23, height: 23, borderRadius: '50%', border: `1.5px solid ${done ? HP.terracotta : active ? HP.gold : 'rgba(245,236,215,.18)'}`, background: done ? HP.terracotta : active ? 'rgba(212,168,75,.12)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {done && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={HP.parchment} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
-                      {active && <div style={{ width: 7, height: 7, borderRadius: '50%', background: HP.gold }} />}
-                    </div>
-                  </div>
-                  {/* Content */}
-                  <div style={{ flex: 1, paddingTop: 1 }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                      <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.22em', textTransform: 'uppercase', color: done ? HP.terracotta : active ? HP.gold : `${HP.cream}28` }}>{q}</span>
-                      {done && <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 7, letterSpacing: '.18em', textTransform: 'uppercase', color: HP.terracotta, border: `1px solid rgba(196,98,45,.3)`, padding: '2px 7px' }}>✓ Complete</span>}
-                      {active && <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 7, letterSpacing: '.18em', textTransform: 'uppercase', color: HP.gold, border: `1px solid rgba(212,168,75,.3)`, background: 'rgba(212,168,75,.07)', padding: '2px 7px' }}>In Progress</span>}
-                    </div>
-                    <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: done || active ? HP.cream : `${HP.cream}50`, marginBottom: 6, lineHeight: 1.2 }}>{title}</h3>
-                    <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: HP.wheat, opacity: done || active ? .50 : .30 }}>{detail}</p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+        <SectionEyebrow badge="The Road Ahead" title="The Road to Cider &amp; Spice" subtitle="We are building more than a food hall — we are building a community hub. Here is how we have arrived at this stage and where we are headed." />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'clamp(16px,2.5vw,28px)', alignItems: 'stretch', marginTop: 12 }}>
+          {ROAD_PHASES.map((phase, i) => (
+            <RoadPhaseBlock key={phase.num} phase={phase} delay={i * 0.12} />
+          ))}
         </div>
       </div>
     </section>
@@ -283,4 +326,115 @@ function HPFaq() {
   );
 }
 
-Object.assign(window, { HPStats, HPTimeline, HPFaq, HPCta, HPFooter });
+// ── Ask a Question ──────────────────────────────────────────────────────────
+function HPAskQuestion() {
+  const [name,  setName]  = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [q,     setQ]     = React.useState('');
+  const [sent,  setSent]  = React.useState(false);
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    try { setCount(JSON.parse(localStorage.getItem('cs_questions') || '[]').length); } catch {}
+  }, []);
+
+  const submit = e => {
+    e.preventDefault();
+    if (!name.trim() || !q.trim()) return;
+    const entry = { id: Date.now(), name: name.trim(), email: email.trim(), question: q.trim(), ts: new Date().toISOString(), status: 'new' };
+    try {
+      const existing = JSON.parse(localStorage.getItem('cs_questions') || '[]');
+      localStorage.setItem('cs_questions', JSON.stringify([entry, ...existing]));
+    } catch {}
+    setSent(true);
+  };
+
+  const inputSt = { width: '100%', background: 'rgba(255,255,255,.04)', border: `1px solid ${HP.border}`, padding: '13px 16px', fontFamily: 'Inter,sans-serif', fontSize: 14, color: HP.cream, display: 'block', outline: 'none', transition: 'border-color .25s' };
+  const labelSt = { fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.24em', textTransform: 'uppercase', color: `${HP.cream}45`, display: 'block', marginBottom: 7 };
+
+  return (
+    <section id="ask" style={{ background: HP.bg, borderTop: `1px solid ${HP.border}`, padding: 'clamp(80px,10vw,112px) clamp(24px,5vw,72px)' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 'clamp(40px,6vw,96px)', alignItems: 'start' }}>
+
+        {/* Left — context */}
+        <FadeIn>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+            <div style={{ width: 28, height: 1, background: HP.terracotta, flexShrink: 0 }} />
+            <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.35em', textTransform: 'uppercase', color: HP.terracotta }}>Questions &amp; Answers</span>
+          </div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,54px)', fontWeight: 300, color: HP.cream, lineHeight: .95, marginBottom: 22 }}>
+            Something on<br /><em style={{ fontStyle: 'italic', color: HP.terracotta }}>Your Mind?</em>
+          </h2>
+          <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 14, lineHeight: 1.82, color: HP.wheat, opacity: .56, marginBottom: 36, maxWidth: 400 }}>
+            Whether you're curious about vendor stalls, the Cider Club, investment tiers, or just want to know more about what's coming — ask us directly. We read every question personally.
+          </p>
+          {/* Trust signals */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {[
+              ['◈', 'Every question is read by the founding team'],
+              ['◉', 'We respond by email within 2 business days'],
+              ['✦', 'Great questions may be added to the FAQ'],
+            ].map(([icon, txt]) => (
+              <div key={txt} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <span style={{ color: HP.terracotta, fontFamily: "'Cormorant Garamond',serif", fontSize: 16, flexShrink: 0, marginTop: 1 }}>{icon}</span>
+                <span style={{ fontFamily: 'Inter,sans-serif', fontSize: 13.5, color: HP.wheat, opacity: .52, lineHeight: 1.5 }}>{txt}</span>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Right — form */}
+        <FadeIn delay={0.15}>
+          {sent ? (
+            <div style={{ padding: '48px 36px', border: `1px solid rgba(196,98,45,.3)`, background: 'rgba(196,98,45,.06)', textAlign: 'center' }}>
+              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 40, fontWeight: 300, color: HP.terracotta, marginBottom: 12 }}>◉</div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontWeight: 300, color: HP.cream, marginBottom: 10 }}>Question received</h3>
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: HP.wheat, opacity: .52 }}>Thanks {name.split(' ')[0]} — we'll get back to you within 2 business days.</p>
+            </div>
+          ) : (
+            <form onSubmit={submit} style={{ padding: 'clamp(24px,3vw,36px)', background: 'rgba(255,255,255,.022)', border: `1px solid ${HP.border}`, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: HP.cream, marginBottom: 4 }}>Ask a Question</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div>
+                  <label style={labelSt}>Your Name *</label>
+                  <input required type="text" placeholder="First Last" value={name} onChange={e => setName(e.target.value)} style={inputSt}
+                    onFocus={e => e.target.style.borderColor='rgba(196,98,45,.5)'} onBlur={e => e.target.style.borderColor=HP.border} />
+                </div>
+                <div>
+                  <label style={labelSt}>Email (for reply)</label>
+                  <input type="email" placeholder="you@email.com" value={email} onChange={e => setEmail(e.target.value)} style={inputSt}
+                    onFocus={e => e.target.style.borderColor='rgba(196,98,45,.5)'} onBlur={e => e.target.style.borderColor=HP.border} />
+                </div>
+              </div>
+              <div>
+                <label style={labelSt}>Your Question *</label>
+                <textarea required rows={5} placeholder="What would you like to know about Cider &amp; Spice?" value={q} onChange={e => setQ(e.target.value)}
+                  style={{ ...inputSt, resize: 'vertical', lineHeight: 1.65 }}
+                  onFocus={e => e.target.style.borderColor='rgba(196,98,45,.5)'} onBlur={e => e.target.style.borderColor=HP.border} />
+              </div>
+              {/* Topic chips */}
+              <div>
+                <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 7.5, letterSpacing: '.22em', textTransform: 'uppercase', color: `${HP.cream}35`, marginBottom: 8 }}>Quick topic — tap to fill</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {['Vendor stall availability','Cider Club membership','Investment tiers','Opening date','Commissary kitchen','Incubator program'].map(topic => (
+                    <button key={topic} type="button" onClick={() => setQ(prev => prev ? prev : `I have a question about: ${topic}. `)}
+                      style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.16em', textTransform: 'uppercase', padding: '6px 12px', border: `1px solid rgba(245,236,215,.10)`, background: 'transparent', color: `${HP.cream}42`, cursor: 'pointer', transition: 'all .2s' }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(196,98,45,.35)'; e.currentTarget.style.color=HP.parchment; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(245,236,215,.10)'; e.currentTarget.style.color=`${HP.cream}42`; }}
+                    >{topic}</button>
+                  ))}
+                </div>
+              </div>
+              <button type="submit" style={{ background: HP.terracotta, color: HP.parchment, border: 'none', padding: '15px 24px', fontFamily: "'Josefin Sans',sans-serif", fontSize: 9.5, letterSpacing: '.24em', textTransform: 'uppercase', cursor: 'pointer', fontWeight: 600, transition: 'background .25s' }}
+                onMouseEnter={e => e.currentTarget.style.background='#a8521f'} onMouseLeave={e => e.currentTarget.style.background=HP.terracotta}
+              >Send Your Question →</button>
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 11, color: `${HP.cream}28`, textAlign: 'center' }}>We do not sell or share your information.</p>
+            </form>
+          )}
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+Object.assign(window, { HPStats, HPTimeline, HPFaq, HPAskQuestion, HPCta, HPFooter });

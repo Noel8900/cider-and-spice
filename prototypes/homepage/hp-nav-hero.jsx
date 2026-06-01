@@ -139,9 +139,8 @@ function HPHero() {
         {/* CTAs */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 52, animation: 'hp-fade-up .8s ease both', animationDelay: '.82s' }}>
           {[
-            { l: 'See the Opportunity', fill: true,  href: '#features' },
+            { l: 'See the Opportunity', fill: true,  href: '#hall-os' },
             { l: 'Investor Overview',   fill: false, href: '#stats'    },
-            { l: '✦ Floor Plan',        fill: false, href: '/floor-plan'  },
           ].map(({ l, fill, href }) => (
             <a key={l} href={href} style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', padding: '14px 34px', textDecoration: 'none', fontWeight: fill ? 600 : 400, background: fill ? HP.terracotta : 'transparent', color: fill ? HP.parchment : `${HP.wheat}a8`, border: fill ? 'none' : `1px solid rgba(245,236,215,.18)`, transition: 'all .25s', display: 'inline-block' }}
               onMouseEnter={e => { e.currentTarget.style.background = fill ? '#a8521f' : 'rgba(245,236,215,.06)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}

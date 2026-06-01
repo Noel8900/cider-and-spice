@@ -166,29 +166,50 @@ const FEATURES = [
   { icon:'□', title:'Flexible Stall Leases',        body:'Month-to-month and annual lease options designed for early-stage food entrepreneurs — no prior restaurant experience required.' },
 ];
 
-function FeatureCard({ icon, title, body, delay }) {
+function FeatureRow({ icon, title, body }) {
   const [hov, setHov] = React.useState(false);
   return (
-    <FadeIn delay={delay} style={{ height: '100%' }}>
-      <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-        style={{ height: '100%', padding: '32px 28px', background: hov ? 'rgba(255,255,255,.035)' : 'rgba(255,255,255,.020)', border: `1px solid ${hov ? 'rgba(196,98,45,.28)' : HP.border}`, borderLeft: `2px solid ${hov ? HP.terracotta : 'rgba(196,98,45,.22)'}`, transition: 'all .3s ease', display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, color: hov ? HP.terracotta : `${HP.terracotta}80`, lineHeight: 1, transition: 'color .3s' }}>{icon}</span>
-        <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: HP.cream, lineHeight: 1.15 }} dangerouslySetInnerHTML={{ __html: title }} />
-        <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.75, color: `${HP.wheat}`, opacity: .54, flex: 1 }}>{body}</p>
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ display: 'grid', gridTemplateColumns: '52px 1fr', gap: 20, alignItems: 'flex-start', padding: '22px 24px', borderBottom: `1px solid ${HP.border}`, background: hov ? 'rgba(196,98,45,.05)' : 'transparent', transition: 'background .25s' }}>
+      <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 30, color: hov ? HP.terracotta : `${HP.terracotta}88`, lineHeight: 1, transition: 'color .25s' }} aria-hidden="true">{icon}</span>
+      <div>
+        <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, fontWeight: 300, color: HP.cream, lineHeight: 1.2, marginBottom: 6 }} dangerouslySetInnerHTML={{ __html: title }} />
+        <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: HP.wheat, opacity: .54 }}>{body}</p>
       </div>
-    </FadeIn>
+    </div>
   );
 }
 
 function HPFeatures() {
+  const [hero, ...rest] = FEATURES;
   return (
     <section id="features" style={{ background: HP.bgDeep, padding: 'clamp(80px,10vw,112px) clamp(24px,5vw,72px)', borderTop: `1px solid ${HP.border}` }}>
+      <style>{`@media (max-width: 860px) { .hp-feat-split { grid-template-columns: 1fr !important; } .hp-feat-hero { min-height: 320px !important; } }`}</style>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
         <SectionEyebrow badge="What's Inside" title="Built for Food Makers" subtitle="Every feature of Cider &amp; Spice was designed around what local food entrepreneurs actually need." />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 3 }}>
-          {FEATURES.map(({ icon, title, body }, i) => (
-            <FeatureCard key={title} icon={icon} title={title} body={body} delay={i * 0.07} />
-          ))}
+        <div className="hp-feat-split" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.05fr) minmax(0, 1fr)', gap: 'clamp(18px,2.5vw,32px)', alignItems: 'stretch' }}>
+          {/* Hero feature */}
+          <FadeIn>
+            <div className="hp-feat-hero" style={{ position: 'relative', height: '100%', minHeight: 460, padding: 'clamp(36px,4vw,56px)', background: 'linear-gradient(140deg, rgba(196,98,45,.10) 0%, rgba(212,168,75,.04) 100%)', border: `1px solid rgba(196,98,45,.28)`, borderLeft: `2px solid ${HP.terracotta}`, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden' }}>
+              {/* Ghost glyph */}
+              <span aria-hidden="true" style={{ position: 'absolute', top: -60, right: -30, fontFamily: "'Cormorant Garamond',serif", fontSize: 380, fontWeight: 200, color: 'rgba(196,98,45,.07)', lineHeight: .85, userSelect: 'none', pointerEvents: 'none' }}>{hero.icon}</span>
+              {/* Eyebrow */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, position: 'relative' }}>
+                <span style={{ width: 26, height: 1, background: HP.terracotta }} />
+                <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8.5, letterSpacing: '.32em', textTransform: 'uppercase', color: HP.terracotta }}>The Centerpiece</span>
+              </div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(34px,4.6vw,54px)', fontWeight: 300, color: HP.cream, lineHeight: .98, letterSpacing: '-.018em', marginBottom: 22, position: 'relative' }} dangerouslySetInnerHTML={{ __html: hero.title }} />
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 14.5, lineHeight: 1.78, color: HP.wheat, opacity: .62, maxWidth: 440, position: 'relative' }}>{hero.body}</p>
+            </div>
+          </FadeIn>
+          {/* Compact rows */}
+          <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${HP.border}` }}>
+            {rest.map((f, i) => (
+              <FadeIn key={f.title} delay={i * 0.06} style={{ flex: 1 }}>
+                <FeatureRow icon={f.icon} title={f.title} body={f.body} />
+              </FadeIn>
+            ))}
+          </div>
         </div>
         <FadeIn delay={0.3} style={{ marginTop: 48, textAlign: 'center' }}>
           <a href="/vendors" style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', background: HP.terracotta, color: HP.parchment, textDecoration: 'none', padding: '15px 40px', fontWeight: 600, display: 'inline-block', transition: 'background .25s' }}
@@ -211,24 +232,39 @@ const STEPS = [
   { n:'06', title:'Graduate to Your Own Space', body:'Our alumni network, Las Cruces SBDC connections, and SBA lending partnerships help you secure financing when you\'re ready for a permanent location.' },
 ];
 
+function PathRow({ n, title, body, last }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ display: 'grid', gridTemplateColumns: 'clamp(72px,11vw,140px) 1fr', gap: 'clamp(20px,3vw,44px)', padding: 'clamp(28px,4vw,44px) 0', borderBottom: last ? 'none' : `1px solid ${HP.border}`, transition: 'background .25s' }}>
+      {/* Big italic step number */}
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end' }}>
+        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(56px,8vw,96px)', fontWeight: 200, fontStyle: 'italic', color: hov ? HP.terracotta : `${HP.terracotta}c0`, lineHeight: .85, letterSpacing: '-.02em', transition: 'color .25s', userSelect: 'none' }}>{n}</span>
+      </div>
+      {/* Content */}
+      <div style={{ paddingTop: 'clamp(8px,1vw,16px)', maxWidth: 720 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+          <span style={{ width: hov ? 32 : 20, height: 1, background: HP.terracotta, transition: 'width .3s ease' }} aria-hidden="true" />
+          <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8.5, letterSpacing: '.32em', textTransform: 'uppercase', color: HP.terracotta, opacity: .85 }}>Step {n}</span>
+        </div>
+        <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(24px,2.8vw,32px)', fontWeight: 300, color: HP.cream, lineHeight: 1.15, letterSpacing: '-.008em', marginBottom: 12 }} dangerouslySetInnerHTML={{ __html: title }} />
+        <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 14.5, lineHeight: 1.78, color: HP.wheat, opacity: .58 }}>{body}</p>
+      </div>
+    </div>
+  );
+}
+
 function HPHowItWorks() {
   return (
     <section id="howitworks" style={{ background: HP.bg, padding: 'clamp(80px,10vw,112px) clamp(24px,5vw,72px)', borderTop: `1px solid ${HP.border}` }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <style>{`@media (max-width: 640px) { .hp-path-row { grid-template-columns: 1fr !important; gap: 8px !important; } .hp-path-row > div:first-child { justify-content: flex-start !important; } }`}</style>
+      <div style={{ maxWidth: 1080, margin: '0 auto' }}>
         <SectionEyebrow badge="How It Works" title="Your Path from Pop-Up to Permanent" subtitle="Six steps from home-kitchen dream to a thriving downtown Las Cruces business." />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: '2px' }}>
+        <div style={{ borderTop: `1px solid ${HP.border}` }}>
           {STEPS.map(({ n, title, body }, i) => (
-            <FadeIn key={n} delay={i * 0.08}>
-              <div style={{ padding: '36px 32px', background: 'rgba(255,255,255,.018)', border: `1px solid ${HP.border}`, position: 'relative', height: '100%' }}>
-                {/* Step number — large ghost */}
-                <div style={{ position: 'absolute', top: 20, right: 24, fontFamily: "'Cormorant Garamond',serif", fontSize: 72, fontWeight: 200, color: 'rgba(212,168,75,.07)', lineHeight: 1, userSelect: 'none' }}>{n}</div>
-                {/* Terracotta step badge */}
-                <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.28em', textTransform: 'uppercase', color: HP.terracotta, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 300, color: HP.gold }}>{n}</span>
-                  <div style={{ flex: 1, height: 1, background: `rgba(212,168,75,.18)` }} />
-                </div>
-                <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, color: HP.cream, lineHeight: 1.2, marginBottom: 12 }} dangerouslySetInnerHTML={{ __html: title }} />
-                <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.75, color: HP.wheat, opacity: .52 }}>{body}</p>
+            <FadeIn key={n} delay={i * 0.05}>
+              <div className="hp-path-row" style={{ display: 'contents' }}>
+                <PathRow n={n} title={title} body={body} last={i === STEPS.length - 1} />
               </div>
             </FadeIn>
           ))}
@@ -308,4 +344,141 @@ function HPCiderBar() {
     </section>
   );
 }
+
+// ── Cider Club — three-tier membership ──────────────────────────────────────
+const CC_TIERS = [
+  {
+    name: 'Taster', price: 25, kicker: 'Entry · Builds the Habit', featured: false,
+    line: 'For the curious newcomer easing into the world of New Mexico cider.',
+    perks: [
+      'One tasting flight per month (4 ciders)',
+      '10% off all pours at the bar',
+      'Member newsletter & release alerts',
+      'Early access to events & ticketed nights',
+    ],
+  },
+  {
+    name: 'Enthusiast', price: 45, kicker: 'Core · Most Members Land Here', featured: true,
+    line: 'Steady regulars who treat the bar like a second living room.',
+    perks: [
+      'Two tasting flights per month',
+      '15% off all pours at the bar',
+      'Reserved seating at cider events',
+      'Member wall listing & producer meet-and-greets',
+    ],
+  },
+  {
+    name: 'Connoisseur', price: 85, kicker: 'Ambassador · Brand Champion', featured: false,
+    line: 'For the deep believers — the closest tier to the cellar.',
+    perks: [
+      'Unlimited tasting flights',
+      '20% off all pours at the bar',
+      'Private-label seasonal bottle, included',
+      'Quarterly private pairing dinner with Hub chefs',
+    ],
+  },
+];
+
+function CiderClubTier({ tier, delay }) {
+  const [hov, setHov] = React.useState(false);
+  const f = tier.featured;
+  return (
+    <FadeIn delay={delay} style={{ height: '100%' }}>
+      <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+        style={{
+          position: 'relative', height: '100%', display: 'flex', flexDirection: 'column',
+          padding: 'clamp(28px,3vw,40px) clamp(26px,3vw,36px) clamp(28px,3vw,38px)',
+          background: f ? 'linear-gradient(165deg, rgba(196,98,45,.10) 0%, rgba(212,168,75,.04) 100%)' : 'rgba(255,255,255,.02)',
+          border: `1px solid ${f ? 'rgba(196,98,45,.42)' : hov ? 'rgba(212,168,75,.25)' : HP.border}`,
+          borderTop: f ? `2px solid ${HP.terracotta}` : `1px solid ${hov ? 'rgba(212,168,75,.25)' : HP.border}`,
+          transform: f ? 'translateY(-8px)' : 'translateY(0)',
+          boxShadow: f ? '0 22px 50px -28px rgba(0,0,0,.85), 0 0 0 1px rgba(196,98,45,.18) inset' : 'none',
+          transition: 'border-color .25s, background .25s',
+        }}>
+        {/* Featured badge */}
+        {f && (
+          <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: HP.terracotta, color: HP.parchment, fontFamily: "'Josefin Sans',sans-serif", fontSize: 7.5, letterSpacing: '.3em', textTransform: 'uppercase', padding: '5px 14px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+            Member Favorite
+          </div>
+        )}
+        {/* Tier name */}
+        <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: HP.cream, lineHeight: 1, marginBottom: 8 }}>{tier.name}</div>
+        <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.26em', textTransform: 'uppercase', color: f ? HP.terracotta : `${HP.gold}aa`, marginBottom: 22 }}>{tier.kicker}</div>
+        {/* Price */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+          <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 300, color: HP.wheat, opacity: .65, lineHeight: 1, fontStyle: 'italic' }}>$</span>
+          <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(56px,7vw,80px)', fontWeight: 200, color: HP.cream, lineHeight: .85, letterSpacing: '-.02em', fontStyle: 'italic' }}>{tier.price}</span>
+          <span style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8.5, letterSpacing: '.22em', textTransform: 'uppercase', color: `${HP.wheat}99`, marginLeft: 4 }}>/ month</span>
+        </div>
+        <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: HP.wheat, opacity: .55, marginBottom: 22, fontStyle: 'italic' }}>{tier.line}</p>
+        {/* Hairline */}
+        <div style={{ height: 1, background: f ? 'rgba(196,98,45,.25)' : HP.border, marginBottom: 22 }} aria-hidden="true" />
+        {/* Perks */}
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+          {tier.perks.map((p, i) => (
+            <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.55, color: HP.wheat, opacity: .82 }}>
+              <span aria-hidden="true" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: f ? HP.terracotta : HP.gold, flexShrink: 0, lineHeight: 1.4 }}>◆</span>
+              <span>{p}</span>
+            </li>
+          ))}
+        </ul>
+        {/* CTA */}
+        <a href="Cider Club.html" style={{
+          marginTop: 28, display: 'block', textAlign: 'center',
+          fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', fontWeight: 600,
+          padding: '13px 16px', textDecoration: 'none',
+          background: f ? HP.terracotta : 'transparent',
+          color: f ? HP.parchment : HP.cream,
+          border: f ? `1px solid ${HP.terracotta}` : `1px solid rgba(212,168,75,.32)`,
+          transition: 'background .25s, border-color .25s, color .25s',
+        }}
+          onMouseEnter={e => { if (f) e.currentTarget.style.background = '#a8521f'; else { e.currentTarget.style.borderColor = HP.terracotta; e.currentTarget.style.color = HP.terracotta; } }}
+          onMouseLeave={e => { if (f) e.currentTarget.style.background = HP.terracotta; else { e.currentTarget.style.borderColor = 'rgba(212,168,75,.32)'; e.currentTarget.style.color = HP.cream; } }}
+        >Join as {tier.name} →</a>
+      </div>
+    </FadeIn>
+  );
+}
+
+function HPCiderClub() {
+  return (
+    <section id="cider-club" style={{ position: 'relative', background: HP.bg, padding: 'clamp(80px,10vw,120px) clamp(24px,5vw,72px)', borderTop: `1px solid ${HP.border}`, overflow: 'hidden' }}>
+      {/* Soft radial accent at top */}
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(196,98,45,.08) 0%, transparent 60%)', pointerEvents: 'none' }} />
+      {/* Subtle grain */}
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: HP_GRAIN, opacity: .025, backgroundSize: '180px', pointerEvents: 'none' }} />
+
+      <div style={{ position: 'relative', maxWidth: 1180, margin: '0 auto' }}>
+        <SectionEyebrow badge="The Membership" title="Join the Cider Club" subtitle="A monthly subscription that turns every visit into a tasting — plus early access to releases, events, and pairing dinners with the makers themselves." />
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'clamp(16px,2vw,24px)', alignItems: 'stretch', marginTop: 24, paddingTop: 14 }}>
+          {CC_TIERS.map((t, i) => (
+            <CiderClubTier key={t.name} tier={t} delay={i * 0.08} />
+          ))}
+        </div>
+
+        {/* Footnote row */}
+        <FadeIn delay={0.35}>
+          <div style={{ marginTop: 40, padding: '22px clamp(20px,3vw,32px)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24, alignItems: 'center', background: 'rgba(255,255,255,.018)', border: `1px solid ${HP.border}`, borderLeft: `2px solid ${HP.terracotta}` }}>
+            <div>
+              <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.28em', textTransform: 'uppercase', color: HP.terracotta, marginBottom: 6 }}>Founding Members</div>
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: HP.wheat, opacity: .65, margin: 0 }}>Pre-register before opening day for locked-in pricing and an invite to the soft-open preview night.</p>
+            </div>
+            <div>
+              <div style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 8, letterSpacing: '.28em', textTransform: 'uppercase', color: HP.terracotta, marginBottom: 6 }}>Cancel Anytime</div>
+              <p style={{ fontFamily: 'Inter,sans-serif', fontSize: 13, lineHeight: 1.7, color: HP.wheat, opacity: .65, margin: 0 }}>Month-to-month with no commitment — annual prepay saves one month and adds a member bottle.</p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <a href="Cider Club.html" style={{ fontFamily: "'Josefin Sans',sans-serif", fontSize: 9, letterSpacing: '.25em', textTransform: 'uppercase', color: HP.cream, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10, padding: '12px 22px', border: `1px solid rgba(212,168,75,.32)`, transition: 'border-color .25s, color .25s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = HP.terracotta; e.currentTarget.style.color = HP.terracotta; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(212,168,75,.32)'; e.currentTarget.style.color = HP.cream; }}
+              >Full Member Benefits →</a>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
 
