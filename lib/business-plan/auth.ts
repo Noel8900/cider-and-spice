@@ -35,7 +35,7 @@ export function createAccessToken() {
 }
 
 export async function hasBusinessPlanAccess() {
-  if (!isPasscodeConfigured()) return true;
+  if (!isPasscodeConfigured()) return process.env.NODE_ENV !== "production";
 
   const cookieStore = await cookies();
   return cookieStore.get(BUSINESS_PLAN_COOKIE)?.value === createAccessToken();
