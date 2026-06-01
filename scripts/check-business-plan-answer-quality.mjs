@@ -135,6 +135,40 @@ const CHECKS = [
   },
 ];
 
+const DOMAIN_TERMS = [
+  "business",
+  "plan",
+  "funding",
+  "grant",
+  "investment",
+  "investor",
+  "capital",
+  "revenue",
+  "ebitda",
+  "risk",
+  "return",
+  "incubator",
+  "vendor",
+  "cohort",
+  "graduation",
+  "kitchen",
+  "commissary",
+  "food",
+  "cider",
+  "hall",
+  "las cruces",
+  "nmed",
+  "permit",
+  "compliance",
+  "sanitation",
+  "location",
+  "founder",
+  "timeline",
+  "operations",
+  "market",
+  "financial",
+];
+
 function tokenize(value) {
   const tokens = value
     .toLowerCase()
@@ -251,8 +285,16 @@ function topicForQuestion(question) {
   return "general";
 }
 
+function isDiligenceLibraryQuestion(question) {
+  const lowerQuestion = question.toLowerCase();
+  return DOMAIN_TERMS.some((term) => lowerQuestion.includes(term));
+}
+
 function createAnswer(question, chunks) {
   if (!question || chunks.length === 0) {
+    return "The business plan does not specify that. Try asking about funding, incubator operations, kitchen operations, or implementation details.";
+  }
+  if (!isDiligenceLibraryQuestion(question)) {
     return "The business plan does not specify that. Try asking about funding, incubator operations, kitchen operations, or implementation details.";
   }
 

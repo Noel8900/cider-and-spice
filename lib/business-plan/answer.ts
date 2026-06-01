@@ -23,6 +23,40 @@ const QUESTION_STOP_WORDS = new Set([
 
 type AnswerTopic = "incubator" | "kitchen-rules" | "food-safety" | "investment" | "general";
 
+const DOMAIN_TERMS = [
+  "business",
+  "plan",
+  "funding",
+  "grant",
+  "investment",
+  "investor",
+  "capital",
+  "revenue",
+  "ebitda",
+  "risk",
+  "return",
+  "incubator",
+  "vendor",
+  "cohort",
+  "graduation",
+  "kitchen",
+  "commissary",
+  "food",
+  "cider",
+  "hall",
+  "las cruces",
+  "nmed",
+  "permit",
+  "compliance",
+  "sanitation",
+  "location",
+  "founder",
+  "timeline",
+  "operations",
+  "market",
+  "financial",
+];
+
 function citation(chunk: BusinessPlanChunk) {
   return `[${chunk.documentTitle} - ${chunk.sectionTitle}](#${chunk.sectionId})`;
 }
@@ -51,6 +85,11 @@ function topicForQuestion(question: string): AnswerTopic {
     return "incubator";
   }
   return "general";
+}
+
+function isDiligenceLibraryQuestion(question: string) {
+  const lowerQuestion = question.toLowerCase();
+  return DOMAIN_TERMS.some((term) => lowerQuestion.includes(term));
 }
 
 function trimEvidence(text: string, maxLength = 320) {
@@ -162,6 +201,7 @@ function buildEvidencePoints(question: string, chunks: BusinessPlanChunk[], exis
 
 export function createGroundedAnswer(question: string, chunks: BusinessPlanChunk[]) {
   if (!question || chunks.length === 0) return UNSUPPORTED_RESPONSE;
+  if (!isDiligenceLibraryQuestion(question)) return UNSUPPORTED_RESPONSE;
 
   const topic = topicForQuestion(question);
   const curatedPoints = buildCuratedPoints(topic, chunks);
