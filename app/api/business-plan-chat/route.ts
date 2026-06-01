@@ -25,7 +25,10 @@ function getLatestUserQuestion(messages: UIMessage[]) {
 }
 
 function hasConfiguredModelAccess() {
-  return Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN);
+  return (
+    process.env.BUSINESS_PLAN_AI_GATEWAY_ENABLED === "true" &&
+    Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN)
+  );
 }
 
 function toCitation(chunk: BusinessPlanChunk) {
