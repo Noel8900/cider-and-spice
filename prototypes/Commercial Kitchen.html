@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commercial Kitchen Operations Manual — Cider &amp; Spice · Las Cruces</title>
+  <meta name="description" content="Commercial Kitchen Operations Manual — 7-zone production workflow, NM compliance framework, shared-use governance, and maintenance cadence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; color-scheme: dark; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body { background: #2c2416; color: #f7f3ec; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #1e1710; }
+    ::-webkit-scrollbar-thumb { background: rgba(192,98,42,0.35); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(192,98,42,0.55); }
+    ::selection { background: rgba(192,98,42,0.32); color: #f7f3ec; }
+    :focus-visible { outline: 2px solid rgba(192,98,42,0.6); outline-offset: 3px; }
+    #root { min-height: 100vh; }
+  </style>
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="80" fill="#1e1710"/>
+      <text x="60" y="35" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="#6b8c6b" opacity=".7">Kitchen</text>
+      <text x="60" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="6" fill="#e8c18d" opacity=".35">Operations Manual</text>
+    </svg>
+  </template>
+</head>
+<body>
+  <script type="text/babel" src="inv-tokens.jsx"></script>
+  <script type="text/babel" src="kitchen-sections.jsx"></script>
+  <div id="root"></div>
+  <script type="text/babel">
+    function KitchenApp() {
+      return (
+        <React.Fragment>
+          <KNav />
+          <KHero />
+          <div style={{ padding: '0 1.5rem' }}>
+            <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+              <KOverview />
+              <KZones />
+              <KCompliance />
+              <KSharedUse />
+              <KCTA />
+            </div>
+          </div>
+          <KFooter />
+        </React.Fragment>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(KitchenApp));
+  </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invest in Cider &amp; Spice — Las Cruces' First Food Hall</title>
+  <meta name="description" content="Private investor overview for Cider &amp; Spice, Las Cruces' first food hall and craft cider bar. $1.505M raise · 17–20% illustrative IRR · 6 revenue streams." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body {
+      background: #2c2416;
+      color: #f7f3ec;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    ::-webkit-scrollbar       { width: 5px; }
+    ::-webkit-scrollbar-track { background: #1e1710; }
+    ::-webkit-scrollbar-thumb { background: rgba(192,98,42,0.38); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(192,98,42,0.58); }
+    ::selection { background: rgba(192,98,42,0.32); color: #f7f3ec; }
+    :focus-visible { outline: 2px solid rgba(192,98,42,0.6); outline-offset: 3px; }
+    #root { min-height: 100vh; }
+
+    /* Chat scrollbar */
+    #inv-chat-area::-webkit-scrollbar { width: 3px; }
+    #inv-chat-area::-webkit-scrollbar-track { background: transparent; }
+    #inv-chat-area::-webkit-scrollbar-thumb { background: rgba(232,193,141,0.15); border-radius: 2px; }
+  </style>
+
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="80" fill="#2c2416"/>
+      <rect x="0" y="0" width="120" height="80" fill="url(#g)"/>
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#c0622a" stop-opacity=".2"/>
+          <stop offset="100%" stop-color="#2c2416" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="36" y1="33" x2="50" y2="33" stroke="#c0622a" stroke-width=".7"/>
+      <text x="60" y="37" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-style="italic" fill="#c0622a">Revenue Platform</text>
+      <text x="60" y="50" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#e8c18d" opacity=".35">Cider &amp; Spice · Investors</text>
+    </svg>
+  </template>
+</head>
+<body>
+
+  <!-- Load all component modules in dependency order -->
+  <script type="text/babel" src="inv-tokens.jsx"></script>
+  <script type="text/babel" src="inv-imagery.jsx"></script>
+  <script type="text/babel" src="inv-hero.jsx"></script>
+  <script type="text/babel" src="inv-sections.jsx"></script>
+  <script type="text/babel" src="inv-floorplan.jsx"></script>
+  <script type="text/babel" src="inv-assumptions.jsx"></script>
+  <script type="text/babel" src="inv-modeler.jsx"></script>
+  <script type="text/babel" src="inv-search.jsx"></script>
+  <script type="text/babel" src="inv-bottom.jsx"></script>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function InvStickyCTA({ show }) {
+      const [hov, setHov] = React.useState(false);
+      return (
+        <a href="#inquiry" aria-hidden={!show} tabIndex={show ? 0 : -1}
+          onMouseEnter={() => setHov(true)}
+          onMouseLeave={() => setHov(false)}
+          style={{
+            position: 'fixed', top: '64px', right: show ? '1.25rem' : '-22rem', zIndex: 95,
+            display: 'flex', alignItems: 'center', gap: '0.7rem',
+            background: hov ? '#d4673a' : '#c0622a', color: '#f7f3ec',
+            padding: '13px 22px 13px 24px', textDecoration: 'none',
+            fontFamily: "'Josefin Sans', system-ui, sans-serif", fontSize: '0.64rem', letterSpacing: '0.22em', textTransform: 'uppercase',
+            boxShadow: '0 14px 34px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,193,141,0.14)',
+            transition: 'right 0.5s cubic-bezier(0.16,1,0.3,1), background 0.25s',
+          }}>
+          <span style={{ width: '7px', height: '7px', background: '#f7f3ec', borderRadius: '50%', flexShrink: 0, opacity: 0.9 }} aria-hidden="true"></span>
+          Inquire to Invest
+          <span aria-hidden="true" style={{ fontSize: '0.9rem', lineHeight: 1 }}>&rarr;</span>
+        </a>
+      );
+    }
+
+    function InvApp() {
+      const [scrolled, setScrolled] = React.useState(false);
+      const [deep, setDeep] = React.useState(false);
+      React.useEffect(() => {
+        const fn = () => {
+          const y = window.scrollY;
+          setScrolled(y > 60);
+          // Pin the action bar once the reader is into the body (past ~90% of the hero)
+          setDeep(y > window.innerHeight * 0.9);
+        };
+        fn();
+        window.addEventListener('scroll', fn, { passive: true });
+        return () => window.removeEventListener('scroll', fn);
+      }, []);
+
+      return (
+        <React.Fragment>
+
+          {/* ── Fixed nav ── */}
+          <InvNav scrolled={scrolled} />
+
+          {/* ── Sticky "Inquire to Invest" action bar (appears on deep scroll) ── */}
+          <InvStickyCTA show={deep} />
+
+          {/* ── Hero: full-viewport with bg image ── */}
+          <InvHero />
+
+          {/* ── 4 animated metrics ── */}
+          <InvMetrics />
+
+          {/* ── Endorsement strip ── */}
+          <InvTrustStrip />
+
+          {/* ── Full-bleed venue gallery (no horizontal padding) ── */}
+          <InvVenueGallery />
+
+          {/* ── Body content: max-width container ── */}
+          <div style={{ padding: '0 1.5rem' }}>
+            <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+
+              {/* 01 · Why Now */}
+              <InvOpportunity />
+
+              {/* 02 · 3-Year Financials */}
+              <InvFinancials />
+
+              {/* 03 · Market Comparables */}
+              <InvComparables />
+
+              {/* 04 · Confirmed Anchor Concepts (with images) */}
+              <InvVendorConcepts />
+
+              {/* 05 · Interactive Color-Coded 50/50 Floor Plan */}
+              <InvFloorPlan />
+
+              {/* 06 · Investment Tiers */}
+              <InvTiers />
+
+              {/* 07 · Interactive Investment Modeler */}
+              <InvModeler />
+
+              {/* 08 · Horizontal Timeline */}
+              <InvTimeline />
+
+              {/* 09 · Assumptions & Scalability (reviewer-response appendix) */}
+              <InvAssumptions />
+
+            </div>
+          </div>
+
+          {/* ── Full-width AI Business Plan Search ── */}
+          <InvSearch />
+
+          {/* ── FAQ + Form side-by-side ── */}
+          <div style={{ padding: '0 1.5rem' }}>
+            <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+              <InvFaqAndForm />
+            </div>
+          </div>
+
+          {/* ── Footer ── */}
+          <InvFooter />
+
+        </React.Fragment>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      React.createElement(InvApp)
+    );
+  </script>
+
+</body>
+</html>

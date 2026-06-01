@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cider &amp; Spice — Community Section · 3 Directions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Josefin+Sans:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #f0eee9; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  img { display: block; }
+</style>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="80" fill="#1C1209"/>
+    <line x1="44" y1="30" x2="60" y2="30" stroke="#C4622D" stroke-width="1"/>
+    <text x="60" y="40" text-anchor="middle" font-family="Georgia,serif" font-size="10" font-style="italic" fill="#C4622D">Community</text>
+    <text x="60" y="54" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#F5ECD7" opacity=".45">3 Directions</text>
+  </svg>
+</template>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- Brand system + content + directions + canvas -->
+<script type="text/babel" src="hp-tokens.jsx"></script>
+<script type="text/babel" src="community-data.jsx"></script>
+<script type="text/babel" src="community-a.jsx"></script>
+<script type="text/babel" src="community-b.jsx"></script>
+<script type="text/babel" src="community-c.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+  function CommunityDirections() {
+    return (
+      <DesignCanvas>
+        <DCSection id="community" title="Community Section — Cider & Spice Homepage" subtitle="Three directions to compare · drops natively into the existing page · open any board fullscreen (↑ expand icon)">
+          <DCArtboard id="a" label="A · Editorial Story" width={1280} height={1536}>
+            <CommunityA />
+          </DCArtboard>
+          <DCArtboard id="b" label="B · Impact Ledger" width={1280} height={1496}>
+            <CommunityB />
+          </DCArtboard>
+          <DCArtboard id="c" label="C · Get-Involved First" width={1280} height={1266}>
+            <CommunityC />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+
+  function boot() {
+    if (!window.DesignCanvas || !window.CommunityA) { setTimeout(boot, 40); return; }
+    window.__HP_REVEAL_ALL = true;   // canvas is static — show all reveal content
+    ReactDOM.createRoot(document.getElementById('root')).render(<CommunityDirections />);
+  }
+  boot();
+</script>
+
+</body>
+</html>
