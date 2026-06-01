@@ -30,7 +30,7 @@ const INVESTOR_SCHEMA = {
       url: 'https://www.lccullinaryhub.com/investors',
       name: 'Investor Overview — Las Cruces Culinary Innovation Hub',
       description:
-        'Private investor overview for the Las Cruces Culinary Innovation Hub. $1,505,000 total project capital, 6 qualifying grant categories, 17–20% illustrative 3-year IRR, and three structured investment tiers from $25K to $200K+.',
+        'Private investor overview for the Las Cruces Culinary Innovation Hub. $1,505,000 total project capital, 6 qualifying grant categories, 17–20% illustrative 3-year IRR, and three structured investment participation tiers.',
       inLanguage: 'en-US',
       isPartOf: {
         '@type': 'WebSite',
@@ -85,19 +85,19 @@ const WHY_NOW = [
   { glyph: '◇', title: 'Conservative Underwriting',     body: 'The Appendix F model uses conservative Year 1 projections. Breakeven at month 18–20. The 17–20% IRR is illustrative based on base-case assumptions.' },
 ];
 
-interface InvestorTier { name: string; range: string; glyph: string; featured?: boolean; perks: string[]; }
+interface InvestorTier { name: string; glyph: string; featured?: boolean; perks: string[]; }
 
 const TIERS: InvestorTier[] = [
   {
-    name: 'Community Investor', range: '$25K – $74,999', glyph: '◇',
+    name: 'Community Investor', glyph: '◇',
     perks: ['Investor newsletter & quarterly updates', 'Named recognition in Hub materials', 'Early access to Cider Club founding membership', '3-year Appendix F projection summary'],
   },
   {
-    name: 'Growth Partner', range: '$75K – $199,999', glyph: '◈', featured: true,
+    name: 'Growth Partner', glyph: '◈', featured: true,
     perks: ['All Community Investor perks', 'Invitation to quarterly investor briefings', 'Priority commissary kitchen bookings', 'Hub Advisory Board observer seat', 'Full Appendix F Cashflow Model access'],
   },
   {
-    name: 'Founding Investor', range: '$200K+', glyph: '◆',
+    name: 'Founding Investor', glyph: '◆',
     perks: ['All Growth Partner perks', 'Named feature in Hub signage & website', 'Annual private cider pairing dinner', 'Equity participation discussion eligible', 'Co-investment in graduating vendors (5–15%)'],
   },
 ];
@@ -459,7 +459,6 @@ export default function InvestorsPage() {
                     )}
                     <span style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.75rem', color: tier.featured ? D3.terracotta : `${D3.terracotta}80`, display: 'block', marginBottom: '1.25rem', lineHeight: 1 }} aria-hidden="true">{tier.glyph}</span>
                     <div style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: D3.parchment, marginBottom: '0.35rem', lineHeight: 1.2 }}>{tier.name}</div>
-                    <div style={{ fontFamily: 'var(--font-josefin), system-ui, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em', color: D3.terracotta, marginBottom: '1.5rem' }}>{tier.range}</div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
                       {tier.perks.map(perk => (
                         <li key={perk} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: '0.83rem', color: `${D3.wheat}75`, lineHeight: 1.6 }}>
