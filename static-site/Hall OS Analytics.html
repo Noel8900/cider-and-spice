@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script src="hos-nav.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Hall OS · Analytics · Cider &amp; Spice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap"/>
+<style>
+  :root{
+    --bg:#1C1209;--bg-deep:#100E0A;--bg-band:#150F08;
+    --surface:rgba(245,236,215,0.025);--surface-2:rgba(245,236,215,0.05);
+    --border:rgba(245,236,215,0.10);--border-m:rgba(245,236,215,0.18);--border-s:rgba(245,236,215,0.06);
+    --cream:#F5ECD7;--parchment:#F7F3EC;--wheat:#E8C18D;
+    --muted:rgba(245,236,215,0.55);--faint:rgba(245,236,215,0.32);
+    --primary:#C4622D;--gold:#D4A84B;--green:#4B9B6E;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --caps:'Josefin Sans',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--cream);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;}
+
+  /* Header */
+  .hdr{
+    position:sticky;top:0;z-index:50;height:52px;
+    background:var(--bg-deep);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;padding:0 24px;gap:14px;
+  }
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;}
+  .bmark{width:28px;height:28px;border-radius:6px;background:linear-gradient(140deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;font-size:15px;color:#1e1710;}
+  .bname{font-family:var(--serif);font-size:16px;}.bname em{font-style:italic;color:var(--primary);}
+  .vsep{width:1px;height:18px;background:var(--border);}
+  .hdr-badge{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,75,0.08);border:1px solid rgba(212,168,75,0.22);padding:3px 9px;}
+  .hdr-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+  .range-tabs{display:flex;gap:0;}
+  .rt{
+    font-family:var(--caps);font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;
+    padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;
+    transition:color .12s,background .12s;margin-right:-1px;
+  }
+  .rt.active{background:var(--surface-2);color:var(--parchment);border-color:var(--border-m);}
+  .back-link{font-family:var(--caps);font-size:9px;letter-spacing:0.20em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);text-decoration:none;}
+
+  /* KPI row */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border);}
+  .kpi{padding:16px 22px;border-right:1px solid var(--border);}
+  .kpi:last-child{border-right:0;}
+  .kpi-lbl{font-family:var(--caps);font-size:8.5px;letter-spacing:0.24em;text-transform:uppercase;color:var(--faint);}
+  .kpi-val{font-family:var(--serif);font-size:32px;color:var(--parchment);line-height:1;margin:4px 0 2px;font-weight:400;}
+  .kpi-val.g{color:var(--gold);}
+  .kpi-sub{font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .up{color:var(--green);}.dn{color:#C44B4B;}
+
+  /* Grid layout */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border);}
+  .grid-3{display:grid;grid-template-columns:2fr 1fr;gap:0;border-bottom:1px solid var(--border);}
+  @media(max-width:960px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+  .card{border-right:1px solid var(--border);padding:20px 24px;}
+  .card:last-child{border-right:0;}
+  .card-title{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .card-sub{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:-10px;margin-bottom:14px;}
+
+  /* Week-over-week chart */
+  .wow-chart{display:flex;align-items:flex-end;gap:3px;height:80px;margin-bottom:10px;}
+  .wow-group{display:flex;align-items:flex-end;gap:1px;flex:1;}
+  .wow-bar{flex:1;border-radius:1px 1px 0 0;min-height:3px;}
+  .wow-lbl{font-family:var(--mono);font-size:8px;color:var(--faint);text-align:center;margin-top:6px;}
+  .wow-legend{display:flex;gap:16px;flex-wrap:wrap;}
+  .wl-item{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .wl-dot{width:8px;height:8px;border-radius:1px;flex-shrink:0;}
+
+  /* Donut chart */
+  .donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+  .donut-legend{display:flex;flex-direction:column;gap:8px;flex:1;min-width:120px;}
+  .dl-item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);}
+  .dl-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .dl-val{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--wheat);}
+  .dl-pct{font-family:var(--mono);font-size:10px;color:var(--faint);margin-left:4px;}
+
+  /* Heatmap */
+  .heatmap{border-collapse:collapse;width:100%;}
+  .heatmap th{font-family:var(--mono);font-size:9px;color:var(--faint);font-weight:400;padding:0 2px 7px;text-align:center;white-space:nowrap;}
+  .heatmap th.v{text-align:left;font-family:var(--caps);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;padding-right:8px;}
+  .heatmap td{padding:2px;}
+  .heatmap td.v{font-family:var(--serif);font-size:12px;color:var(--muted);padding-right:8px;white-space:nowrap;}
+  .hcell{width:36px;height:22px;border-radius:1px;cursor:default;transition:outline .1s;}
+  .hcell:hover{outline:1px solid var(--border-m);}
+
+  /* Foot traffic */
+  .traffic-wrap{position:relative;}
+  .traffic-bars{display:flex;align-items:flex-end;gap:3px;height:72px;}
+  .tb-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .tb{width:100%;border-radius:1px 1px 0 0;}
+  .tb-lbl{font-family:var(--mono);font-size:8px;color:var(--faint);}
+  .forecast-note{margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--faint);display:flex;align-items:center;gap:8px;}
+  .fn-dot{width:8px;height:8px;border-radius:50%;background:rgba(212,168,75,0.7);}
+  .fn-dot.actual{background:var(--primary);opacity:0.6;}
+
+  /* Comparison table */
+  .comp-table{width:100%;border-collapse:collapse;}
+  .comp-table th{font-family:var(--caps);font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);padding:0 10px 10px;text-align:right;}
+  .comp-table th:first-child{text-align:left;}
+  .comp-table td{padding:9px 10px;border-top:1px solid var(--border-s);font-size:13px;color:var(--muted);text-align:right;}
+  .comp-table td:first-child{font-family:var(--serif);font-size:15px;color:var(--parchment);text-align:left;}
+  .comp-table td .mono{font-family:var(--mono);font-size:11px;}
+  .delta-up{color:var(--green);font-family:var(--mono);font-size:10px;}
+  .delta-dn{color:#C44B4B;font-family:var(--mono);font-size:10px;}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="brand" href="Hall OS Admin.html">
+    <span class="bmark">&amp;</span>
+    <span class="bname">Hall <em>OS</em></span>
+  </a>
+  <span class="vsep"></span>
+  <span class="hdr-badge">Analytics · Admin</span>
+  <div class="hdr-right">
+    <div class="range-tabs">
+      <button class="rt" onclick="setRange(this,'7d')">7D</button>
+      <button class="rt active" onclick="setRange(this,'4w')">4W</button>
+      <button class="rt" onclick="setRange(this,'3m')">3M</button>
+      <button class="rt" onclick="setRange(this,'1y')">1Y</button>
+    </div>
+    <a class="back-link" href="Hall OS Index.html">← All modules</a>
+  </div>
+</header>
+
+<!-- KPIs -->
+<div class="kpis">
+  <div class="kpi"><div class="kpi-lbl">Total revenue</div><div class="kpi-val g">$94,200</div><div class="kpi-sub"><span class="up">↑ 11%</span> vs. prior period</div></div>
+  <div class="kpi"><div class="kpi-lbl">Orders</div><div class="kpi-val">5,140</div><div class="kpi-sub"><span class="up">↑ 8%</span> vs. prior period</div></div>
+  <div class="kpi"><div class="kpi-lbl">Avg ticket</div><div class="kpi-val">$18.33</div><div class="kpi-sub"><span class="up">↑ 3%</span> vs. prior period</div></div>
+  <div class="kpi"><div class="kpi-lbl">Peak hour</div><div class="kpi-val">12–1p</div><div class="kpi-sub">Fri &amp; Sat highest</div></div>
+  <div class="kpi"><div class="kpi-lbl">Busiest vendor</div><div class="kpi-val" style="font-size:22px;padding-top:6px;">Seoul Fire</div><div class="kpi-sub">$21,400 · 22.7% share</div></div>
+</div>
+
+<!-- Row 1: Week-over-week + donut -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Week-over-week revenue</div>
+    <div class="card-sub">Current week vs. prior week · daily</div>
+    <div class="wow-chart" id="wow-chart"></div>
+    <div style="display:flex;gap:4px;margin-bottom:8px;" id="wow-labels"></div>
+    <div class="wow-legend">
+      <div class="wl-item"><span class="wl-dot" style="background:var(--primary);opacity:0.7"></span>This week</div>
+      <div class="wl-item"><span class="wl-dot" style="background:rgba(245,236,215,0.18)"></span>Prior week</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Revenue share by vendor</div>
+    <div class="card-sub">4-week period</div>
+    <div class="donut-wrap">
+      <svg width="130" height="130" viewBox="0 0 130 130" id="donut-svg"></svg>
+      <div class="donut-legend" id="donut-legend"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 2: Peak-hour heatmap -->
+<div style="border-bottom:1px solid var(--border);">
+  <div class="card" style="border-right:0;">
+    <div class="card-title">Sales heatmap — vendor × hour</div>
+    <div class="card-sub">4-week average · Mon–Sun · 10 AM – 9 PM</div>
+    <div style="overflow-x:auto;">
+      <table class="heatmap" id="heatmap"></table>
+    </div>
+  </div>
+</div>
+
+<!-- Row 3: Foot traffic forecast + Vendor comparison -->
+<div class="grid-3">
+  <div class="card">
+    <div class="card-title">Foot traffic forecast · next 7 days</div>
+    <div class="card-sub">Predicted vs. actual orders · shaded = forecast</div>
+    <div class="traffic-wrap">
+      <div class="traffic-bars" id="traffic-bars"></div>
+      <div style="display:flex;gap:3px;margin-top:4px;" id="traffic-labels"></div>
+    </div>
+    <div class="forecast-note"><span class="fn-dot actual"></span>Actual &nbsp;<span class="fn-dot"></span>Forecast</div>
+  </div>
+  <div class="card" style="border-right:0;">
+    <div class="card-title">Vendor comparison</div>
+    <table class="comp-table">
+      <thead><tr>
+        <th>Vendor</th>
+        <th>Revenue</th>
+        <th>Orders</th>
+        <th>WoW</th>
+      </tr></thead>
+      <tbody id="comp-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function setRange(el){ document.querySelectorAll('.rt').forEach(x=>x.classList.remove('active')); el.classList.add('active'); }
+
+// Week-over-week
+const wowDays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const thisWeek=[11200,13400,12800,14100,18600,16200,7900];
+const lastWeek=[10200,12100,11800,12900,17200,14800,7400];
+const maxWow=Math.max(...thisWeek,...lastWeek);
+const wowChart=document.getElementById('wow-chart');
+const wowLabels=document.getElementById('wow-labels');
+wowDays.forEach((d,i)=>{
+  const g=document.createElement('div');
+  g.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;gap:0;';
+  const barsDiv=document.createElement('div');
+  barsDiv.className='wow-group';
+  const b1=document.createElement('div');
+  b1.className='wow-bar';
+  b1.style.cssText=`height:${Math.round((lastWeek[i]/maxWow)*80)}px;background:rgba(245,236,215,0.14);`;
+  const b2=document.createElement('div');
+  b2.className='wow-bar';
+  b2.style.cssText=`height:${Math.round((thisWeek[i]/maxWow)*80)}px;background:var(--primary);opacity:0.7;`;
+  barsDiv.append(b1,b2);
+  g.appendChild(barsDiv);
+  wowChart.appendChild(g);
+  const lbl=document.createElement('div');
+  lbl.style.cssText='flex:1;text-align:center;font-family:var(--mono);font-size:8px;color:var(--faint);';
+  lbl.textContent=d;
+  wowLabels.appendChild(lbl);
+});
+
+// Donut chart
+const donutData=[
+  {name:'Seoul Fire', val:21400, color:'#C44B4B'},
+  {name:'Yazzie',     val:18600, color:'#C4622D'},
+  {name:'Sticky Stack',val:16200,color:'#D4A84B'},
+  {name:'Hall Bar',   val:22400, color:'#4B9B6E'},
+  {name:'Others',     val:15600, color:'rgba(245,236,215,0.18)'},
+];
+const total = donutData.reduce((s,d)=>s+d.val,0);
+const cx=65,cy=65,r=50,ir=30;
+let startAngle=-Math.PI/2;
+const svg=document.getElementById('donut-svg');
+donutData.forEach(d=>{
+  const angle=(d.val/total)*Math.PI*2;
+  const endAngle=startAngle+angle;
+  const x1=cx+r*Math.cos(startAngle),y1=cy+r*Math.sin(startAngle);
+  const x2=cx+r*Math.cos(endAngle),y2=cy+r*Math.sin(endAngle);
+  const ix1=cx+ir*Math.cos(startAngle),iy1=cy+ir*Math.sin(startAngle);
+  const ix2=cx+ir*Math.cos(endAngle),iy2=cy+ir*Math.sin(endAngle);
+  const large=angle>Math.PI?1:0;
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',`M ${ix1} ${iy1} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${ir} ${ir} 0 ${large} 0 ${ix1} ${iy1} Z`);
+  path.setAttribute('fill',d.color);
+  path.setAttribute('opacity','0.85');
+  svg.appendChild(path);
+  startAngle=endAngle;
+});
+const legend=document.getElementById('donut-legend');
+donutData.forEach(d=>{
+  const pct=Math.round((d.val/total)*100);
+  const div=document.createElement('div');
+  div.className='dl-item';
+  div.innerHTML=`<span class="dl-dot" style="background:${d.color}"></span>${d.name}<span class="dl-pct">${pct}%</span><span class="dl-val">$${(d.val/1000).toFixed(1)}k</span>`;
+  legend.appendChild(div);
+});
+
+// Heatmap
+const hours=['10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p'];
+const heatVendors=[
+  {name:'Seoul Fire',  d:[5,28,95,100,64,38,48,78,92,82,54,30]},
+  {name:'Yazzie',      d:[0,16,74,82,52,32,38,62,72,58,38,18]},
+  {name:'Sticky Stack',d:[42,84,90,72,32,12,8,12,18,12,6,0]},
+  {name:'Hall Bar',    d:[22,40,80,84,60,42,64,90,100,92,70,44]},
+];
+function hBg(p){
+  if(p<8) return 'rgba(245,236,215,0.04)';
+  if(p<25) return 'rgba(196,98,45,0.16)';
+  if(p<50) return 'rgba(196,98,45,0.36)';
+  if(p<75) return 'rgba(196,98,45,0.62)';
+  return 'rgba(196,98,45,0.90)';
+}
+const tbl=document.getElementById('heatmap');
+let html='<thead><tr><th class="v">Vendor</th>';
+hours.forEach(h=>{ html+=`<th>${h}</th>`; });
+html+='</tr></thead><tbody>';
+heatVendors.forEach(v=>{
+  html+=`<tr><td class="v">${v.name}</td>`;
+  v.d.forEach((p,i)=>{
+    html+=`<td><div class="hcell" style="background:${hBg(p)}" title="${v.name} · ${hours[i]} · ${p}%"></div></td>`;
+  });
+  html+='</tr>';
+});
+html+='</tbody>';
+tbl.innerHTML=html;
+
+// Traffic forecast
+const tfDays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const actual=[720,810,790,850,980,900,440,null,null,null,null,null,null,null];
+const forecast=[null,null,null,null,null,null,null,740,820,800,870,1020,940,460];
+const maxTf=1100;
+const tbars=document.getElementById('traffic-bars');
+const tlabels=document.getElementById('traffic-labels');
+tfDays.forEach((d,i)=>{
+  const isActual=actual[i]!==null;
+  const val=isActual?actual[i]:forecast[i];
+  const h=Math.round((val/maxTf)*72);
+  const grp=document.createElement('div');
+  grp.className='tb-group';
+  const bar=document.createElement('div');
+  bar.className='tb';
+  bar.style.cssText=`height:${h}px;background:${isActual?'var(--primary)':'rgba(212,168,75,0.55)'};opacity:${isActual?0.65:0.45};border-radius:1px 1px 0 0;`;
+  grp.appendChild(bar);
+  tbars.appendChild(grp);
+  const lbl=document.createElement('div');
+  lbl.style.cssText='flex:1;text-align:center;font-family:var(--mono);font-size:7.5px;color:var(--faint);';
+  lbl.textContent=i===7?'→ '+d:d;
+  tlabels.appendChild(lbl);
+});
+
+// Vendor comparison
+const compData=[
+  {name:'Seoul Fire Chicken', rev:21400,orders:1280,wow:'+14%',up:true},
+  {name:'Yazzie',             rev:18600,orders:1060,wow:'+9%', up:true},
+  {name:'Hall Bar',           rev:22400,orders:1740,wow:'+6%', up:true},
+  {name:'Sticky Stack Co.',   rev:16200,orders: 820,wow:'+4%', up:true},
+  {name:'Rio Bakehouse',      rev: 7200,orders: 640,wow:'-3%', up:false},
+  {name:'Desert Bloom',       rev: 5400,orders: 900,wow:'-1%', up:false},
+];
+const tbody=document.getElementById('comp-tbody');
+compData.forEach(d=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td>${d.name}</td>
+    <td class="mono">$${(d.rev/1000).toFixed(1)}k</td>
+    <td class="mono">${d.orders.toLocaleString()}</td>
+    <td class="${d.up?'delta-up':'delta-dn'}">${d.wow}</td>`;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>

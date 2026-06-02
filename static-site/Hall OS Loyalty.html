@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script src="hos-nav.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Hall OS · Loyalty &amp; Tab · Cider &amp; Spice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap"/>
+<style>
+  :root{
+    --bg:#1C1209;--bg-deep:#100E0A;--bg-band:#150F08;
+    --surface:rgba(245,236,215,0.025);--surface-2:rgba(245,236,215,0.05);
+    --border:rgba(245,236,215,0.10);--border-m:rgba(245,236,215,0.18);--border-s:rgba(245,236,215,0.06);
+    --cream:#F5ECD7;--parchment:#F7F3EC;--wheat:#E8C18D;
+    --muted:rgba(245,236,215,0.55);--faint:rgba(245,236,215,0.32);
+    --primary:#C4622D;--primary-hi:#D67841;--primary-dim:rgba(196,98,45,0.16);
+    --gold:#D4A84B;--green:#4B9B6E;--green-dim:rgba(75,155,110,0.12);
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --caps:'Josefin Sans',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--cream);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;min-height:100vh;}
+
+  /* ── Header ── */
+  .hdr{
+    position:sticky;top:0;z-index:50;height:52px;
+    background:var(--bg-deep);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;padding:0 24px;gap:14px;
+  }
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;}
+  .bmark{width:28px;height:28px;border-radius:6px;background:linear-gradient(140deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;font-size:15px;color:#1e1710;}
+  .bname{font-family:var(--serif);font-size:16px;}.bname em{font-style:italic;color:var(--primary);}
+  .vsep{width:1px;height:18px;background:var(--border);}
+  .hdr-badge{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,75,0.08);border:1px solid rgba(212,168,75,0.22);padding:3px 9px;}
+  .hdr-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .view-toggle{display:flex;gap:0;}
+  .vt{font-family:var(--caps);font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;margin-right:-1px;transition:color .12s,background .12s;}
+  .vt.active{background:var(--surface-2);color:var(--parchment);border-color:var(--border-m);}
+  .back-link{font-family:var(--caps);font-size:9px;letter-spacing:0.20em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);text-decoration:none;}
+
+  /* ── Views ── */
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ── Customer view ── */
+  .customer-shell{display:grid;grid-template-columns:1fr 360px;min-height:calc(100vh - 52px);}
+  @media(max-width:900px){.customer-shell{grid-template-columns:1fr;}}
+
+  /* QR + profile */
+  .qr-panel{
+    padding:36px 40px;display:flex;flex-direction:column;gap:28px;
+    border-right:1px solid var(--border);
+  }
+  .customer-hero{display:flex;align-items:center;gap:20px;}
+  .avatar{
+    width:62px;height:62px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(140deg,var(--primary),var(--gold));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-style:italic;font-size:28px;color:#1e1710;
+  }
+  .customer-info{flex:1;}
+  .customer-name{font-family:var(--serif);font-size:28px;color:var(--parchment);font-weight:400;line-height:1;}
+  .member-since{font-family:var(--caps);font-size:8.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);margin-top:5px;}
+
+  .qr-block{
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    padding:28px;background:var(--bg-deep);border:1px solid var(--border);
+  }
+  .qr-label{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--faint);}
+  .qr-code{width:160px;height:160px;}
+  .qr-sub{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:center;line-height:1.5;}
+
+  /* Tab balance */
+  .tab-balance{background:var(--bg-deep);border:1px solid var(--border);padding:20px 22px;}
+  .tab-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .tab-title{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);}
+  .tab-add{
+    font-family:var(--caps);font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;
+    padding:5px 11px;background:var(--primary);border:none;color:var(--parchment);cursor:pointer;
+  }
+  .tab-amount{font-family:var(--serif);font-size:44px;color:var(--parchment);font-weight:300;line-height:1;margin-bottom:6px;}
+  .tab-meta{font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .tab-items{margin-top:14px;display:flex;flex-direction:column;gap:0;}
+  .tab-item{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 0;border-top:1px solid var(--border-s);font-size:13px;color:var(--muted);
+  }
+  .tab-item:first-child{border-top:0;}
+  .ti-right{display:flex;align-items:center;gap:10px;}
+  .ti-vendor{font-family:var(--caps);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);}
+  .ti-price{font-family:var(--mono);font-size:11.5px;color:var(--wheat);}
+
+  /* ── Punch cards ── */
+  .punch-panel{padding:28px 40px;border-right:0;}
+  .punch-title{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+  .punch-cards{display:flex;flex-direction:column;gap:14px;}
+  .punch-card{
+    background:var(--bg-deep);border:1px solid var(--border);
+    padding:18px 20px;
+  }
+  .pc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .pc-vendor{font-family:var(--serif);font-size:18px;color:var(--parchment);font-weight:400;}
+  .pc-reward{font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .pc-dots{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;}
+  .pc-dot{
+    width:26px;height:26px;border-radius:50%;
+    border:1px solid var(--border-m);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;transition:background .2s,border-color .2s;
+  }
+  .pc-dot.filled{background:var(--primary);border-color:var(--primary);}
+  .pc-dot.reward{background:var(--gold);border-color:var(--gold);animation:reward-pop .4s cubic-bezier(0.34,1.56,0.64,1) both;}
+  @keyframes reward-pop{from{transform:scale(0.6);}to{transform:scale(1);}}
+  .pc-progress{height:2px;background:var(--border);position:relative;overflow:hidden;margin-top:8px;}
+  .pc-fill{position:absolute;top:0;left:0;bottom:0;background:var(--primary);transition:width .5s ease;}
+  .pc-foot{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--faint);}
+
+  /* ── Admin view ── */
+  .admin-shell{display:grid;grid-template-columns:1fr 320px;min-height:calc(100vh - 52px);}
+  @media(max-width:900px){.admin-shell{grid-template-columns:1fr;}}
+
+  .admin-main{border-right:1px solid var(--border);}
+
+  /* KPIs */
+  .a-kpis{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+  .a-kpi{padding:14px 20px;border-right:1px solid var(--border);}
+  .a-kpi:last-child{border-right:0;}
+  .a-lbl{font-family:var(--caps);font-size:8.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);}
+  .a-val{font-family:var(--serif);font-size:28px;color:var(--parchment);line-height:1.1;margin:3px 0 2px;}
+  .a-val.g{color:var(--gold);}
+  .a-sub{font-family:var(--mono);font-size:10px;color:var(--faint);}
+
+  /* Member list */
+  .member-sec{border-bottom:1px solid var(--border);}
+  .sec-head{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--bg-band);border-bottom:1px solid var(--border-s);}
+  .sec-lbl{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);}
+  .sec-meta{font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .member-table{width:100%;border-collapse:collapse;}
+  .member-table th{font-family:var(--caps);font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--faint);padding:8px 16px;text-align:left;border-bottom:1px solid var(--border-s);}
+  .member-table td{padding:10px 16px;border-bottom:1px solid var(--border-s);font-size:13px;color:var(--muted);vertical-align:middle;}
+  .member-table tr:last-child td{border-bottom:0;}
+  .member-table td.name{font-family:var(--serif);font-size:15px;color:var(--parchment);}
+  .member-table td .mono{font-family:var(--mono);font-size:11px;}
+  .tier-badge{font-family:var(--caps);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;padding:2px 7px;border:1px solid;}
+  .tier-badge.gold{color:var(--gold);border-color:rgba(212,168,75,0.35);background:rgba(212,168,75,0.08);}
+  .tier-badge.reg{color:var(--faint);border-color:var(--border);}
+  .tier-badge.new{color:var(--primary);border-color:rgba(196,98,45,0.3);background:var(--primary-dim);}
+
+  /* Sidebar totals */
+  .admin-side{padding:20px 20px;background:var(--bg-deep);}
+  .s-title{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .redemption-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border-s);font-size:13px;color:var(--muted);}
+  .redemption-row:last-child{border-bottom:0;}
+  .redemption-row span:last-child{font-family:var(--mono);font-size:11px;color:var(--wheat);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="brand" href="Hall OS.html">
+    <span class="bmark">&amp;</span>
+    <span class="bname">Hall <em>OS</em></span>
+  </a>
+  <span class="vsep"></span>
+  <span class="hdr-badge">Loyalty &amp; Tab</span>
+  <div class="hdr-right">
+    <div class="view-toggle">
+      <button class="vt active" onclick="switchView('customer',this)">Customer</button>
+      <button class="vt" onclick="switchView('admin',this)">Admin</button>
+    </div>
+    <a class="back-link" href="Hall OS Index.html">← All modules</a>
+  </div>
+</header>
+
+<!-- ── Customer View ─────────────────────────────────────────── -->
+<div class="view active" id="view-customer">
+  <div class="customer-shell">
+
+    <!-- Left: QR + tab -->
+    <div class="qr-panel">
+      <div class="customer-hero">
+        <div class="avatar">M</div>
+        <div class="customer-info">
+          <div class="customer-name">Maya Delgado</div>
+          <div class="member-since">Member since March 2025 · #CS-00482</div>
+        </div>
+      </div>
+
+      <div class="qr-block">
+        <span class="qr-label">Scan to pay or redeem</span>
+        <svg class="qr-code" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" id="qr-svg"></svg>
+        <div class="qr-sub">Show this at the stall or tap your phone to the reader.</div>
+      </div>
+
+      <div class="tab-balance">
+        <div class="tab-head">
+          <span class="tab-title">Running tab · today</span>
+          <button class="tab-add" onclick="addFunds()">+ Add funds</button>
+        </div>
+        <div class="tab-amount" id="tab-amount">$34.50</div>
+        <div class="tab-meta">$65.50 remaining · $100 loaded</div>
+        <div class="tab-items">
+          <div class="tab-item"><span>Frybread Taco</span><div class="ti-right"><span class="ti-vendor">Yazzie</span><span class="ti-price">$12.00</span></div></div>
+          <div class="tab-item"><span>Korean Fried Chicken</span><div class="ti-right"><span class="ti-vendor">Seoul Fire</span><span class="ti-price">$15.00</span></div></div>
+          <div class="tab-item"><span>House Chai</span><div class="ti-right"><span class="ti-vendor">Desert Bloom</span><span class="ti-price">$6.00</span></div></div>
+          <div class="tab-item"><span>Buttermilk Stack</span><div class="ti-right"><span class="ti-vendor">Sticky Stack</span><span class="ti-price">$14.00</span></div></div>
+          <div class="tab-item" style="margin-top:4px;border-top:1px solid var(--border-m);padding-top:10px;"><span style="color:var(--parchment);font-weight:500;">Total spent today</span><div class="ti-right"><span class="ti-price" style="color:var(--gold);">$47.00</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Punch cards -->
+    <div class="punch-panel">
+      <div class="punch-title">Punch cards</div>
+      <div class="punch-cards" id="punch-cards"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Admin View ─────────────────────────────────────────────── -->
+<div class="view" id="view-admin">
+  <div class="admin-shell">
+    <div class="admin-main">
+      <div class="a-kpis">
+        <div class="a-kpi"><div class="a-lbl">Members</div><div class="a-val">1,248</div><div class="a-sub">↑ 42 this month</div></div>
+        <div class="a-kpi"><div class="a-lbl">Loaded tab value</div><div class="a-val g">$28,400</div><div class="a-sub">active balances</div></div>
+        <div class="a-kpi"><div class="a-lbl">Punches redeemed</div><div class="a-val">340</div><div class="a-sub">this month</div></div>
+        <div class="a-kpi"><div class="a-lbl">Loyalty revenue</div><div class="a-val">$14,200</div><div class="a-sub">from tab loads</div></div>
+      </div>
+      <div class="member-sec">
+        <div class="sec-head"><span class="sec-lbl">Members</span><span class="sec-meta">Sorted by total spend</span></div>
+        <table class="member-table">
+          <thead><tr>
+            <th>Name</th><th>Joined</th><th>Tab balance</th><th>Total spent</th><th>Tier</th>
+          </tr></thead>
+          <tbody id="member-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="admin-side">
+      <div class="s-title">Punch redemptions · this month</div>
+      <div id="redemption-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchView(id, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.vt').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// QR code — simple pixel art placeholder
+(function buildQR(){
+  const svg = document.getElementById('qr-svg');
+  const size = 160, cells = 21, cell = Math.floor(size/cells);
+  // deterministic pseudo-random QR-like pattern
+  const seed = [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,
+                1,0,0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,0,1,
+                1,0,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,1,1,0,1,
+                1,0,1,1,1,0,1,0,0,1,1,0,0,0,1,0,1,1,1,0,1,
+                1,0,1,1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,1,0,1,
+                1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0,1,
+                1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,
+                0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,
+                1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,
+                0,1,0,0,1,0,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,
+                1,0,1,1,0,1,1,0,1,0,1,0,1,0,0,1,0,1,1,0,1,
+                0,1,1,0,0,1,0,0,0,1,1,0,0,1,1,0,0,1,0,1,0,
+                1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,1,1,0,1,0,1,
+                0,0,0,0,0,0,0,0,1,0,1,1,0,0,1,0,1,1,0,0,1,
+                1,1,1,1,1,1,1,0,0,1,1,0,1,0,1,0,1,0,1,0,1,
+                1,0,0,0,0,0,1,0,1,0,0,1,0,1,1,0,0,1,0,0,0,
+                1,0,1,1,1,0,1,0,1,1,0,0,1,0,0,1,1,0,1,1,1,
+                1,0,1,1,1,0,1,0,0,1,1,0,0,1,1,0,0,1,0,0,1,
+                1,0,1,1,1,0,1,0,1,0,0,1,1,0,1,1,0,1,1,0,0,
+                1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,1,0,
+                1,1,1,1,1,1,1,0,1,1,0,1,0,1,1,0,1,0,1,0,1];
+  svg.setAttribute('style','background:#F7F3EC;');
+  seed.forEach((v,i)=>{
+    if(!v) return;
+    const x=(i%cells)*cell, y=Math.floor(i/cells)*cell;
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',x);rect.setAttribute('y',y);
+    rect.setAttribute('width',cell);rect.setAttribute('height',cell);
+    rect.setAttribute('fill','#1C1209');
+    svg.appendChild(rect);
+  });
+})();
+
+// Punch cards
+const punchData = [
+  {vendor:'Yazzie',         filled:7, total:10, reward:'Free Frybread Taco'},
+  {vendor:'Seoul Fire',     filled:4, total:8,  reward:'Free KFC'},
+  {vendor:'Sticky Stack',   filled:10,total:10, reward:'Free stack — ready!'},
+  {vendor:'Hall Bar',       filled:2, total:6,  reward:'Free drink'},
+];
+const punchContainer = document.getElementById('punch-cards');
+punchData.forEach(p=>{
+  const card = document.createElement('div');
+  card.className = 'punch-card';
+  const isReady = p.filled >= p.total;
+  let dots = '';
+  for(let i=0;i<p.total;i++){
+    const cls = i < p.filled ? (isReady ? 'pc-dot reward' : 'pc-dot filled') : 'pc-dot';
+    dots += `<div class="${cls}">${i<p.filled?(isReady?'★':'✓'):''}</div>`;
+  }
+  const pct = Math.round((p.filled/p.total)*100);
+  card.innerHTML = `
+    <div class="pc-head">
+      <span class="pc-vendor">${p.vendor}</span>
+      <span class="pc-reward">${p.reward}</span>
+    </div>
+    <div class="pc-dots">${dots}</div>
+    <div class="pc-progress"><div class="pc-fill" style="width:${pct}%"></div></div>
+    <div class="pc-foot">
+      <span>${p.filled} of ${p.total} punches</span>
+      <span>${isReady ? '🎉 Redeem now' : (p.total-p.filled)+' more to go'}</span>
+    </div>`;
+  punchContainer.appendChild(card);
+});
+
+function addFunds(){
+  const el = document.getElementById('tab-amount');
+  const cur = parseFloat(el.textContent.replace('$',''));
+  el.textContent = '$'+(cur+20).toFixed(2);
+}
+
+// Admin member table
+const members = [
+  {name:'Maya Delgado',   joined:'Mar 2025',bal:65.50, spent:1240, tier:'gold'},
+  {name:'James Tafoya',   joined:'Jan 2025',bal:22.00, spent:980,  tier:'gold'},
+  {name:'Lin Wei',        joined:'May 2025',bal:45.00, spent:620,  tier:'reg'},
+  {name:'Amara Osei',     joined:'Jun 2025',bal:80.00, spent:480,  tier:'reg'},
+  {name:'Santiago Reyes', joined:'Jun 2026',bal:100.00,spent:47,   tier:'new'},
+  {name:'Priya Nair',     joined:'Apr 2025',bal:12.50, spent:740,  tier:'reg'},
+  {name:'Devon Yazzie',   joined:'Feb 2025',bal:55.00, spent:1100, tier:'gold'},
+];
+const tbody = document.getElementById('member-tbody');
+members.forEach(m=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML=`
+    <td class="name">${m.name}</td>
+    <td class="mono">${m.joined}</td>
+    <td class="mono">$${m.bal.toFixed(2)}</td>
+    <td class="mono">$${m.spent.toLocaleString()}</td>
+    <td><span class="tier-badge ${m.tier}">${m.tier==='gold'?'Gold':m.tier==='new'?'New':'Member'}</span></td>`;
+  tbody.appendChild(tr);
+});
+
+// Redemptions
+const redemptions = [
+  {vendor:'Sticky Stack', reward:'Free Stack',      count:82},
+  {vendor:'Seoul Fire',   reward:'Free KFC',        count:74},
+  {vendor:'Yazzie',       reward:'Free Frybread',   count:68},
+  {vendor:'Hall Bar',     reward:'Free Drink',      count:116},
+];
+const rlist = document.getElementById('redemption-list');
+redemptions.forEach(r=>{
+  const div = document.createElement('div');
+  div.className = 'redemption-row';
+  div.innerHTML=`<span>${r.vendor} — ${r.reward}</span><span>${r.count}</span>`;
+  rlist.appendChild(div);
+});
+</script>
+</body>
+</html>

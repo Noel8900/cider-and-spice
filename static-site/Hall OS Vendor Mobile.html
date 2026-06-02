@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script src="hos-nav.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hall OS · Vendor App · Yazzie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap" />
+<style>
+  :root {
+    --bg:#1C1209; --bg-deep:#100E0A; --bg-band:#150F08;
+    --surface:rgba(245,236,215,0.025); --surface-2:rgba(245,236,215,0.05);
+    --border:rgba(245,236,215,0.10); --border-m:rgba(245,236,215,0.16); --border-s:rgba(245,236,215,0.06);
+    --cream:#F5ECD7; --parchment:#F7F3EC; --wheat:#E8C18D;
+    --muted:rgba(245,236,215,0.55); --faint:rgba(245,236,215,0.36);
+    --primary:#C4622D; --primary-hi:#D67841; --primary-dim:rgba(196,98,45,0.16);
+    --gold:#D4A84B;
+    --green:#4B9B6E; --green-dim:rgba(75,155,110,0.12);
+    --red:#C44B4B; --red-dim:rgba(196,75,75,0.12);
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --caps:'Josefin Sans',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#0d0d0d;
+    display:flex;align-items:flex-start;justify-content:center;
+    min-height:100vh;font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    padding:32px 16px 48px;
+  }
+
+  /* ── Phone shell ───────────────────────────────────────────── */
+  .phone{
+    width:390px;min-height:844px;
+    background:var(--bg);
+    display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,0.7);
+  }
+
+  /* ── Status bar ────────────────────────────────────────────── */
+  .status-bar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 22px 8px;
+    font-family:var(--sans);font-size:12px;font-weight:600;color:var(--cream);
+    flex-shrink:0;
+  }
+  .sb-right{display:flex;align-items:center;gap:6px;}
+  .sb-icon{font-size:11px;opacity:0.8;}
+
+  /* ── App header ────────────────────────────────────────────── */
+  .app-hdr{
+    padding:8px 20px 14px;
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:flex-end;justify-content:space-between;
+    flex-shrink:0;
+  }
+  .vendor-name{font-family:var(--serif);font-size:26px;color:var(--parchment);font-weight:400;line-height:1;}
+  .vendor-name em{font-style:italic;color:var(--primary);}
+  .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .stall-tag{font-family:var(--caps);font-size:8.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);}
+  .live-pill{
+    display:flex;align-items:center;gap:5px;
+    font-family:var(--mono);font-size:10px;color:var(--green);
+  }
+  .ldot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:gpulse 2.2s ease-in-out infinite;}
+  @keyframes gpulse{0%,100%{box-shadow:0 0 0 2px rgba(75,155,110,0.22);}50%{box-shadow:0 0 0 5px rgba(75,155,110,0.04);}}
+
+  /* ── Today strip ───────────────────────────────────────────── */
+  .today-strip{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .ts-cell{
+    padding:12px 16px;border-right:1px solid var(--border);
+    display:flex;flex-direction:column;gap:3px;
+  }
+  .ts-cell:last-child{border-right:0;}
+  .ts-lbl{font-family:var(--caps);font-size:8px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);}
+  .ts-val{font-family:var(--serif);font-size:22px;color:var(--parchment);font-weight:400;line-height:1;}
+  .ts-val.g{color:var(--gold);}
+  .ts-sub{font-family:var(--mono);font-size:9px;color:var(--faint);}
+
+  /* ── Tab bar ───────────────────────────────────────────────── */
+  .tab-bar{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    background:var(--bg-deep);border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .tab{
+    padding:10px 4px;text-align:center;cursor:pointer;
+    font-family:var(--caps);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--muted);border-bottom:2px solid transparent;
+    transition:color .15s,border-color .15s;
+    position:relative;
+  }
+  .tab.active{color:var(--parchment);border-bottom-color:var(--primary);}
+  .tab-badge{
+    position:absolute;top:8px;right:calc(50% - 22px);
+    background:var(--primary);color:var(--parchment);
+    font-family:var(--sans);font-size:9px;font-weight:700;
+    width:16px;height:16px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ── Scroll content ────────────────────────────────────────── */
+  .tab-content{flex:1;overflow-y:auto;display:none;}
+  .tab-content.active{display:block;}
+
+  /* ── Queue tab ─────────────────────────────────────────────── */
+  .queue-section{padding:14px 16px 4px;}
+  .q-section-lbl{
+    font-family:var(--caps);font-size:8.5px;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:10px;
+  }
+
+  /* Order card */
+  .order-card{
+    background:var(--bg-deep);border:1px solid var(--border);
+    margin-bottom:10px;overflow:hidden;
+    transition:border-color .2s;
+  }
+  .order-card.new-order{border-color:rgba(196,98,45,0.45);background:rgba(196,98,45,0.04);}
+  .order-card.in-progress{border-color:rgba(212,168,75,0.35);}
+  .order-card.done-order{opacity:0.48;}
+
+  .oc-head{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 14px 8px;
+    border-bottom:1px solid var(--border-s);
+  }
+  .oc-num{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--primary);line-height:1;}
+  .oc-badge{
+    font-family:var(--caps);font-size:8px;letter-spacing:0.18em;text-transform:uppercase;
+    padding:2px 7px;border:1px solid;
+  }
+  .oc-badge.new{color:var(--primary);border-color:rgba(196,98,45,0.5);background:rgba(196,98,45,0.1);animation:blink-badge 1.4s ease-in-out infinite;}
+  @keyframes blink-badge{0%,100%{opacity:1;}50%{opacity:0.55;}}
+  .oc-badge.inprog{color:var(--gold);border-color:rgba(212,168,75,0.4);background:rgba(212,168,75,0.08);}
+  .oc-badge.done{color:var(--green);border-color:rgba(75,155,110,0.3);background:var(--green-dim);}
+  .oc-badge.ready{color:var(--cream);border-color:var(--border-m);}
+  .oc-time{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--faint);}
+
+  .oc-items{padding:10px 14px;}
+  .oc-item{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:13px;color:var(--cream);padding:2px 0;
+  }
+  .oc-item .qty{font-family:var(--mono);font-size:11px;color:var(--primary);margin-right:6px;}
+  .oc-item .price{font-family:var(--mono);font-size:11px;color:var(--faint);}
+  .oc-note{
+    margin:4px 0 2px;padding:6px 8px;
+    background:rgba(212,168,75,0.07);border-left:2px solid rgba(212,168,75,0.4);
+    font-size:11.5px;color:var(--wheat);font-style:italic;
+  }
+
+  .oc-actions{
+    display:flex;gap:8px;padding:8px 14px 12px;
+  }
+  .oc-btn{
+    flex:1;padding:10px;
+    font-family:var(--caps);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+    cursor:pointer;border:1px solid;transition:background .15s,color .15s;
+    font-weight:600;
+  }
+  .oc-btn.start{background:var(--primary);border-color:var(--primary);color:var(--parchment);}
+  .oc-btn.start:hover{background:var(--primary-hi);}
+  .oc-btn.ready{background:var(--gold);border-color:var(--gold);color:#1e1710;}
+  .oc-btn.ready:hover{background:#e2b655;}
+  .oc-btn.ghost{background:transparent;border-color:var(--border);color:var(--muted);}
+  .oc-btn.ghost:hover{border-color:var(--border-m);color:var(--cream);}
+
+  /* ── Menu tab ──────────────────────────────────────────────── */
+  .menu-list{list-style:none;margin:0;padding:14px 16px;}
+  .menu-item{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 0;border-bottom:1px solid var(--border-s);
+  }
+  .menu-item:last-child{border-bottom:0;}
+  .mi-name-wrap{flex:1;}
+  .mi-name{font-size:14px;color:var(--parchment);font-weight:500;}
+  .mi-name.sold-out{color:var(--faint);text-decoration:line-through;}
+  .mi-desc{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.4;}
+  .mi-price{font-family:var(--mono);font-size:12px;color:var(--wheat);flex-shrink:0;}
+  .mi-price.sold-out{color:var(--faint);}
+
+  /* 86 Toggle */
+  .toggle-86{
+    flex-shrink:0;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+  }
+  .toggle-track{
+    width:36px;height:20px;border-radius:10px;
+    background:var(--border-m);position:relative;transition:background .2s;
+  }
+  .toggle-track.off{background:rgba(196,75,75,0.45);}
+  .toggle-thumb{
+    position:absolute;top:3px;left:3px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--faint);transition:transform .2s,background .2s;
+  }
+  .toggle-track.off .toggle-thumb{transform:translateX(16px);background:var(--red);}
+  .toggle-lbl{font-family:var(--caps);font-size:7.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);}
+  .toggle-lbl.off{color:var(--red);}
+
+  /* ── Stats tab ─────────────────────────────────────────────── */
+  .stats-content{padding:14px 16px;}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+  .stat-card{
+    background:var(--bg-deep);border:1px solid var(--border);
+    padding:12px 14px;display:flex;flex-direction:column;gap:3px;
+  }
+  .stat-lbl{font-family:var(--caps);font-size:8px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);}
+  .stat-val{font-family:var(--serif);font-size:28px;color:var(--parchment);line-height:1;font-weight:400;}
+  .stat-val.g{color:var(--gold);}
+  .stat-sub{font-family:var(--mono);font-size:9.5px;color:var(--faint);}
+
+  .goal-section{margin-bottom:16px;}
+  .goal-lbl{
+    display:flex;justify-content:space-between;
+    font-family:var(--caps);font-size:8.5px;letter-spacing:0.20em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:7px;
+  }
+  .goal-lbl span{color:var(--wheat);}
+  .goal-track{height:4px;background:var(--border);position:relative;overflow:hidden;}
+  .goal-fill{position:absolute;top:0;left:0;bottom:0;background:var(--primary);width:64%;}
+
+  .hourly-section{margin-bottom:16px;}
+  .section-label{
+    font-family:var(--caps);font-size:8.5px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:10px;
+  }
+  .hourly-bars{display:flex;align-items:flex-end;gap:4px;height:60px;}
+  .hbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .hbar{width:100%;border-radius:1px 1px 0 0;background:var(--primary);}
+  .hbar.current{background:var(--gold);}
+  .hbar-lbl{font-family:var(--mono);font-size:8px;color:var(--faint);}
+
+  .top-items{list-style:none;margin:0;padding:0;}
+  .top-item{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 0;border-top:1px solid var(--border-s);
+  }
+  .top-rank{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--primary);width:20px;line-height:1;}
+  .top-name{flex:1;font-size:13px;color:var(--cream);}
+  .top-count{font-family:var(--mono);font-size:11px;color:var(--faint);}
+  .top-rev{font-family:var(--mono);font-size:11px;color:var(--wheat);}
+
+  /* ── Bottom nav ────────────────────────────────────────────── */
+  .bottom-nav{
+    display:flex;border-top:1px solid var(--border);
+    background:var(--bg-deep);flex-shrink:0;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .bn-item{
+    flex:1;padding:10px 4px 14px;text-align:center;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    font-family:var(--caps);font-size:8px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--muted);transition:color .15s;
+  }
+  .bn-item.active{color:var(--primary);}
+  .bn-icon{font-size:18px;line-height:1;}
+
+  /* ── Top nav ─────────────────────────────────────────────────── */
+  .top-nav{
+    width:100%;max-width:390px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 4px;margin-bottom:8px;
+  }
+  .back-link{
+    font-family:var(--caps);font-size:9px;letter-spacing:0.20em;text-transform:uppercase;
+    color:var(--muted);text-decoration:none;padding:6px 10px;
+    border:1px solid var(--border);transition:color .15s,border-color .15s;
+  }
+  .back-link:hover{color:var(--cream);border-color:var(--border-m);}
+  .top-nav-label{font-family:var(--caps);font-size:8.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);}
+</style>
+</head>
+<body>
+
+<div>
+  <div class="top-nav">
+    <a class="back-link" href="Hall OS Index.html">← All modules</a>
+    <span class="top-nav-label">Vendor Mobile App</span>
+  </div>
+  <div class="phone">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span id="sb-time">9:41</span>
+      <div class="sb-right">
+        <span class="sb-icon">●●●</span>
+        <span class="sb-icon">WiFi</span>
+        <span class="sb-icon">⬡</span>
+      </div>
+    </div>
+
+    <!-- App header -->
+    <div class="app-hdr">
+      <div>
+        <div class="vendor-name">Yazzie</div>
+      </div>
+      <div class="hdr-right">
+        <span class="stall-tag">Stall A1 · Native SW</span>
+        <div class="live-pill"><span class="ldot"></span>Live</div>
+      </div>
+    </div>
+
+    <!-- Today strip -->
+    <div class="today-strip">
+      <div class="ts-cell">
+        <span class="ts-lbl">Revenue</span>
+        <span class="ts-val g">$1,284</span>
+        <span class="ts-sub">today</span>
+      </div>
+      <div class="ts-cell">
+        <span class="ts-lbl">Orders</span>
+        <span class="ts-val">73</span>
+        <span class="ts-sub">today</span>
+      </div>
+      <div class="ts-cell">
+        <span class="ts-lbl">Avg ticket</span>
+        <span class="ts-val">$17.59</span>
+        <span class="ts-sub">today</span>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab active" data-tab="queue">Queue<span class="tab-badge" id="badge-count">2</span></div>
+      <div class="tab" data-tab="menu">Menu</div>
+      <div class="tab" data-tab="stats">Stats</div>
+    </div>
+
+    <!-- ── Queue tab ─────────────────────────────────────────── -->
+    <div class="tab-content active" id="tab-queue">
+
+      <div class="queue-section">
+        <div class="q-section-lbl">New · 2 orders</div>
+
+        <div class="order-card new-order" id="order-4133">
+          <div class="oc-head">
+            <span class="oc-num">#4133</span>
+            <span class="oc-badge new">New</span>
+            <span class="oc-time">0:48</span>
+          </div>
+          <div class="oc-items">
+            <div class="oc-item"><span class="qty">2×</span> Frybread Taco <span class="price">$24</span></div>
+            <div class="oc-item"><span class="qty">1×</span> Posole Bowl <span class="price">$13</span></div>
+            <div class="oc-note">"No jalapeños please"</div>
+          </div>
+          <div class="oc-actions">
+            <button class="oc-btn start" onclick="startOrder('4133')">Start →</button>
+          </div>
+        </div>
+
+        <div class="order-card new-order" id="order-4132">
+          <div class="oc-head">
+            <span class="oc-num">#4132</span>
+            <span class="oc-badge new">New</span>
+            <span class="oc-time">1:22</span>
+          </div>
+          <div class="oc-items">
+            <div class="oc-item"><span class="qty">1×</span> Chile Steak Plate <span class="price">$18</span></div>
+            <div class="oc-item"><span class="qty">1×</span> Mutton Stew <span class="price">$14</span></div>
+          </div>
+          <div class="oc-actions">
+            <button class="oc-btn start" onclick="startOrder('4132')">Start →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="queue-section">
+        <div class="q-section-lbl">In Progress · 1 order</div>
+
+        <div class="order-card in-progress" id="order-4131">
+          <div class="oc-head">
+            <span class="oc-num">#4131</span>
+            <span class="oc-badge inprog">In Progress</span>
+            <span class="oc-time">3:15</span>
+          </div>
+          <div class="oc-items">
+            <div class="oc-item"><span class="qty">3×</span> Frybread Taco <span class="price">$36</span></div>
+            <div class="oc-item"><span class="qty">1×</span> Navajo Tea <span class="price">$4</span></div>
+          </div>
+          <div class="oc-actions">
+            <button class="oc-btn ghost" onclick="cancelOrder('4131')">← Cancel</button>
+            <button class="oc-btn ready" onclick="readyOrder('4131')">Ready ✓</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="queue-section">
+        <div class="q-section-lbl">Ready for pickup · 1 order</div>
+        <div class="order-card done-order" id="order-4130">
+          <div class="oc-head">
+            <span class="oc-num">#4130</span>
+            <span class="oc-badge ready">Awaiting Pickup</span>
+            <span class="oc-time">8 min ago</span>
+          </div>
+          <div class="oc-items">
+            <div class="oc-item"><span class="qty">1×</span> Mutton Stew <span class="price">$14</span></div>
+            <div class="oc-item"><span class="qty">1×</span> Frybread Taco <span class="price">$12</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="queue-section">
+        <div class="q-section-lbl">Done · earlier today</div>
+        <div class="order-card done-order">
+          <div class="oc-head">
+            <span class="oc-num">#4129</span>
+            <span class="oc-badge done">Done</span>
+            <span class="oc-time">15 min ago</span>
+          </div>
+          <div class="oc-items">
+            <div class="oc-item"><span class="qty">2×</span> Chile Steak Plate <span class="price">$36</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Menu tab ───────────────────────────────────────────── -->
+    <div class="tab-content" id="tab-menu">
+      <ul class="menu-list" id="menu-list">
+        <!-- populated by JS -->
+      </ul>
+    </div>
+
+    <!-- ── Stats tab ─────────────────────────────────────────── -->
+    <div class="tab-content" id="tab-stats">
+      <div class="stats-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-lbl">Revenue</span>
+            <span class="stat-val g">$1,284</span>
+            <span class="stat-sub">today</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Orders</span>
+            <span class="stat-val">73</span>
+            <span class="stat-sub">today</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Avg ticket</span>
+            <span class="stat-val">$17.59</span>
+            <span class="stat-sub">today</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-lbl">Food cost %</span>
+            <span class="stat-val">28%</span>
+            <span class="stat-sub">vs. 30% target</span>
+          </div>
+        </div>
+
+        <div class="goal-section">
+          <div class="goal-lbl">
+            <span>Daily revenue goal</span>
+            <span>$1,284 / $2,000</span>
+          </div>
+          <div class="goal-track"><div class="goal-fill"></div></div>
+        </div>
+
+        <div class="hourly-section">
+          <div class="section-label">Hourly orders · today</div>
+          <div class="hourly-bars" id="hourly-bars"></div>
+        </div>
+
+        <div class="hourly-section">
+          <div class="section-label">Top items · today</div>
+          <ul class="top-items">
+            <li class="top-item"><span class="top-rank">1</span><span class="top-name">Frybread Taco</span><span class="top-count">42 sold</span><span class="top-rev">$504</span></li>
+            <li class="top-item"><span class="top-rank">2</span><span class="top-name">Posole Bowl</span><span class="top-count">18 sold</span><span class="top-rev">$234</span></li>
+            <li class="top-item"><span class="top-rank">3</span><span class="top-name">Chile Steak</span><span class="top-count">13 sold</span><span class="top-rev">$234</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <div class="bn-item active" data-nav="queue">
+        <span class="bn-icon">≡</span>
+        <span>Queue</span>
+      </div>
+      <div class="bn-item" data-nav="menu">
+        <span class="bn-icon">◈</span>
+        <span>Menu</span>
+      </div>
+      <div class="bn-item" data-nav="stats">
+        <span class="bn-icon">↗</span>
+        <span>Stats</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// Status bar clock
+(function tick(){
+  const el = document.getElementById('sb-time');
+  if(el){
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  }
+  setTimeout(tick, 30000);
+})();
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const t = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.bn-item').forEach(x => x.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + t).classList.add('active');
+    document.querySelector(`.bn-item[data-nav="${t}"]`).classList.add('active');
+  });
+});
+document.querySelectorAll('.bn-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const t = item.dataset.nav;
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.bn-item').forEach(x => x.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('tab-' + t).classList.add('active');
+    document.querySelector(`.tab[data-tab="${t}"]`).classList.add('active');
+  });
+});
+
+// Order actions
+let newCount = 2;
+function startOrder(id) {
+  const card = document.getElementById('order-' + id);
+  if (!card) return;
+  card.classList.remove('new-order');
+  card.classList.add('in-progress');
+  const badge = card.querySelector('.oc-badge');
+  badge.className = 'oc-badge inprog';
+  badge.textContent = 'In Progress';
+  const actions = card.querySelector('.oc-actions');
+  actions.innerHTML = `<button class="oc-btn ghost" onclick="cancelOrder('${id}')">← Cancel</button><button class="oc-btn ready" onclick="readyOrder('${id}')">Ready ✓</button>`;
+  newCount = Math.max(0, newCount - 1);
+  const badge2 = document.getElementById('badge-count');
+  if (badge2) { badge2.textContent = newCount; badge2.style.display = newCount > 0 ? 'flex' : 'none'; }
+}
+function readyOrder(id) {
+  const card = document.getElementById('order-' + id);
+  if (!card) return;
+  card.classList.remove('in-progress');
+  card.classList.add('done-order');
+  const badge = card.querySelector('.oc-badge');
+  badge.className = 'oc-badge ready';
+  badge.textContent = 'Awaiting Pickup';
+  const actions = card.querySelector('.oc-actions');
+  if (actions) actions.remove();
+}
+function cancelOrder(id) {
+  const card = document.getElementById('order-' + id);
+  if (!card) return;
+  card.classList.remove('in-progress');
+  card.classList.add('new-order');
+  const badge = card.querySelector('.oc-badge');
+  badge.className = 'oc-badge new';
+  badge.textContent = 'New';
+  const actions = card.querySelector('.oc-actions');
+  actions.innerHTML = `<button class="oc-btn start" onclick="startOrder('${id}')">Start →</button>`;
+  newCount = Math.min(2, newCount + 1);
+  const badge2 = document.getElementById('badge-count');
+  if (badge2) { badge2.textContent = newCount; badge2.style.display = 'flex'; }
+}
+
+// Menu tab
+const menuItems = [
+  { name: 'Frybread Taco', desc: 'Slow-braised green chile, lettuce, tomato', price: '$12.00', off: false },
+  { name: 'Mutton Stew', desc: 'Traditional recipe, slow-simmered all day', price: '$14.00', off: false },
+  { name: 'Posole Bowl', desc: 'Red chile, hominy, pulled pork', price: '$13.00', off: false },
+  { name: 'Chile Steak Plate', desc: 'Hatch green chile, rice, pinto beans', price: '$18.00', off: false },
+  { name: 'Fry Bread (plain)', desc: 'Fresh-made to order, served with honey butter', price: '$5.00', off: false },
+  { name: 'Navajo Tea', desc: 'Traditional four-corners herb blend', price: '$4.00', off: true },
+];
+const ml = document.getElementById('menu-list');
+menuItems.forEach((item, i) => {
+  const li = document.createElement('li');
+  li.className = 'menu-item';
+  li.id = 'mi-' + i;
+  li.innerHTML = `
+    <div class="mi-name-wrap">
+      <div class="mi-name${item.off ? ' sold-out' : ''}" id="mi-name-${i}">${item.name}</div>
+      <div class="mi-desc">${item.desc}</div>
+    </div>
+    <span class="mi-price${item.off ? ' sold-out' : ''}" id="mi-price-${i}">${item.price}</span>
+    <label class="toggle-86" title="86 — mark as sold out">
+      <div class="toggle-track${item.off ? ' off' : ''}" id="toggle-${i}">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span class="toggle-lbl${item.off ? ' off' : ''}" id="tlbl-${i}">${item.off ? '86\u2019d' : 'On'}</span>
+    </label>`;
+  const track = li.querySelector('.toggle-track');
+  track.addEventListener('click', () => {
+    const isOff = track.classList.contains('off');
+    const lbl = document.getElementById('tlbl-' + i);
+    const nm = document.getElementById('mi-name-' + i);
+    const pr = document.getElementById('mi-price-' + i);
+    track.classList.toggle('off', !isOff);
+    lbl.textContent = isOff ? 'On' : '86\u2019d';
+    lbl.className = 'toggle-lbl' + (isOff ? '' : ' off');
+    nm.className = 'mi-name' + (isOff ? '' : ' sold-out');
+    pr.className = 'mi-price' + (isOff ? '' : ' sold-out');
+  });
+  ml.appendChild(li);
+});
+
+// Hourly bars
+const hourlyData = [
+  {h:'10a',v:4},{h:'11a',v:18},{h:'12p',v:36},{h:'1p',v:28},{h:'2p',v:12},
+  {h:'3p',v:8},{h:'4p',v:6,cur:true},{h:'5p',v:0},{h:'6p',v:0},{h:'7p',v:0},
+];
+const maxH = Math.max(...hourlyData.map(d=>d.v),1);
+const hbEl = document.getElementById('hourly-bars');
+hourlyData.forEach(d=>{
+  const h = d.v > 0 ? Math.max(4, Math.round((d.v/maxH)*60)) : 2;
+  const wrap = document.createElement('div');
+  wrap.className = 'hbar-wrap';
+  wrap.innerHTML = `<div class="hbar${d.cur?' current':''}" style="height:${h}px;opacity:${d.cur?0.9:0.6}"></div><span class="hbar-lbl">${d.h}</span>`;
+  hbEl.appendChild(wrap);
+});
+</script>
+</body>
+</html>

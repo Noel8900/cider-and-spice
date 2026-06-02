@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script src="hos-nav.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Hall OS · Finance Portal · Cider &amp; Spice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap"/>
+<style>
+  :root{
+    --bg:#1C1209;--bg-deep:#100E0A;--bg-band:#150F08;
+    --surface:rgba(245,236,215,0.025);--surface-2:rgba(245,236,215,0.05);
+    --border:rgba(245,236,215,0.10);--border-m:rgba(245,236,215,0.18);--border-s:rgba(245,236,215,0.06);
+    --cream:#F5ECD7;--parchment:#F7F3EC;--wheat:#E8C18D;
+    --muted:rgba(245,236,215,0.55);--faint:rgba(245,236,215,0.32);
+    --primary:#C4622D;--primary-hi:#D67841;--primary-dim:rgba(196,98,45,0.16);
+    --gold:#D4A84B;--green:#4B9B6E;--green-dim:rgba(75,155,110,0.12);
+    --red:#C44B4B;--red-dim:rgba(196,75,75,0.12);
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --caps:'Josefin Sans',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--cream);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;min-height:100vh;}
+
+  /* ── Header ── */
+  .hdr{
+    position:sticky;top:0;z-index:50;height:52px;
+    background:var(--bg-deep);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;padding:0 24px;gap:14px;
+  }
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;}
+  .bmark{width:28px;height:28px;border-radius:6px;background:linear-gradient(140deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;font-size:15px;color:#1e1710;}
+  .bname{font-family:var(--serif);font-size:16px;}.bname em{font-style:italic;color:var(--primary);}
+  .vsep{width:1px;height:18px;background:var(--border);}
+  .hdr-badge{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);background:rgba(212,168,75,0.08);border:1px solid rgba(212,168,75,0.22);padding:3px 9px;}
+  .hdr-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .view-toggle{display:flex;gap:0;}
+  .vt{font-family:var(--caps);font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;margin-right:-1px;transition:color .12s,background .12s;}
+  .vt.active{background:var(--surface-2);color:var(--parchment);border-color:var(--border-m);}
+  .back-link{font-family:var(--caps);font-size:9px;letter-spacing:0.20em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);text-decoration:none;}
+
+  /* ── Views ── */
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ── Shared components ── */
+  .kpi-strip{display:grid;border-bottom:1px solid var(--border);}
+  .kpi{padding:16px 22px;border-right:1px solid var(--border);}
+  .kpi:last-child{border-right:0;}
+  .kpi-lbl{font-family:var(--caps);font-size:8.5px;letter-spacing:0.24em;text-transform:uppercase;color:var(--faint);}
+  .kpi-val{font-family:var(--serif);font-size:32px;color:var(--parchment);line-height:1.1;margin:4px 0 2px;}
+  .kpi-val.g{color:var(--gold);}
+  .kpi-val.gr{color:var(--green);}
+  .kpi-val.r{color:var(--red);}
+  .kpi-sub{font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .up{color:var(--green);}.dn{color:var(--red);}
+
+  .sec-head{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;background:var(--bg-band);border-bottom:1px solid var(--border-s);}
+  .sec-lbl{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);}
+  .sec-meta{font-family:var(--mono);font-size:10px;color:var(--faint);}
+
+  /* ── Transaction table ── */
+  .tx-table{width:100%;border-collapse:collapse;}
+  .tx-table th{font-family:var(--caps);font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--faint);padding:8px 20px;text-align:left;border-bottom:1px solid var(--border-s);}
+  .tx-table th.r{text-align:right;}
+  .tx-table td{padding:10px 20px;border-bottom:1px solid var(--border-s);font-size:13px;color:var(--muted);vertical-align:middle;}
+  .tx-table tr:last-child td{border-bottom:0;}
+  .tx-table td.name{font-family:var(--serif);font-size:15px;color:var(--parchment);}
+  .tx-table td.mono{font-family:var(--mono);font-size:12px;text-align:right;}
+  .tx-table td.pos{color:var(--green);}
+  .tx-table td.neg{color:var(--red);}
+  .tx-table td.neut{color:var(--faint);}
+  .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;}
+  .status-dot.paid{background:var(--green);}
+  .status-dot.due{background:var(--gold);}
+  .status-dot.ow{background:var(--red);animation:rp 2s ease-in-out infinite;}
+  @keyframes rp{0%,100%{box-shadow:0 0 0 3px rgba(196,75,75,0.18);}50%{box-shadow:0 0 0 6px rgba(196,75,75,0.04);}}
+
+  /* ── P&L breakdown ── */
+  .pl-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+  @media(max-width:800px){.pl-grid{grid-template-columns:1fr;}}
+  .pl-col{border-right:1px solid var(--border);padding:18px 22px;}
+  .pl-col:last-child{border-right:0;}
+  .pl-title{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+  .pl-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border-s);font-size:13px;color:var(--muted);}
+  .pl-row:last-child{border-bottom:0;}
+  .pl-row.total{border-top:1px solid var(--border-m);border-bottom:0;padding-top:10px;margin-top:4px;font-weight:600;color:var(--parchment);font-size:14px;}
+  .pl-row span:last-child{font-family:var(--mono);font-size:12px;}
+  .pl-row.total span:last-child{font-size:14px;color:var(--gold);}
+  .pl-row.neg span:last-child{color:var(--red);}
+  .pl-row.pos span:last-child{color:var(--green);}
+
+  /* ── Revenue bar mini ── */
+  .mini-bars{display:flex;align-items:flex-end;gap:4px;height:52px;margin-bottom:6px;}
+  .mb-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .mb{width:100%;border-radius:1px 1px 0 0;}
+  .mb-lbl{font-family:var(--mono);font-size:8px;color:var(--faint);}
+
+  /* ── Landlord rent roll ── */
+  .rent-roll{overflow-x:auto;}
+  .rr-table{width:100%;border-collapse:collapse;min-width:640px;}
+  .rr-table th{font-family:var(--caps);font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--faint);padding:8px 18px;text-align:left;border-bottom:1px solid var(--border-s);}
+  .rr-table th.r{text-align:right;}
+  .rr-table td{padding:11px 18px;border-bottom:1px solid var(--border-s);font-size:13px;color:var(--muted);vertical-align:middle;}
+  .rr-table tr:last-child td{border-bottom:0;}
+  .rr-table td.stall{font-family:var(--mono);font-size:11px;}
+  .rr-table td.vendor{font-family:var(--serif);font-size:15px;color:var(--parchment);}
+  .rr-table td.r{font-family:var(--mono);font-size:12px;text-align:right;}
+  .rr-table td.r.g{color:var(--green);}
+  .rr-table td.r.r{color:var(--red);}
+  .rr-table td.r.w{color:var(--gold);}
+  .rbadge{font-family:var(--caps);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;padding:2px 7px;border:1px solid;}
+  .rbadge.paid{color:var(--green);border-color:rgba(75,155,110,0.3);background:var(--green-dim);}
+  .rbadge.due{color:var(--gold);border-color:rgba(212,168,75,0.3);background:rgba(212,168,75,0.08);}
+  .rbadge.ow{color:var(--red);border-color:rgba(196,75,75,0.3);background:var(--red-dim);}
+
+  /* ── Summary sidebar ── */
+  .two-col{display:grid;grid-template-columns:1fr 280px;}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+  .main-col{border-right:1px solid var(--border);}
+  .side-col{background:var(--bg-deep);padding:20px 20px;}
+  .side-title{font-family:var(--caps);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .sum-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-s);font-size:13px;color:var(--muted);}
+  .sum-row:last-child{border-bottom:0;}
+  .sum-row.total{font-weight:600;color:var(--parchment);border-top:1px solid var(--border-m);border-bottom:0;padding-top:10px;margin-top:4px;}
+  .sum-row span:last-child{font-family:var(--mono);font-size:12px;}
+  .sum-row.total span:last-child{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="brand" href="Hall OS.html">
+    <span class="bmark">&amp;</span>
+    <span class="bname">Hall <em>OS</em></span>
+  </a>
+  <span class="vsep"></span>
+  <span class="hdr-badge">Finance Portal</span>
+  <div class="hdr-right">
+    <div class="view-toggle">
+      <button class="vt active" onclick="switchView('vendor',this)">Vendor — Yazzie</button>
+      <button class="vt" onclick="switchView('landlord',this)">Landlord Ledger</button>
+    </div>
+    <a class="back-link" href="Hall OS Index.html">← All modules</a>
+  </div>
+</header>
+
+<!-- ── Vendor View ─────────────────────────────────────────────── -->
+<div class="view active" id="view-vendor">
+
+  <!-- KPIs -->
+  <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi"><div class="kpi-lbl">Gross revenue · June</div><div class="kpi-val g">$21,480</div><div class="kpi-sub"><span class="up">↑ 9%</span> vs. May</div></div>
+    <div class="kpi"><div class="kpi-lbl">Net after rent &amp; fees</div><div class="kpi-val">$16,924</div><div class="kpi-sub">78.8% margin</div></div>
+    <div class="kpi"><div class="kpi-lbl">Rent due</div><div class="kpi-val r">$2,400</div><div class="kpi-sub">Jul 1 · 30 days</div></div>
+    <div class="kpi"><div class="kpi-lbl">Last payout</div><div class="kpi-val gr">$3,840</div><div class="kpi-sub">Jun 1 · ACH settled</div></div>
+  </div>
+
+  <!-- P&L breakdown + mini chart -->
+  <div class="pl-grid">
+    <div class="pl-col">
+      <div class="pl-title">Profit &amp; loss · June 2026</div>
+      <div class="pl-row pos"><span>Gross sales</span><span>$21,480</span></div>
+      <div class="pl-row neg"><span>Food cost (28%)</span><span>−$6,014</span></div>
+      <div class="pl-row neg"><span>Labor</span><span>−$3,200</span></div>
+      <div class="pl-row neg"><span>Packaging &amp; supplies</span><span>−$420</span></div>
+      <div class="pl-row neg"><span>Platform fee (2%)</span><span>−$430</span></div>
+      <div class="pl-row neg"><span>Rent</span><span>−$2,400</span></div>
+      <div class="pl-row neg"><span>Revenue share</span><span>−$540</span></div>
+      <div class="pl-row total"><span>Net profit</span><span>$8,476</span></div>
+    </div>
+    <div class="pl-col">
+      <div class="pl-title">Monthly revenue · trailing 6 months</div>
+      <div class="mini-bars" id="mini-bars"></div>
+      <div style="display:flex;gap:4px;" id="mini-labels"></div>
+    </div>
+  </div>
+
+  <!-- Transaction history -->
+  <div class="sec-head">
+    <span class="sec-lbl">Transaction history</span>
+    <span class="sec-meta">June 2026</span>
+  </div>
+  <table class="tx-table" id="tx-table">
+    <thead><tr>
+      <th>Date</th><th>Description</th><th class="r">Amount</th><th class="r">Type</th>
+    </tr></thead>
+    <tbody id="tx-tbody"></tbody>
+  </table>
+
+</div>
+
+<!-- ── Landlord Ledger ─────────────────────────────────────────── -->
+<div class="view" id="view-landlord">
+
+  <!-- KPIs -->
+  <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr);">
+    <div class="kpi"><div class="kpi-lbl">Rent roll · June</div><div class="kpi-val g">$21,600</div><div class="kpi-sub">9 active stalls</div></div>
+    <div class="kpi"><div class="kpi-lbl">Collected</div><div class="kpi-val gr">$19,200</div><div class="kpi-sub">8 of 9 paid</div></div>
+    <div class="kpi"><div class="kpi-lbl">Overdue</div><div class="kpi-val r">$2,400</div><div class="kpi-sub">La Boca · 12 days</div></div>
+    <div class="kpi"><div class="kpi-lbl">Rev share collected</div><div class="kpi-val">$3,840</div><div class="kpi-sub">June settlements</div></div>
+    <div class="kpi"><div class="kpi-lbl">Total hall income</div><div class="kpi-val g">$23,040</div><div class="kpi-sub">rent + rev share</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="main-col">
+      <div class="sec-head">
+        <span class="sec-lbl">Rent Roll · June 2026</span>
+        <span class="sec-meta">All stalls · sorted by status</span>
+      </div>
+      <div class="rent-roll">
+        <table class="rr-table" id="rr-table">
+          <thead><tr>
+            <th>Stall</th><th>Vendor</th><th class="r">Monthly rent</th>
+            <th class="r">Rev share</th><th class="r">Total due</th>
+            <th>Status</th><th class="r">Lease exp.</th>
+          </tr></thead>
+          <tbody id="rr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="side-title">June summary</div>
+      <div id="ll-summary"></div>
+
+      <div class="side-title" style="margin-top:24px;">YTD rent collected</div>
+      <div class="mini-bars" id="ll-bars" style="height:44px;"></div>
+      <div style="display:flex;gap:3px;" id="ll-labels"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchView(id,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.vt').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Mini revenue bars (vendor)
+const months=['Jan','Feb','Mar','Apr','May','Jun'];
+const revs=[14200,16800,18400,19200,19700,21480];
+const maxR=Math.max(...revs);
+const mbEl=document.getElementById('mini-bars');
+const mlEl=document.getElementById('mini-labels');
+months.forEach((m,i)=>{
+  const h=Math.round((revs[i]/maxR)*52);
+  const isCur=i===5;
+  const wrap=document.createElement('div');wrap.className='mb-wrap';
+  wrap.innerHTML=`<div class="mb" style="height:${h}px;background:${isCur?'var(--gold)':'var(--primary)'};opacity:${isCur?0.85:0.5};"></div>`;
+  mbEl.appendChild(wrap);
+  const l=document.createElement('div');l.style.cssText='flex:1;text-align:center;font-family:var(--mono);font-size:8px;color:var(--faint);';
+  l.textContent=m;mlEl.appendChild(l);
+});
+
+// Transaction history
+const txData=[
+  {date:'Jun 30',desc:'Daily sales payout',amt:'+$840.00',type:'Payout',cls:'pos'},
+  {date:'Jun 29',desc:'Daily sales payout',amt:'+$912.00',type:'Payout',cls:'pos'},
+  {date:'Jun 28',desc:'Daily sales payout',amt:'+$788.00',type:'Payout',cls:'pos'},
+  {date:'Jun 15',desc:'Revenue share — May (4% above $8k)',amt:'−$540.00',type:'Fee',cls:'neg'},
+  {date:'Jun 10',desc:'Packaging supplies reimbursement',amt:'−$420.00',type:'Expense',cls:'neg'},
+  {date:'Jun 1', desc:'Monthly rent — Stall A1',amt:'−$2,400.00',type:'Rent',cls:'neg'},
+  {date:'Jun 1', desc:'June sales payout (week of May 25)',amt:'+$3,840.00',type:'Payout',cls:'pos'},
+  {date:'May 31',desc:'Daily sales payout',amt:'+$780.00',type:'Payout',cls:'pos'},
+];
+const txTbody=document.getElementById('tx-tbody');
+txData.forEach(t=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td class="neut mono">${t.date}</td><td>${t.desc}</td><td class="mono ${t.cls}">${t.amt}</td><td class="neut">${t.type}</td>`;
+  txTbody.appendChild(tr);
+});
+
+// Rent roll
+const rrData=[
+  {stall:'A5',vendor:'La Boca',        rent:2400,revshare:320, status:'ow', exp:'Aug 2026'},
+  {stall:'A2',vendor:'Seoul Fire',      rent:2400,revshare:860, status:'paid',exp:'Aug 2027'},
+  {stall:'A1',vendor:'Yazzie',          rent:2400,revshare:540, status:'paid',exp:'Dec 2027'},
+  {stall:'A3',vendor:'Sticky Stack',    rent:2400,revshare:480, status:'paid',exp:'Jan 2028'},
+  {stall:'A4',vendor:'Mesa Verde Bowl', rent:2200,revshare:0,   status:'paid',exp:'Nov 2026'},
+  {stall:'A6',vendor:'Chimichurri Bros',rent:2400,revshare:420, status:'paid',exp:'May 2027'},
+  {stall:'B1',vendor:'Nubian Spice',    rent:2200,revshare:280, status:'paid',exp:'Mar 2027'},
+  {stall:'B2',vendor:'Rio Bakehouse',   rent:1800,revshare:0,   status:'due', exp:'Feb 2027'},
+  {stall:'B3',vendor:'Desert Bloom',    rent:1800,revshare:0,   status:'paid',exp:'Jun 2027'},
+  {stall:'B6',vendor:'Hall Bar',        rent:0,   revshare:1540,status:'paid',exp:'Hub-operated'},
+];
+const rrTbody=document.getElementById('rr-tbody');
+rrData.forEach(r=>{
+  const total=r.rent+r.revshare;
+  const statusBadge={paid:'<span class="rbadge paid">Paid</span>',due:'<span class="rbadge due">Due</span>',ow:'<span class="rbadge ow">Overdue</span>'}[r.status];
+  const statusDot={paid:'paid',due:'due',ow:'ow'}[r.status];
+  const rentCls=r.status==='ow'?'r r':r.status==='due'?'r w':'r g';
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td class="stall">${r.stall}</td>
+    <td class="vendor">${r.vendor}</td>
+    <td class="r">${r.rent>0?'$'+r.rent.toLocaleString():'—'}</td>
+    <td class="r">${r.revshare>0?'$'+r.revshare.toLocaleString():'—'}</td>
+    <td class="${rentCls}">$${total.toLocaleString()}</td>
+    <td>${statusBadge}</td>
+    <td class="r neut" style="font-family:var(--mono);font-size:11px;">${r.exp}</td>`;
+  rrTbody.appendChild(tr);
+});
+
+// Landlord summary
+const llSummary=[
+  {label:'Base rent · collected',val:'$19,200',cls:''},
+  {label:'Base rent · overdue',val:'$2,400',cls:'r'},
+  {label:'Revenue share',val:'$3,840',cls:''},
+  {label:'June total income',val:'$23,040',cls:'g',total:true},
+];
+const llSumEl=document.getElementById('ll-summary');
+llSummary.forEach(s=>{
+  const div=document.createElement('div');
+  div.className='sum-row'+(s.total?' total':'');
+  div.innerHTML=`<span>${s.label}</span><span style="${s.cls==='r'?'color:var(--red)':s.cls==='g'?'color:var(--gold)':''}">${s.val}</span>`;
+  llSumEl.appendChild(div);
+});
+
+// YTD bars
+const ytd=[18200,19400,20100,21200,21600,21600];
+const ytdM=['Jan','Feb','Mar','Apr','May','Jun'];
+const maxY=Math.max(...ytd);
+const llbEl=document.getElementById('ll-bars');
+const lllEl=document.getElementById('ll-labels');
+ytd.forEach((v,i)=>{
+  const h=Math.round((v/maxY)*44);
+  const w=document.createElement('div');w.className='mb-wrap';
+  w.innerHTML=`<div class="mb" style="height:${h}px;background:var(--gold);opacity:${i===5?0.85:0.45};"></div>`;
+  llbEl.appendChild(w);
+  const l=document.createElement('div');l.style.cssText='flex:1;text-align:center;font-family:var(--mono);font-size:8px;color:var(--faint);';
+  l.textContent=ytdM[i];lllEl.appendChild(l);
+});
+</script>
+</body>
+</html>

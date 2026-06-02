@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script src="hos-nav.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hall OS · Cider &amp; Spice</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap" />
+
+<style>
+  /* ── Tokens ──────────────────────────────────────────────────────────────── */
+  :root {
+    --bg:        #1C1209;
+    --bg-deep:   #100E0A;
+    --bg-band:   #150F08;
+    --surface:   rgba(245,236,215,0.025);
+    --surface-2: rgba(245,236,215,0.045);
+    --border:    rgba(245,236,215,0.10);
+    --border-m:  rgba(245,236,215,0.16);
+    --border-s:  rgba(245,236,215,0.06);
+
+    --cream:     #F5ECD7;
+    --parchment: #F7F3EC;
+    --wheat:     #E8C18D;
+    --muted:     rgba(245,236,215,0.55);
+    --faint:     rgba(245,236,215,0.36);
+
+    --primary:    #C4622D;
+    --primary-hi: #D67841;
+    --primary-dim:rgba(196,98,45,0.16);
+    --gold:       #D4A84B;
+
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans:  'Inter', system-ui, sans-serif;
+    --caps:  'Josefin Sans', sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, monospace;
+
+    --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+    --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 72px;
+    --s-9: 112px; --s-10: 160px;
+
+    --maxw-prose: 680px;
+    --maxw-page:  1240px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: rgba(196,98,45,0.32); color: var(--parchment); }
+  a { color: inherit; }
+
+  /* ── Type ────────────────────────────────────────────────────────────────── */
+  h1, h2, h3 { margin: 0; font-weight: 300; color: var(--parchment); }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(40px, 5.6vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(30px, 3.8vw, 46px);
+    line-height: 1.08;
+    letter-spacing: -0.005em;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--parchment);
+  }
+  p { margin: 0; }
+  .lede {
+    font-family: var(--serif);
+    font-size: clamp(19px, 1.9vw, 24px);
+    line-height: 1.5;
+    font-weight: 300;
+    color: var(--wheat);
+    font-style: italic;
+  }
+  .eyebrow {
+    font-family: var(--caps);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--primary);
+    font-weight: 500;
+  }
+
+  /* ── Layout helpers ──────────────────────────────────────────────────────── */
+  .container { max-width: var(--maxw-page); margin: 0 auto; padding: 0 var(--s-6); }
+  @media (max-width: 640px) {
+    .container { padding: 0 var(--s-5); }
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────────── */
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(16,14,10,0.78);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header .inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px var(--s-6);
+    max-width: var(--maxw-page); margin: 0 auto;
+  }
+  .brand {
+    display: flex; align-items: center; gap: var(--s-3);
+    text-decoration: none;
+  }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(140deg, var(--primary), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-style: italic; font-size: 18px;
+    color: #1e1710; font-weight: 600;
+  }
+  .brand-name { font-family: var(--serif); font-size: 18px; color: var(--cream); line-height: 1; }
+  .brand-name em { font-style: italic; color: var(--primary); font-weight: 400; }
+  .brand-sub {
+    font-family: var(--caps); font-size: 9px;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--faint); margin-top: 4px;
+  }
+  .site-nav { display: flex; align-items: center; gap: var(--s-6); }
+  .site-nav a {
+    font-family: var(--caps); font-size: 11px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.18s;
+  }
+  .site-nav a:hover { color: var(--cream); }
+  @media (max-width: 720px) {
+    .site-nav { gap: var(--s-4); }
+    .site-nav .nav-secondary { display: none; }
+    .brand-sub { display: none; }
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    font-family: var(--caps);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 14px 22px;
+    border-radius: 0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+    line-height: 1;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: var(--parchment);
+    border-color: var(--primary);
+  }
+  .btn-primary:hover { background: var(--primary-hi); border-color: var(--primary-hi); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--cream);
+    border-color: var(--border-m);
+  }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+  .btn .arrow { font-size: 14px; line-height: 1; }
+
+  /* ── HERO (split: copy + stack diagram) ──────────────────────────────────── */
+  .hero {
+    padding: var(--s-9) 0 var(--s-9);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .container {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--s-8);
+    align-items: center;
+  }
+  @media (max-width: 960px) {
+    .hero .container { grid-template-columns: 1fr; gap: var(--s-7); }
+  }
+  .hero .eyebrow-row {
+    display: flex; align-items: center; gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .hero .eyebrow-line { width: 32px; height: 1px; background: var(--primary); }
+  .hero h1 { max-width: 14ch; }
+  .hero h1 em { font-style: italic; color: var(--primary); font-weight: 400; }
+  .hero .lede { max-width: var(--maxw-prose); margin-top: var(--s-4); }
+  .hero-cta {
+    display: flex; flex-wrap: wrap; gap: var(--s-3);
+    margin-top: var(--s-6);
+  }
+
+  /* Right-side stack diagram */
+  .stack {
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+    padding: var(--s-4);
+    position: relative;
+  }
+  .stack::before {
+    content: "";
+    position: absolute; inset: -1px;
+    border: 1px dashed var(--border-s);
+    pointer-events: none;
+    transform: translate(8px, 8px);
+  }
+  .stack-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--s-2) var(--s-3);
+    border-bottom: 1px dashed var(--border-s);
+    margin-bottom: var(--s-3);
+  }
+  .stack-head .ax {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--faint);
+  }
+  .stack-head .ax strong { color: var(--cream); font-weight: 600; }
+  .stack-head .dot {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--primary); border-radius: 50%;
+    margin-right: var(--s-2);
+    box-shadow: 0 0 0 3px rgba(196,98,45,0.18);
+  }
+  .stack-rows { display: grid; gap: 1px; background: var(--border-s); }
+  .stack-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-4) var(--s-3);
+    background: var(--bg-deep);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.18s;
+  }
+  .stack-row:hover { background: #1a130a; }
+  .stack-row .nm {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 26px; color: var(--primary); line-height: 1;
+  }
+  .stack-row .lbl {
+    font-family: var(--caps); font-size: 10.5px;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--cream); font-weight: 600;
+  }
+  .stack-row .desc {
+    font-size: 12.5px; color: var(--muted); margin-top: 4px;
+    line-height: 1.4;
+  }
+  .stack-row .arr {
+    font-family: var(--mono); font-size: 12px; color: var(--faint);
+  }
+  .stack-row:hover .arr { color: var(--primary); }
+  .stack-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-3) var(--s-2) 0;
+    margin-top: var(--s-3);
+    border-top: 1px dashed var(--border-s);
+    font-family: var(--mono); font-size: 10.5px;
+    color: var(--faint);
+    letter-spacing: 0.04em;
+  }
+  .stack-foot .live { color: var(--gold); }
+
+  /* ── 4-UP OVERVIEW GRID (replaces old centered intro) ────────────────────── */
+  .overview {
+    padding: var(--s-9) 0 var(--s-8);
+    background: var(--bg-band);
+    border-bottom: 1px solid var(--border);
+  }
+  .overview-head {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1.4fr);
+    gap: var(--s-6);
+    align-items: end;
+    margin-bottom: var(--s-7);
+  }
+  @media (max-width: 880px) {
+    .overview-head { grid-template-columns: 1fr; gap: var(--s-4); align-items: start; }
+  }
+  .overview-head h2 { max-width: 16ch; }
+  .overview-head p {
+    color: var(--muted);
+    max-width: var(--maxw-prose);
+  }
+  .overview-grid {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-left: 1px solid var(--border);
+  }
+  @media (max-width: 1080px) {
+    .overview-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .overview-grid { grid-template-columns: 1fr; }
+  }
+  .ov-card {
+    border-right: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: var(--s-5) var(--s-5) var(--s-5);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s, border-color 0.2s;
+    display: flex; flex-direction: column;
+    gap: var(--s-3);
+    min-height: 260px;
+    position: relative;
+  }
+  @media (max-width: 1080px) {
+    .ov-card:nth-child(2) { border-right: 1px solid var(--border); }
+    .ov-card:nth-child(3), .ov-card:nth-child(4) { border-top: 0; }
+  }
+  @media (max-width: 560px) {
+    .ov-card { border-top: 0; }
+    .ov-card:first-child { border-top: 1px solid var(--border); }
+  }
+  .ov-card:hover {
+    background: var(--surface);
+    border-color: var(--border-m);
+  }
+  .ov-card .ov-num {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 44px; color: var(--primary); line-height: 1;
+  }
+  .ov-card .ov-name {
+    font-family: var(--caps); font-size: 11px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+  }
+  .ov-card .ov-title {
+    font-family: var(--serif); font-size: 22px;
+    color: var(--parchment); font-weight: 400;
+    line-height: 1.2;
+    margin-top: auto;
+  }
+  .ov-card .ov-link {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: var(--s-2);
+    margin-top: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px dashed var(--border-s);
+  }
+  .ov-card:hover .ov-link { color: var(--primary); }
+
+  /* ── MODULE — chapter-break header + single body column ──────────────────── */
+  .module {
+    padding: var(--s-9) 0 var(--s-9);
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .module:first-of-type { border-top: 0; }
+
+  .module-head {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6) var(--s-7);
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: var(--s-6);
+    align-items: end;
+    border-bottom: 1px solid var(--border-s);
+    margin-bottom: var(--s-7);
+  }
+  @media (max-width: 720px) {
+    .module-head {
+      grid-template-columns: 1fr;
+      gap: var(--s-3);
+      padding-bottom: var(--s-5);
+      margin-bottom: var(--s-6);
+    }
+  }
+  .module-head .num {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(96px, 12vw, 160px);
+    color: var(--primary);
+    line-height: 0.85;
+  }
+  .module-head .name {
+    font-family: var(--caps); font-size: 11px;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+    margin-bottom: var(--s-3);
+  }
+  .module-head h2 { max-width: 18ch; }
+
+  .module-body {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .module-body .lede { max-width: 720px; margin-bottom: var(--s-7); }
+
+  /* benefit list — three across when there's room */
+  .benefits {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-6);
+    max-width: 1080px;
+  }
+  @media (max-width: 880px) { .benefits { grid-template-columns: 1fr; gap: var(--s-5); } }
+  .benefits li {
+    border-top: 1px solid var(--border);
+    padding-top: var(--s-4);
+    display: flex; flex-direction: column; gap: var(--s-2);
+  }
+  .benefits .bnum {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--primary); letter-spacing: 0.08em;
+    margin-bottom: var(--s-1);
+  }
+  .benefits h3 { line-height: 1.3; }
+  .benefits p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* Example card */
+  .example {
+    margin-top: var(--s-7);
+    padding: var(--s-5) var(--s-6);
+    border-left: 2px solid var(--primary);
+    background: var(--surface);
+    max-width: 760px;
+  }
+  .example .label {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: var(--s-3);
+  }
+  .example p {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--parchment);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .example .src {
+    margin-top: var(--s-3);
+    font-family: var(--caps); font-size: 9.5px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--faint);
+    font-style: normal;
+  }
+
+  /* ── MODULE 03 — tabbed sub-modules ──────────────────────────────────────── */
+  .tabs {
+    margin-top: var(--s-2);
+    max-width: 1080px;
+  }
+  .tabs-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    background: var(--bg-deep);
+    margin-bottom: 0;
+  }
+  @media (max-width: 720px) {
+    .tabs-bar { grid-template-columns: 1fr; }
+  }
+  .tab-btn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    border-right: 1px solid var(--border);
+    padding: var(--s-4) var(--s-5);
+    text-align: left;
+    cursor: pointer;
+    color: var(--muted);
+    transition: background 0.18s, color 0.18s;
+    display: flex; flex-direction: column; gap: 6px;
+    border-bottom: 2px solid transparent;
+  }
+  .tab-btn:last-child { border-right: 0; }
+  @media (max-width: 720px) {
+    .tab-btn { border-right: 0; border-bottom: 1px solid var(--border); }
+    .tab-btn:last-child { border-bottom: 0; }
+  }
+  .tab-btn:hover { color: var(--cream); background: var(--surface); }
+  .tab-btn[aria-selected="true"] {
+    background: var(--surface);
+    color: var(--parchment);
+    border-bottom-color: var(--primary);
+  }
+  .tab-btn .tb-lbl {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .tab-btn .tb-ttl {
+    font-family: var(--serif); font-size: 19px;
+    color: inherit; font-weight: 400;
+    line-height: 1.25;
+  }
+  .tab-panels {
+    border: 1px solid var(--border);
+    border-top: 0;
+    padding: var(--s-6);
+    background: var(--surface);
+  }
+  .tab-panel { display: none; }
+  .tab-panel[aria-hidden="false"] { display: block; }
+  .tab-panel .sm-lede {
+    font-family: var(--serif);
+    font-size: 19px; line-height: 1.5;
+    color: var(--wheat); font-style: italic; font-weight: 300;
+    max-width: 720px;
+    margin-bottom: var(--s-5);
+  }
+
+  /* feature grid */
+  .feature-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--s-5);
+    row-gap: var(--s-2);
+  }
+  @media (max-width: 720px) {
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+  .feature-grid li {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: var(--s-3);
+    align-items: start;
+    padding: 6px 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--cream);
+  }
+  .feature-grid li::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--primary);
+    margin-top: 9px;
+  }
+
+  /* attribution strip */
+  .attribution-strip {
+    margin-top: var(--s-6);
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--border);
+    background: var(--bg-deep);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    max-width: 1080px;
+  }
+  .attribution-strip .ax {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--faint);
+  }
+  .attribution-strip strong { color: var(--cream); font-weight: 600; letter-spacing: 0.22em; }
+  .attribution-strip a {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--primary); text-decoration: none;
+    border-bottom: 1px solid var(--primary);
+    padding-bottom: 2px;
+  }
+  .attribution-strip a:hover { color: var(--primary-hi); border-color: var(--primary-hi); }
+
+  /* ── DEMO PREVIEW SECTION ────────────────────────────────────────────────── */
+  .demo {
+    padding: var(--s-9) 0 var(--s-9);
+    border-top: 1px solid var(--border-m);
+    background: var(--bg-band);
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-head {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1.3fr);
+    gap: var(--s-6);
+    align-items: end;
+    margin-bottom: var(--s-7);
+  }
+  @media (max-width: 880px) {
+    .demo-head { grid-template-columns: 1fr; gap: var(--s-4); align-items: start; }
+  }
+  .demo-head h2 { max-width: 18ch; margin-top: var(--s-4); }
+  .demo-head p { color: var(--muted); max-width: var(--maxw-prose); }
+
+  .personas {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s-4);
+  }
+  @media (max-width: 1080px) { .personas { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px)  { .personas { grid-template-columns: 1fr; } }
+
+  .persona {
+    border: 1px solid var(--border);
+    background: var(--bg-deep);
+    display: flex; flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none; color: inherit;
+    overflow: hidden;
+  }
+  .persona:hover { border-color: var(--border-m); }
+  .persona-chrome {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-s);
+    background: rgba(0,0,0,0.25);
+  }
+  .persona-chrome .dots {
+    display: flex; gap: 4px;
+  }
+  .persona-chrome .dots span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(245,236,215,0.18);
+  }
+  .persona-chrome .tag {
+    margin-left: auto;
+    font-family: var(--mono); font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+  }
+  .persona-screen {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 80% 8%, rgba(196,98,45,0.10), transparent 55%),
+      linear-gradient(180deg, #1a130a, #120d07);
+  }
+  .persona-meta {
+    padding: var(--s-4) var(--s-4) var(--s-4);
+    border-top: 1px solid var(--border-s);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .persona-meta .pname {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600;
+  }
+  .persona-meta .ptitle {
+    font-family: var(--serif); font-size: 20px;
+    color: var(--parchment); font-weight: 400;
+    line-height: 1.2;
+  }
+  .persona-meta .pdesc {
+    font-size: 13.5px; line-height: 1.55;
+    color: var(--muted);
+  }
+
+  /* ── Mock screen primitives (CSS only, no SVG) ───────────────────────────── */
+  .mock { position: absolute; inset: 0; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-bar {
+    height: 8px; border-radius: 2px;
+    background: rgba(245,236,215,0.10);
+  }
+  .mock-bar.w-30 { width: 30%; }
+  .mock-bar.w-50 { width: 50%; }
+  .mock-bar.w-65 { width: 65%; }
+  .mock-bar.w-80 { width: 80%; }
+  .mock-bar.accent { background: rgba(196,98,45,0.55); }
+  .mock-bar.gold   { background: rgba(212,168,75,0.55); }
+  .mock-bar.cream  { background: rgba(245,236,215,0.32); }
+  .mock-bar.tall   { height: 12px; }
+  .mock-row { display: flex; gap: 6px; align-items: center; }
+  .mock-row.between { justify-content: space-between; }
+
+  /* Customer phone screen */
+  .scr-customer {
+    background:
+      linear-gradient(150deg, #c4622d 0%, #9c4a1f 55%, #1a130a 130%);
+    padding: 14px 12px 10px;
+  }
+  .scr-customer .ch {
+    font-family: var(--serif); font-size: 16px; color: #fff;
+    line-height: 1.1; max-width: 18ch;
+  }
+  .scr-customer .eyebrow-mini {
+    font-family: var(--caps); font-size: 8px;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: rgba(255,247,236,0.8); margin-bottom: 4px;
+  }
+  .scr-customer .ask {
+    margin-top: auto;
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(18,13,8,0.34); border: 1px solid rgba(255,247,236,0.28);
+    border-radius: 18px; padding: 6px 9px;
+    font-family: var(--sans); font-size: 10px;
+    color: rgba(255,247,236,0.85);
+  }
+  .scr-customer .ask .star {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+  .scr-customer .chips {
+    display: flex; gap: 4px; margin-top: 10px; flex-wrap: nowrap;
+  }
+  .scr-customer .chip {
+    font-family: var(--caps); font-size: 7.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,247,236,0.92);
+    background: rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,247,236,0.22);
+    border-radius: 10px;
+    padding: 3px 7px;
+  }
+  .scr-customer .chip.active { background: var(--gold); color: #3a2410; border-color: var(--gold); }
+
+  /* Vendor screen */
+  .scr-vendor { padding: 14px; }
+  .scr-vendor .head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+  .scr-vendor .vname { font-family: var(--serif); font-size: 14px; color: var(--parchment); }
+  .scr-vendor .vmeta { font-family: var(--mono); font-size: 9px; color: var(--faint); letter-spacing: 0.06em; }
+  .scr-vendor .kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0 10px; }
+  .scr-vendor .kpi {
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+  }
+  .scr-vendor .kpi .lab { font-family: var(--caps); font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); }
+  .scr-vendor .kpi .val { font-family: var(--serif); font-size: 18px; color: var(--parchment); margin-top: 2px; line-height: 1; }
+  .scr-vendor .kpi .val.acc { color: var(--primary); }
+  .scr-vendor .feed { display: flex; flex-direction: column; gap: 5px; }
+  .scr-vendor .feed .ord {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 9.5px; color: var(--muted);
+    padding: 3px 0;
+    border-top: 1px dashed var(--border-s);
+  }
+  .scr-vendor .feed .ord .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--primary); flex-shrink: 0;
+  }
+  .scr-vendor .feed .ord .dot.done { background: var(--gold); }
+  .scr-vendor .feed .ord .lbl { color: var(--cream); }
+  .scr-vendor .feed .ord .amt { margin-left: auto; color: var(--wheat); }
+
+  /* Operator console screen */
+  .scr-ops { padding: 12px; }
+  .scr-ops .top {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+  }
+  .scr-ops .live-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,168,75,0.18);
+  }
+  .scr-ops .top .ttl {
+    font-family: var(--caps); font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--cream);
+  }
+  .scr-ops .top .stamp { margin-left: auto; font-family: var(--mono); font-size: 9px; color: var(--faint); }
+  .scr-ops .big {
+    font-family: var(--serif); font-size: 28px; color: var(--parchment);
+    line-height: 1; margin-bottom: 2px;
+  }
+  .scr-ops .big-lbl { font-family: var(--caps); font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+  .scr-ops .stalls { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-bottom: 8px; }
+  .scr-ops .stall {
+    aspect-ratio: 1 / 1.1;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 8px; color: var(--muted);
+  }
+  .scr-ops .stall.hot { background: var(--primary-dim); border-color: rgba(196,98,45,0.42); color: var(--primary-hi); }
+  .scr-ops .stall.warm { background: rgba(212,168,75,0.12); border-color: rgba(212,168,75,0.30); color: var(--gold); }
+  .scr-ops .bars { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
+  .scr-ops .bars span { flex: 1; background: var(--primary); border-radius: 1px; opacity: 0.65; }
+
+  /* Counter POS screen */
+  .scr-pos { padding: 12px; }
+  .scr-pos .pos-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .scr-pos .pos-head .lab { font-family: var(--caps); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+  .scr-pos .pos-head .nm  { font-family: var(--serif); font-size: 13px; color: var(--parchment); margin-left: auto; }
+  .scr-pos .tickets { display: flex; flex-direction: column; gap: 5px; }
+  .scr-pos .tk {
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 9.5px; color: var(--cream);
+  }
+  .scr-pos .tk .num {
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+    color: var(--primary); width: 22px; line-height: 1;
+  }
+  .scr-pos .tk .body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .scr-pos .tk .body .ln1 { color: var(--parchment); font-family: var(--sans); font-size: 10.5px; font-weight: 500; }
+  .scr-pos .tk .body .ln2 { color: var(--faint); font-size: 8.5px; letter-spacing: 0.05em; }
+  .scr-pos .tk .badge {
+    font-family: var(--caps); font-size: 7.5px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold);
+    border: 1px solid var(--border-m); padding: 3px 6px;
+  }
+  .scr-pos .tk.active { border-color: var(--primary); background: rgba(196,98,45,0.08); }
+  .scr-pos .tk.active .badge { color: var(--primary); border-color: var(--primary); }
+
+  /* Shared-store strip */
+  .shared-store-wrap {
+    max-width: var(--maxw-page); margin: var(--s-6) auto 0;
+    padding: 0 var(--s-6);
+  }
+  .shared-store {
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; gap: var(--s-5);
+    flex-wrap: wrap;
+  }
+  @media (max-width: 720px) {
+    .shared-store .line { display: none; }
+    .shared-store { gap: var(--s-3); }
+  }
+  .shared-store .lbl {
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--faint);
+  }
+  .shared-store .lbl strong { color: var(--cream); font-weight: 600; letter-spacing: 0.22em; }
+  .shared-store .line { flex: 1; height: 1px; background: var(--border); min-width: 30px; }
+  .shared-store .pulse {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 10px; color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+  .shared-store .pulse .d {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,168,75,0.18);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(212,168,75,0.18); }
+    50%      { box-shadow: 0 0 0 7px rgba(212,168,75,0.04); }
+  }
+
+  /* CTA at the bottom of demo section */
+  .demo-cta {
+    max-width: var(--maxw-page); margin: var(--s-7) auto 0;
+    padding: 0 var(--s-6);
+    display: flex; align-items: center; gap: var(--s-4);
+    flex-wrap: wrap;
+  }
+  .demo-cta .cta-copy {
+    flex: 1; min-width: 240px;
+    font-family: var(--serif); font-size: clamp(20px, 2vw, 26px);
+    line-height: 1.35;
+    color: var(--parchment); font-weight: 300;
+    max-width: 28ch;
+  }
+  .demo-cta .cta-copy em { font-style: italic; color: var(--primary); }
+  .demo-cta .actions {
+    display: flex; flex-wrap: wrap; gap: var(--s-3);
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────────────── */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: var(--s-6) 0;
+    background: var(--bg-deep);
+  }
+  .site-footer .inner {
+    max-width: var(--maxw-page); margin: 0 auto;
+    padding: 0 var(--s-6);
+    display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+    flex-wrap: wrap;
+    font-family: var(--caps); font-size: 10px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ── Entry animations ─────────────────────────────────────────────────────── */
+  @keyframes hosUp    { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  @keyframes hosRight { from { opacity:0; transform:translateX(-14px); } to { opacity:1; transform:none; } }
+  @keyframes hosFade  { from { opacity:0; } to { opacity:1; } }
+
+  /* Hero stagger */
+  .hero .eyebrow-row { animation: hosUp  0.70s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+  .hero h1           { animation: hosUp  0.75s cubic-bezier(0.16,1,0.3,1) 0.16s both; }
+  .hero .lede        { animation: hosUp  0.75s cubic-bezier(0.16,1,0.3,1) 0.28s both; }
+  .hero-cta          { animation: hosUp  0.70s cubic-bezier(0.16,1,0.3,1) 0.40s both; }
+  .hero .stack       { animation: hosUp  0.90s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
+  .site-header       { animation: hosFade 0.45s ease 0s both; }
+
+  /* Scroll-reveal base */
+  .sr { opacity: 0; transform: translateY(16px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+  .sr.visible { opacity: 1; transform: none; }
+  .sr-d1 { transition-delay: 0.08s; }
+  .sr-d2 { transition-delay: 0.18s; }
+  .sr-d3 { transition-delay: 0.28s; }
+  .sr-d4 { transition-delay: 0.38s; }
+
+  /* ── Persona card lift ────────────────────────────────────────────────────── */
+  .persona {
+    transition: transform 0.24s cubic-bezier(0.34,1.56,0.64,1),
+                border-color 0.22s ease,
+                box-shadow 0.24s ease !important;
+  }
+  .persona:hover {
+    transform: translateY(-5px) !important;
+    border-color: rgba(245,236,215,0.22) !important;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55) !important;
+  }
+
+  /* ── Button micro-interactions ────────────────────────────────────────────── */
+  .btn-primary {
+    transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease !important;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(192,98,42,0.35) !important;
+  }
+  .btn-primary:active { transform: translateY(0) !important; }
+
+  .btn-ghost { transition: color 0.18s ease, border-color 0.18s ease !important; }
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="Cider &amp; Spice - Homepage.html">
+      <span class="brand-mark">&amp;</span>
+      <span>
+        <span class="brand-name">Hall <em>OS</em></span>
+        <div class="brand-sub">Cider &amp; Spice · Las Cruces</div>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a class="nav-secondary" href="#modules">The four modules</a>
+      <a class="btn btn-primary" href="Hall OS Index.html">See the demo <span class="arrow">↗</span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container">
+      <div>
+        <div class="eyebrow-row">
+          <span class="eyebrow-line"></span>
+          <span class="eyebrow">The Hall Operating System</span>
+        </div>
+        <h1 id="hero-title">
+          Operating infrastructure for a <em>multi-tenant food hall</em>.
+        </h1>
+        <p class="lede">
+          A four-module stack — physical infrastructure, brand production, commerce systems, and vendor graduation — integrated through one shared backend. Every stall reads and writes to a single store, from POS terminal to monthly remittance.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="Hall OS Index.html">Open the demo <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" href="#modules">Module reference <span class="arrow">↓</span></a>
+        </div>
+      </div>
+
+      <aside class="stack" aria-label="Hall OS module stack">
+        <div class="stack-head">
+          <span class="ax"><span class="dot"></span><strong>HALL OS</strong> &middot; v1.0</span>
+          <span class="ax">4 modules</span>
+        </div>
+        <div class="stack-rows">
+          <a class="stack-row" href="#m1">
+            <span class="nm">01</span>
+            <span>
+              <div class="lbl">Space OS</div>
+              <div class="desc">Commercial kitchen, walk-in, dish pit, dining, common services.</div>
+            </span>
+            <span class="arr">→</span>
+          </a>
+          <a class="stack-row" href="#m2">
+            <span class="nm">02</span>
+            <span>
+              <div class="lbl">Brand OS</div>
+              <div class="desc">Identity, menus, photography, signage, content cadence.</div>
+            </span>
+            <span class="arr">→</span>
+          </a>
+          <a class="stack-row" href="#m3">
+            <span class="nm">03</span>
+            <span>
+              <div class="lbl">Revenue OS</div>
+              <div class="desc">Unified POS, inventory, loyalty, multi-vendor remittance.</div>
+            </span>
+            <span class="arr">→</span>
+          </a>
+          <a class="stack-row" href="#m4">
+            <span class="nm">04</span>
+            <span>
+              <div class="lbl">Growth OS</div>
+              <div class="desc">Staffing playbooks, KPI reporting, graduation track, retail support.</div>
+            </span>
+            <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="stack-foot">
+          <span><span class="live">●</span>&nbsp; All modules · operational</span>
+          <span>Cider &amp; Spice · Las Cruces</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── 4-UP OVERVIEW ─────────────────────────────────────────────────────── -->
+  <section class="overview" id="modules" aria-labelledby="modules-title">
+    <div class="overview-head">
+      <div>
+        <span class="eyebrow">System overview</span>
+        <h2 id="modules-title" style="margin-top: var(--s-4);">Four operating modules. One shared infrastructure.</h2>
+      </div>
+      <p>
+        Each module addresses an operational requirement that an independent first-time food operator cannot resource on their own. Modules are independently scoped but share the same tenant population, the same commerce backend, and the same reporting layer.
+      </p>
+    </div>
+
+    <div class="overview-grid">
+      <a class="ov-card" href="#m1">
+        <span class="ov-num">01</span>
+        <span class="ov-name">Space OS</span>
+        <span class="ov-title">Physical infrastructure.</span>
+        <span class="ov-link">Specification <span aria-hidden="true">↓</span></span>
+      </a>
+      <a class="ov-card" href="#m2">
+        <span class="ov-num">02</span>
+        <span class="ov-name">Brand OS</span>
+        <span class="ov-title">Brand &amp; creative production.</span>
+        <span class="ov-link">Specification <span aria-hidden="true">↓</span></span>
+      </a>
+      <a class="ov-card" href="#m3">
+        <span class="ov-num">03</span>
+        <span class="ov-name">Revenue OS</span>
+        <span class="ov-title">Shared commerce stack.</span>
+        <span class="ov-link">Specification <span aria-hidden="true">↓</span></span>
+      </a>
+      <a class="ov-card" href="#m4">
+        <span class="ov-num">04</span>
+        <span class="ov-name">Growth OS</span>
+        <span class="ov-title">Vendor scale-up &amp; graduation.</span>
+        <span class="ov-link">Specification <span aria-hidden="true">↓</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── MODULE 01 — SPACE OS ──────────────────────────────────────────────── -->
+  <section class="module" id="m1" aria-labelledby="m1-title">
+    <div class="module-head">
+      <div class="num">01</div>
+      <div>
+        <div class="name">Space OS</div>
+        <h2 id="m1-title">Physical infrastructure.</h2>
+      </div>
+    </div>
+    <div class="module-body">
+      <p class="lede">
+        Commercial kitchen suite, walk-in refrigeration, dish pit, dining capacity, and the service flow that connects them.
+      </p>
+
+      <ul class="benefits">
+        <li>
+          <span class="bnum">01.A</span>
+          <h3>~$150K of kitchen capex, pre-built.</h3>
+          <p>Shared commercial kitchen, walk-in cooler, and dish pit eliminate the single largest capex line in a first-year restaurant operation.</p>
+        </li>
+        <li>
+          <span class="bnum">01.B</span>
+          <h3>Floor plan engineered for throughput.</h3>
+          <p>Stall fronts, runner paths, and seat-to-stall ratios are sized to service-period peak demand rather than nominal occupancy.</p>
+        </li>
+        <li>
+          <span class="bnum">01.C</span>
+          <h3>Centralized common services.</h3>
+          <p>Dining, restrooms, sanitation, and the bar program are operated by the Hub. Vendors operate only the line and stall front.</p>
+        </li>
+      </ul>
+
+      <figure class="example">
+        <div class="label">Reference</div>
+        <p>“Seoul Fire Chicken commenced service on day one with no additional fryer procurement. Two hoods, walk-in cold shelf, and counter capacity were provisioned at handover.”</p>
+        <div class="src">— Stall A2 onboarding · week one</div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── MODULE 02 — BRAND OS ──────────────────────────────────────────────── -->
+  <section class="module" id="m2" aria-labelledby="m2-title">
+    <div class="module-head">
+      <div class="num">02</div>
+      <div>
+        <div class="name">Brand OS</div>
+        <h2 id="m2-title">Brand &amp; creative production.</h2>
+      </div>
+    </div>
+    <div class="module-body">
+      <p class="lede">
+        In-house naming, identity, menu design, photography, and content scheduling — production-ready on or before opening day, licensed to the operator.
+      </p>
+
+      <ul class="benefits">
+        <li>
+          <span class="bnum">02.A</span>
+          <h3>Identity &amp; menu systems delivered pre-open.</h3>
+          <p>Each operator receives a verbal mark, visual identity, menu board, and signage system delivered prior to opening service rather than during the first quarter of operation.</p>
+        </li>
+        <li>
+          <span class="bnum">02.B</span>
+          <h3>Quarterly photography &amp; content cadence.</h3>
+          <p>Stall photography and dish styling are produced on a quarterly cadence, supplying owned channels without requiring an in-stall marketing function.</p>
+        </li>
+        <li>
+          <span class="bnum">02.C</span>
+          <h3>Unified hall signage system.</h3>
+          <p>Wayfinding, stall facades, gift-card artwork, and promotional templates conform to a single specification, producing a coherent retail environment across all tenants.</p>
+        </li>
+      </ul>
+
+      <figure class="example">
+        <div class="label">Reference</div>
+        <p>“Sticky Stack Co. launched in week one with a delivered name, mark, menu board, and content template set — produced by the Hub, licensed to the operator.”</p>
+        <div class="src">— Stall A3 · opening week</div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── MODULE 03 — REVENUE OS ────────────────────────────────────────────── -->
+  <section class="module" id="m3" aria-labelledby="m3-title">
+    <div class="module-head">
+      <div class="num">03</div>
+      <div>
+        <div class="name">Revenue OS</div>
+        <h2 id="m3-title">Shared commerce stack.</h2>
+      </div>
+    </div>
+    <div class="module-body">
+      <p class="lede">
+        Unified POS, single inventory ledger, hall-wide loyalty, and scheduled multi-vendor remittance — every stall transacts against the same live system.
+      </p>
+
+      <div class="tabs" role="region" aria-label="Revenue OS sub-modules">
+        <div class="tabs-bar" role="tablist">
+          <button class="tab-btn" role="tab" id="tab-3a" aria-controls="panel-3a" aria-selected="true" data-tab="3a">
+            <span class="tb-lbl">3a · POS &amp; Inventory</span>
+            <span class="tb-ttl">Unified POS and inventory across all channels.</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-3b" aria-controls="panel-3b" aria-selected="false" data-tab="3b">
+            <span class="tb-lbl">3b · Loyalty &amp; Gift Cards</span>
+            <span class="tb-ttl">Native loyalty, gift cards, and promotion engine.</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-3c" aria-controls="panel-3c" aria-selected="false" data-tab="3c">
+            <span class="tb-lbl">3c · Tracking &amp; Payouts</span>
+            <span class="tb-ttl">Per-vendor panels, operator console, automated remittance.</span>
+          </button>
+        </div>
+
+        <div class="tab-panels">
+          <div class="tab-panel" role="tabpanel" id="panel-3a" aria-labelledby="tab-3a" aria-hidden="false">
+            <p class="sm-lede">
+              Online orders, counter tickets, and stall kitchen consumption write to a single inventory ledger. Stock-out propagates across every channel in the same transaction.
+            </p>
+            <ul class="feature-grid">
+              <li>One POS terminal across every stall and the bar</li>
+              <li>Unified inventory across online &amp; in-person channels</li>
+              <li>Real-time stock sync — prevents overselling</li>
+              <li>Auto stock-level adjustment on every sale</li>
+              <li>Live API updates push changes instantly</li>
+              <li>Restocking validates &amp; updates in real time</li>
+              <li>Discrepancy flagging &amp; auto error correction</li>
+              <li>Bulk inventory import via Excel for setup</li>
+            </ul>
+          </div>
+
+          <div class="tab-panel" role="tabpanel" id="panel-3b" aria-labelledby="tab-3b" aria-hidden="true">
+            <p class="sm-lede">
+              Customer club, gift cards, cashback, and configurable promotions run natively in the commerce stack. No third-party integrations; one program scope spans every tenant.
+            </p>
+            <ul class="feature-grid">
+              <li>Customer club for repeat-customer rewards</li>
+              <li>Gamification tools that reward return visits</li>
+              <li>Cashback program, native &amp; hall-wide</li>
+              <li>Discount engine for configurable promotions</li>
+              <li>Gift cards — no third-party plugin required</li>
+              <li>Incentive programs for retention</li>
+              <li>Promotion functionality for offers &amp; flash specials</li>
+            </ul>
+          </div>
+
+          <div class="tab-panel" role="tabpanel" id="panel-3c" aria-labelledby="tab-3c" aria-hidden="true">
+            <p class="sm-lede">
+              Each stall is provisioned with a per-vendor dashboard; the operator receives a master console. Rent and fee deductions execute against the live sales feed on a scheduled remittance cycle.
+            </p>
+            <ul class="feature-grid">
+              <li>Per-vendor panels — Amazon / Airbnb marketplace model</li>
+              <li>Individual stall dashboards for products &amp; sales</li>
+              <li>Full order timeline: payment → fulfillment</li>
+              <li>Real-time sales feed for auto rent / fee deduction</li>
+              <li>Master operator panel across every stall</li>
+              <li>Financial reporting &amp; vendor payout management</li>
+              <li>Multi-vendor marketplace functionality (Tier 3)</li>
+              <li>Vendor-separated reporting at every level</li>
+              <li>Multiple-domain support, one operating system</li>
+              <li>Automated tenant remittance — no manual math</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <figure class="example">
+        <div class="label">Reference</div>
+        <p>“A Cider Club member orders at Yazzie; the same instrument settles the bar tab. Yazzie's panel registers the return-visit metric the next morning; the corresponding rent share is deducted on Friday's scheduled remittance.”</p>
+        <div class="src">— Hall Console · daily briefing</div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── MODULE 04 — GROWTH OS ─────────────────────────────────────────────── -->
+  <section class="module" id="m4" aria-labelledby="m4-title">
+    <div class="module-head">
+      <div class="num">04</div>
+      <div>
+        <div class="name">Growth OS</div>
+        <h2 id="m4-title">Vendor scale-up &amp; graduation.</h2>
+      </div>
+    </div>
+    <div class="module-body">
+      <p class="lede">
+        Operational playbooks for staffing, systems, retail expansion, and standalone-location readiness.
+      </p>
+
+      <ul class="benefits">
+        <li>
+          <span class="bnum">04.A</span>
+          <h3>Staffing &amp; training playbooks.</h3>
+          <p>Role definitions, training SOPs, and food-safety documentation supporting growth from a two-person stall to a ten-person operation.</p>
+        </li>
+        <li>
+          <span class="bnum">04.B</span>
+          <h3>Defined graduation KPIs.</h3>
+          <p>Vendor-separated reporting — sales per stall, food cost percentage, customer rating, compliance status — produces the documented evidence required for standalone-location financing and lease negotiation.</p>
+        </li>
+        <li>
+          <span class="bnum">04.C</span>
+          <h3>Retail &amp; CPG expansion support.</h3>
+          <p>Co-packing partnerships, label compliance review, and wholesale introductions to support migration of stall sidelines into retail SKUs.</p>
+        </li>
+      </ul>
+
+      <figure class="example">
+        <div class="label">Reference</div>
+        <p>“Sticky Stack's NM Jam Jar transitions from a stall sideline into a packaged retail SKU. The Hub provides co-packing introductions, label compliance review, and the initial wholesale outreach.”</p>
+        <div class="src">— Graduation cohort · Q3</div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── DEMO PREVIEW ───────────────────────────────────────────────────────── -->
+  <section class="demo" aria-labelledby="demo-title">
+    <div class="demo-head">
+      <div>
+        <span class="eyebrow">Working reference implementation</span>
+        <h2 id="demo-title">Four operator surfaces. One backend instance.</h2>
+      </div>
+      <p>
+        Each persona is a working interface onto the same Hall OS instance, seeded with representative hall data. Reads and writes propagate across all four surfaces in real time.
+      </p>
+    </div>
+
+    <div class="personas">
+      <!-- Customer (phone) -->
+      <a class="persona" href="Hall OS Index.html">
+        <div class="persona-chrome">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="tag">iOS · 390 ⨯ 844</span>
+        </div>
+        <div class="persona-screen">
+          <div class="mock scr-customer">
+            <div class="eyebrow-mini">Welcome to the hall</div>
+            <div class="ch">Order from every stall at once.</div>
+            <div class="chips">
+              <span class="chip active">All</span>
+              <span class="chip">Popular</span>
+              <span class="chip">Under $10</span>
+              <span class="chip">Spicy</span>
+            </div>
+            <div class="ask">
+              <span class="star"></span>
+              <span>Ask the Hall Concierge…</span>
+            </div>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="pname">01 · Customer App</span>
+          <span class="ptitle">Multi-stall ordering surface.</span>
+          <span class="pdesc">Unified cart and pickup across kitchens. Browse, search, and natural-language ordering via the AI concierge.</span>
+        </div>
+      </a>
+
+      <!-- Vendor (window) -->
+      <a class="persona" href="Hall OS Index.html">
+        <div class="persona-chrome">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="tag">vendor.hall-os/yazzie</span>
+        </div>
+        <div class="persona-screen">
+          <div class="mock scr-vendor">
+            <div class="head">
+              <span class="vname">Yazzie · today</span>
+              <span class="vmeta">A4 · live</span>
+            </div>
+            <div class="kpi-row">
+              <div class="kpi"><div class="lab">Net today</div><div class="val acc">$1,284</div></div>
+              <div class="kpi"><div class="lab">Orders</div><div class="val">73</div></div>
+            </div>
+            <div class="feed">
+              <div class="ord"><span class="dot"></span><span class="lbl">#4127 · 2× Frybread Taco</span><span class="amt">$22.00</span></div>
+              <div class="ord"><span class="dot"></span><span class="lbl">#4126 · Mutton Stew</span><span class="amt">$14.50</span></div>
+              <div class="ord"><span class="dot done"></span><span class="lbl">#4125 · Posole Bowl</span><span class="amt">$13.00</span></div>
+              <div class="ord"><span class="dot done"></span><span class="lbl">#4124 · Chile Steak</span><span class="amt">$18.50</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="pname">02 · Vendor Stall</span>
+          <span class="ptitle">Per-vendor operating console.</span>
+          <span class="pdesc">Live sales feed, inventory state, and next-cycle remittance projection — scoped to a single stall.</span>
+        </div>
+      </a>
+
+      <!-- Operator console (window) -->
+      <a class="persona" href="Hall OS Index.html">
+        <div class="persona-chrome">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="tag">console.hall-os</span>
+        </div>
+        <div class="persona-screen">
+          <div class="mock scr-ops">
+            <div class="top">
+              <span class="live-dot"></span>
+              <span class="ttl">Hall Console</span>
+              <span class="stamp">Fri · 1:42p</span>
+            </div>
+            <div class="big">$18,430</div>
+            <div class="big-lbl">Hall sales · today</div>
+            <div class="stalls">
+              <span class="stall hot">A1</span>
+              <span class="stall hot">A2</span>
+              <span class="stall warm">A3</span>
+              <span class="stall">A4</span>
+              <span class="stall warm">A5</span>
+              <span class="stall">A6</span>
+            </div>
+            <div class="bars">
+              <span style="height: 40%"></span>
+              <span style="height: 65%"></span>
+              <span style="height: 82%"></span>
+              <span style="height: 95%"></span>
+              <span style="height: 78%"></span>
+              <span style="height: 55%"></span>
+              <span style="height: 35%"></span>
+              <span style="height: 28%"></span>
+            </div>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="pname">03 · Hall Console</span>
+          <span class="ptitle">Operator master console.</span>
+          <span class="pdesc">Aggregate sales by stall, automated rent deduction, exception alerts, and tenant-level reporting.</span>
+        </div>
+      </a>
+
+      <!-- Counter POS (tablet) -->
+      <a class="persona" href="Hall OS Index.html">
+        <div class="persona-chrome">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="tag">pos · counter 03</span>
+        </div>
+        <div class="persona-screen">
+          <div class="mock scr-pos">
+            <div class="pos-head">
+              <span class="lbl">Tickets</span>
+              <span class="nm">Counter 03</span>
+            </div>
+            <div class="tickets">
+              <div class="tk active">
+                <span class="num">17</span>
+                <span class="body">
+                  <span class="ln1">Frybread Taco ×2</span>
+                  <span class="ln2">Stall A4 · 00:42</span>
+                </span>
+                <span class="badge">Firing</span>
+              </div>
+              <div class="tk">
+                <span class="num">18</span>
+                <span class="body">
+                  <span class="ln1">Posole Bowl + Cider</span>
+                  <span class="ln2">Stall A4 + Bar · 01:08</span>
+                </span>
+                <span class="badge">Queued</span>
+              </div>
+              <div class="tk">
+                <span class="num">19</span>
+                <span class="body">
+                  <span class="ln1">Mutton Stew</span>
+                  <span class="ln2">Stall A4 · 01:24</span>
+                </span>
+                <span class="badge">Queued</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="persona-meta">
+          <span class="pname">04 · Counter POS</span>
+          <span class="ptitle">Stall-side ticket terminal.</span>
+          <span class="pdesc">Order intake and fulfillment queue — fire, mark ready, hand off to runners. Writes back to the shared store.</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="shared-store-wrap">
+      <div class="shared-store">
+        <span class="lbl"><strong>One shared store</strong></span>
+        <span class="line"></span>
+        <span class="pulse"><span class="d"></span>orders · inventory · loyalty · payouts</span>
+        <span class="line"></span>
+        <span class="lbl">writes propagate · &lt; 200ms</span>
+      </div>
+    </div>
+
+    <div class="demo-cta">
+      <div class="cta-copy">
+        All four surfaces operate against a <em>single backend</em>. State changes propagate across personas in real time.
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="Hall OS Index.html">Open the demo <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="inner">
+    <span>Cider &amp; Spice · Las Cruces, NM</span>
+    <span>Hall OS — operating infrastructure for a multi-tenant food hall</span>
+  </div>
+</footer>
+
+<script>
+  // Tab behavior for Module 03
+  (function () {
+    const bar = document.querySelector('.tabs-bar');
+    if (!bar) return;
+    const buttons = bar.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-tab');
+        buttons.forEach((b) => b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+        panels.forEach((p) => {
+          p.setAttribute('aria-hidden', p.id === 'panel-' + id ? 'false' : 'true');
+        });
+      });
+    });
+  })();
+
+  // Scroll-reveal — mark persona cards + section heads for staggered entry
+  (function () {
+    // Tag elements
+    document.querySelectorAll('.persona').forEach((el, i) => {
+      el.classList.add('sr', 'sr-d' + Math.min(i + 1, 4));
+    });
+    document.querySelectorAll('.module-head, .demo-head').forEach((el, i) => {
+      el.classList.add('sr', 'sr-d' + Math.min(i + 1, 2));
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.sr').forEach(el => io.observe(el));
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script src="hos-nav.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Hall OS · Order Status · Cider &amp; Spice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&display=swap"/>
+<style>
+  :root {
+    --bg:#1C1209; --bg-deep:#100E0A; --bg-band:#150F08;
+    --border:rgba(245,236,215,0.10); --border-s:rgba(245,236,215,0.06);
+    --cream:#F5ECD7; --parchment:#F7F3EC; --wheat:#E8C18D;
+    --muted:rgba(245,236,215,0.55); --faint:rgba(245,236,215,0.30);
+    --primary:#C4622D; --primary-hi:#D67841;
+    --gold:#D4A84B;
+    --green:#4B9B6E; --green-dim:rgba(75,155,110,0.10);
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --caps:'Josefin Sans',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;}
+  body{
+    background:var(--bg);color:var(--cream);
+    font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;height:100vh;
+  }
+
+  /* ── Top bar ── */
+  .top{
+    height:72px;flex-shrink:0;
+    background:var(--bg-deep);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 36px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .bmark{
+    width:38px;height:38px;border-radius:9px;
+    background:linear-gradient(140deg,var(--primary),var(--gold));
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-style:italic;font-size:20px;color:#1e1710;
+  }
+  .bname{font-family:var(--serif);font-size:22px;color:var(--cream);}
+  .bname em{font-style:italic;color:var(--primary);}
+  .top-center{
+    font-family:var(--serif);font-size:20px;font-weight:300;font-style:italic;
+    color:var(--wheat);letter-spacing:0.02em;
+  }
+  .top-right{display:flex;align-items:center;gap:20px;}
+  .live-row{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;color:var(--faint);}
+  .ldot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:gp 2.2s ease-in-out infinite;}
+  @keyframes gp{0%,100%{box-shadow:0 0 0 3px rgba(75,155,110,0.20);}50%{box-shadow:0 0 0 7px rgba(75,155,110,0.04);}}
+  .top-clock{font-family:var(--mono);font-size:14px;color:var(--muted);}
+  .back-link{
+    font-family:var(--caps);font-size:9px;letter-spacing:0.20em;text-transform:uppercase;
+    padding:7px 14px;border:1px solid var(--border);background:transparent;
+    color:var(--muted);text-decoration:none;transition:color .15s;
+  }
+  .back-link:hover{color:var(--cream);}
+
+  /* ── Column header strip ── */
+  .col-headers{
+    display:grid;grid-template-columns:1fr 1fr 1fr;
+    border-bottom:1px solid var(--border);flex-shrink:0;
+  }
+  .col-hd{
+    padding:14px 28px;border-right:1px solid var(--border);
+    display:flex;align-items:center;gap:10px;
+  }
+  .col-hd:last-child{border-right:0;}
+  .col-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .col-dot.prep{background:var(--gold);}
+  .col-dot.ready{background:var(--green);box-shadow:0 0 0 4px rgba(75,155,110,0.18);animation:gp 2s ease-in-out infinite;}
+  .col-dot.done{background:var(--faint);}
+  .col-title{font-family:var(--caps);font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--muted);}
+  .col-count{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:auto;}
+
+  /* ── Three columns ── */
+  .cols{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;overflow:hidden;}
+  .col{
+    border-right:1px solid var(--border);
+    overflow-y:auto;padding:20px 20px 32px;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .col:last-child{border-right:0;}
+  .col::-webkit-scrollbar{width:4px;}
+  .col::-webkit-scrollbar-track{background:transparent;}
+  .col::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+  /* ── Order tile ── */
+  .tile{
+    background:var(--bg-deep);border:1px solid var(--border);
+    padding:20px 22px 18px;
+    display:flex;flex-direction:column;gap:8px;
+    transition:border-color .3s,opacity .3s,transform .3s;
+  }
+  .tile.new-tile{
+    animation:slide-in .35s cubic-bezier(0.34,1.3,0.64,1) both;
+  }
+  @keyframes slide-in{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);}}
+  .tile.fade-out{opacity:0;transform:scale(0.96);}
+  .tile.ready-tile{border-color:rgba(75,155,110,0.35);background:rgba(75,155,110,0.03);}
+  .tile.done-tile{opacity:0.38;}
+
+  .tile-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  .tile-num{font-family:var(--serif);font-style:italic;font-size:48px;color:var(--primary);line-height:1;font-weight:300;}
+  .tile.ready-tile .tile-num{color:var(--green);}
+  .tile.done-tile .tile-num{color:var(--faint);}
+  .tile-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+  .tile-vendor{
+    font-family:var(--caps);font-size:9px;letter-spacing:0.20em;text-transform:uppercase;
+    color:var(--faint);text-align:right;
+  }
+  .tile-elapsed{font-family:var(--mono);font-size:11px;color:var(--faint);}
+
+  .tile-items{display:flex;flex-direction:column;gap:3px;}
+  .tile-item{font-size:14px;color:var(--muted);line-height:1.35;}
+  .tile-item .qty{font-family:var(--mono);font-size:11px;color:var(--primary);margin-right:5px;}
+
+  .tile-ready-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--caps);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--green);padding:4px 10px;border:1px solid rgba(75,155,110,0.35);
+    background:var(--green-dim);align-self:flex-start;margin-top:4px;
+    animation:badge-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes badge-pulse{0%,100%{opacity:1;}50%{opacity:0.65;}}
+
+  /* ── Empty col ── */
+  .col-empty{
+    padding:40px 20px;text-align:center;
+    font-family:var(--serif);font-size:18px;color:var(--faint);font-style:italic;
+  }
+
+  /* ── Bottom ticker ── */
+  .ticker{
+    height:38px;flex-shrink:0;
+    background:var(--bg-deep);border-top:1px solid var(--border);
+    display:flex;align-items:center;overflow:hidden;
+    font-family:var(--caps);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--faint);
+  }
+  .ticker-label{
+    flex-shrink:0;padding:0 18px;
+    border-right:1px solid var(--border);
+    color:var(--gold);white-space:nowrap;
+  }
+  .ticker-track{flex:1;overflow:hidden;position:relative;height:100%;}
+  .ticker-inner{
+    position:absolute;white-space:nowrap;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:32px;
+    animation:ticker-scroll 28s linear infinite;
+  }
+  @keyframes ticker-scroll{0%{left:100%;}100%{left:-200%}}
+  .ticker-sep{color:var(--primary);opacity:0.5;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <span class="bmark">&amp;</span>
+    <span class="bname">Hall <em>OS</em></span>
+  </div>
+  <span class="top-center">Order Status Board</span>
+  <div class="top-right">
+    <div class="live-row"><span class="ldot"></span>Live</div>
+    <span class="top-clock" id="top-clock">—</span>
+    <a class="back-link" href="Hall OS Index.html">← All modules</a>
+  </div>
+</div>
+
+<div class="col-headers">
+  <div class="col-hd"><span class="col-dot prep"></span><span class="col-title">Preparing</span><span class="col-count" id="cnt-prep">0</span></div>
+  <div class="col-hd"><span class="col-dot ready"></span><span class="col-title">Ready for Pickup</span><span class="col-count" id="cnt-ready">0</span></div>
+  <div class="col-hd"><span class="col-dot done"></span><span class="col-title">Picked Up</span><span class="col-count" id="cnt-done">0</span></div>
+</div>
+
+<div class="cols">
+  <div class="col" id="col-prep"></div>
+  <div class="col" id="col-ready"></div>
+  <div class="col" id="col-done"></div>
+</div>
+
+<div class="ticker">
+  <span class="ticker-label">Today at Cider &amp; Spice</span>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker-inner">
+      <span>Yazzie · Frybread Taco</span><span class="ticker-sep">·</span>
+      <span>Seoul Fire Chicken · Gochujang Wings</span><span class="ticker-sep">·</span>
+      <span>Sticky Stack Co. · Buttermilk Stack</span><span class="ticker-sep">·</span>
+      <span>All stalls open · Hall Bar serving until 10 PM</span><span class="ticker-sep">·</span>
+      <span>Yazzie · Mutton Stew</span><span class="ticker-sep">·</span>
+      <span>Seoul Fire · Tteokbokki</span><span class="ticker-sep">·</span>
+      <span>Happy Hour 3–5 PM · Hall Bar</span><span class="ticker-sep">·</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// Clock
+(function tick(){
+  const el = document.getElementById('top-clock');
+  if(el) el.textContent = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',second:'2-digit'});
+  setTimeout(tick,1000);
+})();
+
+const VENDORS = ['Yazzie','Seoul Fire','Sticky Stack'];
+const ITEMS = {
+  'Yazzie':      ['Frybread Taco','Mutton Stew','Posole Bowl','Chile Steak','Navajo Tea'],
+  'Seoul Fire':  ['Korean Fried Chicken','Gochujang Wings','Seoul Fries','Tteokbokki'],
+  'Sticky Stack':['Buttermilk Stack','Pancake Sandwich','Brown Butter Toast'],
+};
+
+let orders = [];
+let nextNum = 4134;
+let idSeq = 0;
+
+function randItem(vendor){ const a=ITEMS[vendor]; return a[Math.floor(Math.random()*a.length)]; }
+function randVendor(){ return VENDORS[Math.floor(Math.random()*VENDORS.length)]; }
+function randQty(){ return Math.random()<0.6?1:2; }
+function elapsed(ms){
+  const s=Math.floor(ms/1000);
+  if(s<60) return s+'s';
+  return Math.floor(s/60)+'m '+(s%60)+'s';
+}
+
+function makeOrder(){
+  const vendor = randVendor();
+  const numItems = Math.random()<0.5?1:2;
+  const items=[];
+  for(let i=0;i<numItems;i++) items.push({qty:randQty(),name:randItem(vendor)});
+  return {
+    id: idSeq++,
+    num: nextNum++,
+    vendor,
+    items,
+    state:'prep', // prep | ready | done
+    created: Date.now(),
+    readyAt: null,
+  };
+}
+
+// Seed initial orders
+for(let i=0;i<4;i++){
+  const o = makeOrder();
+  o.num = 4130 + i;
+  if(i<2) o.state='prep';
+  else if(i===2){ o.state='ready'; o.readyAt=Date.now()-120000; }
+  else { o.state='done'; }
+  orders.push(o);
+}
+
+function renderTile(o){
+  const div = document.createElement('div');
+  const cls = o.state==='ready'?'ready-tile':o.state==='done'?'done-tile':'';
+  div.className = `tile ${cls}`;
+  div.id = 'tile-'+o.id;
+  const ms = Date.now()-o.created;
+  const itemsHtml = o.items.map(it=>`<div class="tile-item"><span class="qty">${it.qty}×</span>${it.name}</div>`).join('');
+  const readyBadge = o.state==='ready' ? `<span class="tile-ready-badge">▲ Ready — pick up now</span>` : '';
+  div.innerHTML=`
+    <div class="tile-top">
+      <span class="tile-num">#${o.num}</span>
+      <div class="tile-right">
+        <span class="tile-vendor">${o.vendor}</span>
+        <span class="tile-elapsed" data-created="${o.created}">${elapsed(ms)}</span>
+      </div>
+    </div>
+    <div class="tile-items">${itemsHtml}</div>
+    ${readyBadge}`;
+  return div;
+}
+
+function render(){
+  const prep  = orders.filter(o=>o.state==='prep').sort((a,b)=>a.created-b.created);
+  const ready = orders.filter(o=>o.state==='ready').sort((a,b)=>a.readyAt-b.readyAt);
+  const done  = orders.filter(o=>o.state==='done').slice(-6).reverse();
+
+  ['prep','ready','done'].forEach(s=>{
+    const col=document.getElementById('col-'+s);
+    const list = s==='prep'?prep:s==='ready'?ready:done;
+    // Remove tiles not in list
+    [...col.querySelectorAll('.tile')].forEach(t=>{
+      if(!list.find(o=>'tile-'+o.id===t.id)) t.remove();
+    });
+    // Add/update
+    list.forEach((o,i)=>{
+      const existing = col.querySelector('#tile-'+o.id);
+      if(!existing){
+        const tile = renderTile(o);
+        tile.classList.add('new-tile');
+        col.insertBefore(tile, col.children[i]||null);
+      }
+    });
+    if(!list.length && !col.querySelector('.col-empty')){
+      const em=document.createElement('div');
+      em.className='col-empty';
+      em.textContent = s==='done'?'No completed orders yet.':s==='ready'?'No orders ready yet.':'No orders in progress.';
+      col.appendChild(em);
+    } else if(list.length){
+      const em=col.querySelector('.col-empty');
+      if(em) em.remove();
+    }
+  });
+
+  document.getElementById('cnt-prep').textContent = prep.length;
+  document.getElementById('cnt-ready').textContent = ready.length;
+  document.getElementById('cnt-done').textContent = done.length;
+}
+
+// Tick elapsed timers
+setInterval(()=>{
+  document.querySelectorAll('[data-created]').forEach(el=>{
+    el.textContent = elapsed(Date.now()-parseInt(el.dataset.created));
+  });
+},1000);
+
+// Auto-advance orders
+function autoAdvance(){
+  // Move oldest prep → ready
+  const prep = orders.filter(o=>o.state==='prep').sort((a,b)=>a.created-b.created);
+  if(prep.length>0 && Math.random()<0.55){
+    const o=prep[0];
+    const tile=document.getElementById('tile-'+o.id);
+    if(tile) tile.classList.add('fade-out');
+    setTimeout(()=>{ o.state='ready'; o.readyAt=Date.now(); render(); },320);
+  }
+
+  // Move oldest ready → done (after ~45s)
+  const ready = orders.filter(o=>o.state==='ready');
+  ready.forEach(o=>{
+    if(Date.now()-o.readyAt > 45000){
+      const tile=document.getElementById('tile-'+o.id);
+      if(tile) tile.classList.add('fade-out');
+      setTimeout(()=>{ o.state='done'; render(); },320);
+    }
+  });
+
+  // Cull old done orders
+  const done=orders.filter(o=>o.state==='done');
+  if(done.length>8) orders=orders.filter(o=>o.state!=='done'||done.slice(-8).includes(o));
+
+  // Add new order occasionally
+  if(orders.filter(o=>o.state==='prep').length<6 && Math.random()<0.45){
+    orders.push(makeOrder());
+  }
+
+  render();
+}
+
+render();
+setInterval(autoAdvance, 6000);
+</script>
+</body>
+</html>
