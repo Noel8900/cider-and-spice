@@ -92,14 +92,14 @@ function buildAnalystContext() {
   ).join('\n');
   const floor = STALLS.map(s => {
     const v = s.vendor ? (vendorById(s.vendor) || {}).name : null;
-    const status = s.state === 'busy' ? 'LEASED — operating, at capacity'
-      : s.state === 'open' ? 'LEASED — operating, capacity to spare'
-      : s.state === 'incubator' ? 'LEASED — occupied by an incubator tenant'
-      : 'UNLEASED — empty, available to fill';
+    const status = s.state === 'busy' ? 'LICENSED — operating, at capacity'
+      : s.state === 'open' ? 'LICENSED — operating, capacity to spare'
+      : s.state === 'incubator' ? 'LICENSED — occupied by an incubator participant'
+      : 'UNLICENSED — empty, available to fill';
     return `- ${s.id}: ${status}${v ? ` (${v})` : ''}`;
   }).join('\n');
-  const leased = STALLS.filter(s => s.state !== 'vacant').length;
-  return `OPERATING KPIs (Incubator Playbook):\n${kpis}\n\nFLOOR / STALLS (${leased} of ${STALLS.length} leased — only stalls explicitly marked UNLEASED are empty; never call a LEASED or "operating" stall vacant or dark):\n${floor}\n\nToday: Friday, ~$11,840 revenue, 312 orders, 11 min average wait, 184 active Cider Club members.`;
+  const licensed = STALLS.filter(s => s.state !== 'vacant').length;
+  return `OPERATING KPIs (Incubator Playbook):\n${kpis}\n\nFLOOR / STALLS (${licensed} of ${STALLS.length} licensed — only stalls explicitly marked UNLICENSED are empty; never call a LICENSED or "operating" stall vacant or dark):\n${floor}\n\nToday: Friday, ~$11,840 revenue, 312 orders, 11 min average wait, 184 active Cider Club members.`;
 }
 
 async function analyzeHall() {

@@ -19,10 +19,10 @@ const FLOOR_UNITS = [
     role:'Programmable stage — Live Music Fridays, classes, pitch nights, and private hire.',
     revenue:'Rental + ticketed programming' },
   { id:'a1', wing:'commercial', name:'Yazzie',              sub:'Anchor Stall', sqft:'120 sf',
-    role:'Confirmed concept on a market-rate lease — Japanese katsu, curry, and NM chile.',
+    role:'Confirmed concept on a market-rate license agreement — Japanese katsu, curry, and NM chile.',
     revenue:'Market-rate stall rent' },
   { id:'a2', wing:'commercial', name:'Seoul Fire',          sub:'Anchor Stall', sqft:'96 sf',
-    role:'Confirmed concept on a market-rate lease — Korean double-fry chicken.',
+    role:'Confirmed concept on a market-rate license agreement — Korean double-fry chicken.',
     revenue:'Market-rate stall rent' },
 
   // ── Incubator wing (Semilla → Mariposa pipeline) ─────────────────────────
@@ -36,7 +36,7 @@ const FLOOR_UNITS = [
     role:'Entry stall reserved for first-generation, immigrant, veteran, and women-owned founders.',
     revenue:'Subsidized → ramping rent' },
   { id:'mp1', wing:'incubator', track:'Mariposa', name:'Mariposa 01', sub:'Grow',     sqft:'120 sf',
-    role:'Growth track — graduating vendors stepping up toward a full market-rate lease.',
+    role:'Growth track — graduating vendors stepping up toward a full market-rate license agreement.',
     revenue:'Graduating to market rate' },
   { id:'mp2', wing:'incubator', track:'Mariposa', name:'Mariposa 02', sub:'Grow',     sqft:'120 sf',
     role:'Scale-up stall with full commissary access and built-in event-programming tie-ins.',
@@ -110,7 +110,7 @@ function FloorDetail({ unit }) {
       <div style={{ background: INV.surf, padding: '1.75rem 1.9rem', borderLeft: `2px solid ${INV.bord}` }}>
         <div style={{ fontFamily: INV_F.l, fontSize: '0.54rem', letterSpacing: '0.24em', textTransform: 'uppercase', color: INV.wheat, opacity: 0.4, marginBottom: '0.6rem' }}>Two Revenue Engines, One Floor</div>
         <p style={{ fontFamily: INV_F.b, fontSize: '0.86rem', color: INV.wheat, opacity: 0.6, lineHeight: 1.85, margin: 0 }}>
-          Roughly half the floor runs on <strong style={{ color: INV.ter, fontWeight: 500 }}>market-rate commercial anchors</strong> — the cider bar, commissary, retail, stage, and confirmed stalls. The other half is the <strong style={{ color: INV.gold, fontWeight: 500 }}>Semilla &amp; Mariposa incubator</strong>, where founders graduate from subsidized ramp rent into full leases. <em style={{ color: INV.parch, fontStyle: 'italic' }}>Select any space to inspect its role.</em>
+          Roughly half the floor runs on <strong style={{ color: INV.ter, fontWeight: 500 }}>market-rate commercial anchors</strong> — the cider bar, commissary, retail, stage, and confirmed stalls. The other half is the <strong style={{ color: INV.gold, fontWeight: 500 }}>Semilla &amp; Mariposa incubator</strong>, where founders graduate from subsidized ramp rent into full license agreements. <em style={{ color: INV.parch, fontStyle: 'italic' }}>Select any space to inspect its role.</em>
         </p>
       </div>
     );

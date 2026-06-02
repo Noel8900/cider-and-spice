@@ -6,7 +6,7 @@ const FAQS_DATA = [
   { q: 'When is the expected cash flow breakeven?', a: 'The Appendix F model projects breakeven between months 18 and 20. The Year 1 ramp loss (−$287K) is fully modeled and covered by the working capital reserve built into the $1.505M raise.' },
   { q: 'Can I review the full financial model?', a: 'Yes. The complete Appendix F Cashflow Model is shared after your initial inquiry is reviewed. We respond within 48 hours with the executive summary, capital stack, and Appendix F snapshot.' },
   { q: 'What if targeted grants are not awarded?', a: 'The SBA 7(a) + owner equity stack fully covers the build without any grant. Grants reduce investor equity and improve returns — but the capital structure is not grant-dependent. No capital is committed before a documented award.' },
-  { q: 'Has a site been selected?', a: 'Four candidates are under parallel diligence: West Picacho/Motel Blvd MRA, Pan Am/University Ave, 3400 W Picacho, and Mesilla Valley Mall. No capital is committed until broker, zoning, cost, and lease terms are fully confirmed.' },
+  { q: 'Has a site been selected?', a: 'Four candidates are under parallel diligence: West Picacho/Motel Blvd MRA, Pan Am/University Ave, 3400 W Picacho, and Mesilla Valley Mall. No capital is committed until broker, zoning, cost, and site terms are fully confirmed.' },
 ];
 
 function FaqItem({ q, a }) {

@@ -235,7 +235,7 @@ function VFooter() {
   return (
     <footer style={{ background: INV.bgDark, borderTop: `1px solid ${INV.bord}`, padding: '2rem 2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
       <div style={{ fontFamily: INV_F.d, fontSize: '1.1rem', color: INV.parch }}>Cider <em style={{ fontStyle: 'italic', color: INV.ter }}>&amp;</em> Spice <span style={{ fontFamily: INV_F.l, fontSize: '0.48rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: INV.wheat, opacity: 0.25, marginLeft: '0.75rem' }}>Las Cruces, NM · Opening 2027</span></div>
-      <p style={{ fontFamily: INV_F.b, fontSize: '0.68rem', color: INV.wheat, opacity: 0.2, maxWidth: '500px', lineHeight: 1.65, textAlign: 'right' }}>Vendor concepts and images are planning-stage renderings. Final stall design, permitting, and lease terms confirmed after site selection. Not a securities offering.</p>
+      <p style={{ fontFamily: INV_F.b, fontSize: '0.68rem', color: INV.wheat, opacity: 0.2, maxWidth: '500px', lineHeight: 1.65, textAlign: 'right' }}>Vendor concepts and images are planning-stage renderings. Final stall design, permitting, and license agreement terms confirmed after site selection. Not a securities offering.</p>
     </footer>
   );
 }

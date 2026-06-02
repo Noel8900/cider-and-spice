@@ -163,7 +163,7 @@ const FEATURES = [
   { icon:'◉', title:'25-Tap Craft Cider Bar',      body:'Southern New Mexico\'s only dedicated craft cider bar — 25 rotating regional and national taps plus a full Cider Club membership program.' },
   { icon:'◆', title:'Event Stage &amp; Programming', body:'A built-in stage for weekly live music, cultural markets, chile harvest festivals, cooking classes, and entrepreneurship showcases.' },
   { icon:'○', title:'Incubator Pathway',            body:'Two structured tracks — Semilla and Mariposa — with mentorship from WESST NM, SCORE, and the Las Cruces SBDC.' },
-  { icon:'□', title:'Flexible Stall Leases',        body:'Month-to-month and annual lease options designed for early-stage food entrepreneurs — no prior restaurant experience required.' },
+  { icon:'□', title:'Flexible Stall Licenses',      body:'Month-to-month and annual license agreement options designed for early-stage food entrepreneurs — no prior restaurant experience required.' },
 ];
 
 function FeatureRow({ icon, title, body }) {
@@ -480,5 +480,4 @@ function HPCiderClub() {
     </section>
   );
 }
-
 

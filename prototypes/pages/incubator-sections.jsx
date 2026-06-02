@@ -110,7 +110,7 @@ function IHero() {
           <em style={{ fontStyle: 'italic', color: INV.ter }}>Operations Playbook</em>
         </h1>
         <p style={{ ...a(0.4), fontFamily: INV_F.b, fontSize: '1rem', lineHeight: 1.85, color: INV.wheat, opacity: 0.65, maxWidth: '560px', marginBottom: '2rem' }}>
-          A structured path from concept to graduation — not a passive stall lease. Every vendor moves through a defined eight-stage lifecycle with coaching, KPIs, and documented graduation criteria.
+          A structured path from concept to graduation — not a passive stall license. Every vendor moves through a defined eight-stage lifecycle with coaching, KPIs, and documented graduation criteria.
         </p>
         <div style={{ ...a(0.52), display: 'flex', flexWrap: 'wrap', gap: '2.5rem' }}>
           {[['8', 'Journey Stages'], ['12+', 'Vendors · Year 1'], ['24 wk', 'Deep Track Academy'], ['9', 'Monthly KPIs']].map(([v, l]) => (
